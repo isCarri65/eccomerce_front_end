@@ -4,14 +4,16 @@
   height: 80px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
   width: 100vw;
 }
 .logoContainer {
   width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .logoContainer img {
-  box-sizing: content-box;
   width: 60px;
 }
 .iconItem {
@@ -25,8 +27,9 @@
 
 .categoriasContainer {
   display: flex;
+  width: 50vw;
   align-items: center;
-  justify-content: space-between;
+  justify-content: start;
   gap: 1.5rem;
 }
 .categoriasContainer p {
