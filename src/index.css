@@ -1,5 +1,16 @@
+@import "tailwindcss";
+
 * {
-  padding: 0;
-  margin: 0;
-  font-family: "Playfair Display", serif;
+  font-family: "Playfair Display", sans-serif;
+}
+:root {
+  /*Colors*/
+  --primary-color: #0a143f;
+  --secundary-color: #f8f8f8;
+  --letter-color: #fff;
+  --letter-Secundary-color: #000;
+  --icon-color: #fff;
+
+  /*Font Family*/
+  --font-family-primary: "Playfair Display", sans-serif;
 }

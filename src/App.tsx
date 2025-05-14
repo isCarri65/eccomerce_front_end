@@ -1,5 +1,5 @@
 import { AppRouter } from "./routes/AppRouter";
-
+import "tailwindcss";
 function App() {
   return (
     <>

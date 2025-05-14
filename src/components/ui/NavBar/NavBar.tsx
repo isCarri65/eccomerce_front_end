@@ -33,8 +33,8 @@ export const NavBar = () => {
         />
         <FontAwesomeIcon className={styles.iconItem} icon={faCartShopping} />
         <FontAwesomeIcon className={styles.iconItem} icon={faUser} />
+        {isLoggin && user ? <p>{user.name}</p> : ""}
       </div>
-      {isLoggin && user ? <p>{user.name}</p> : ""}
     </div>
   );
 };
