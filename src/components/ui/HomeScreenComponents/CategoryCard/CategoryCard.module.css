@@ -1,4 +1,35 @@
 .categoryCardContainer {
-  width: 500px;
-  height: 340px;
+  width: 100%;
+  height: 17vw;
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: opacity 0.25s ease;
+}
+.categoryCardContainer:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+.secondLayer {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.4;
+  position: relative;
+  z-index: 80;
+}
+.categoryNameContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+.categoryName {
+  color: var(--letter-color);
+  font-size: 2rem;
 }

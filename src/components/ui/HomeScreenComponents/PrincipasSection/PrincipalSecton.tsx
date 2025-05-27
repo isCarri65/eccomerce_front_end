@@ -4,7 +4,7 @@ import mainImage from "../../../../assets/homeImages/HomeImage.webp";
 export const PrincipalSection = () => {
   const [darkMode, setDarkMode] = useState(false);
   return (
-    <div className="bg-black h-[32vw] relative">
+    <div className="bg-black h-[32vw] w-[100%] relative">
       <div
         className={`bg-center bg-no-repeat w-full h-full flex justify-start items-center opacity-60`}
         style={{

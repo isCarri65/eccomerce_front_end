@@ -6,10 +6,16 @@ interface ICategoryCard {
 }
 export const CategoryCard: FC<ICategoryCard> = ({ category }) => {
   return (
-    <div className={styles.categoryCardConatainer}>
-      <div className={styles.categoryName}>{category.name}</div>
-      <div className={styles.categoryImgContainer}>
-        <img src={category.image} alt={category.name} />
+    <div
+      className={styles.categoryCardContainer}
+      style={{
+        backgroundImage: `url(${category.image})`,
+        backgroundSize: "cover",
+      }}
+    >
+      <div className={styles.secondLayer}></div>
+      <div className={styles.categoryNameContainer}>
+        <p className={styles.categoryName}>{category.name}</p>
       </div>
     </div>
   );

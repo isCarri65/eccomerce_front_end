@@ -1,0 +1,17 @@
+.simplebar-track.simplebar-horizontal .simplebar-scrollbar::before {
+  height: 14px; /* Aumenta este valor para un thumb más grueso */
+  background-color: var(--primary-color);
+  border-radius: 0;
+  opacity: 1;
+  cursor: pointer;
+}
+.simplebar-track.simplebar-vertical,
+.simplebar-track.simplebar-horizontal {
+  overflow: visible; /* Importante */
+}
+
+/* Reducir el ancho del track si lo deseas */
+.simplebar-track.simplebar-horizontal {
+  height: 16px; /* Ajusta este valor para el track */
+  background-color: transparent;
+}

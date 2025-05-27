@@ -1,9 +1,10 @@
 import { useState } from "react";
-import styles from "./CategorySection.module.css";
 import { ICategory } from "../../../../types/Category/ICategory";
 import { CategoryCard } from "../CategoryCard/CategoryCard";
 import imageAMD from "../../../../assets/homeImages/fondo pc AMD.jpg";
-import ScrollableSection from "../ScrollableSection/ScrollableSection";
+import SimpleBar from "simplebar-react";
+import styles from "./CategorySection.module.css";
+import "./ScrollStyle.css";
 const categoryExample: ICategory[] = [
   {
     id: "1",
@@ -20,6 +21,21 @@ const categoryExample: ICategory[] = [
     name: "Niño/a",
     image: imageAMD,
   },
+  {
+    id: "4",
+    name: "Deporte",
+    image: imageAMD,
+  },
+  {
+    id: "5",
+    name: "Zapatillas",
+    image: imageAMD,
+  },
+  {
+    id: "6",
+    name: "Invierno",
+    image: imageAMD,
+  },
 ];
 export const CategorySection = () => {
   const [categories, setCategories] = useState<ICategory[]>(categoryExample);
@@ -28,16 +44,19 @@ export const CategorySection = () => {
       <div className={styles.titleContainer}>
         <h2 className={styles.title + ` text-4xl`}>Categorías</h2>
       </div>
-      <div className={styles.categorySectionContainer}>
+
+      <SimpleBar
+        style={{ height: "80vh" }}
+        forceVisible="y"
+        autoHide={false}
+        className="w-[90%] md:w-[80%]  lg:w-[66%] xl:w-[66%] categoryContainer"
+      >
         <div className={styles.categoryContainer}>
           {categories.map((category, index) => (
             <CategoryCard key={index} category={category} />
           ))}
         </div>
-        <div>
-          <ScrollableSection />
-        </div>
-      </div>
+      </SimpleBar>
     </div>
   );
 };

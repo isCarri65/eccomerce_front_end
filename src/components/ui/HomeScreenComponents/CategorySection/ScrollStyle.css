@@ -1,0 +1,27 @@
+.simplebar-track.simplebar-vertical .simplebar-scrollbar::before {
+  width: 16px; /* Aumenta este valor para un thumb más grueso */
+  background-color: var(--primary-color);
+  border-radius: 0;
+  opacity: 1;
+  cursor: pointer;
+}
+.simplebar-track.simplebar-vertical .simplebar-scrollbar::before:hover {
+  cursor: pointer;
+}
+.simplebar-track.simplebar-vertical {
+  width: 18px; /* Ajusta este valor para el track */
+  background-color: transparent; /* Mantener el track limpio */
+}
+
+/* Simular la línea del carril */
+.simplebar-track.simplebar-vertical::before {
+  content: "";
+  width: 6px; /* Grosor del "carril" */
+  height: 100%;
+  background-color: #b32020; /* Color sutil */
+  border-radius: 2px; /* Bordes suaves */
+}
+.simplebar-track.simplebar-vertical,
+.simplebar-track.simplebar-horizontal {
+  overflow: visible; /* Importante */
+}
