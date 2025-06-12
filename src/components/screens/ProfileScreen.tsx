@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '../ui/Button';
 import { ProfilePersonal } from './ProfilePersonal';
 import { ProfileFavorites } from './ProfileFavorites';
+import { ProfileHistory } from './ProfileHistory';
 import styles from './ProfileScreen.module.css';
 
 type ProfileTab = 'personal' | 'favorites' | 'history';
@@ -19,12 +20,7 @@ export const ProfileScreen = () => {
             case 'favorites':
               return <ProfileFavorites />;
             case 'history':
-              return (
-                <div className="p-4">
-                  <h2 className="text-2xl font-bold mb-4">Historial</h2>
-                  {/* TODO: Implementar historial */}
-                </div>
-              );
+              return <ProfileHistory />;
           }
         })()}
       </div>
