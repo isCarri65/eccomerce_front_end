@@ -1,8 +1,7 @@
 .navBarContainer {
   background-color: var(--primary-color);
-
   width: 100%;
-  height: 80px;
+  height: 5rem;
 }
 
 .navBarContainer.hidden {
@@ -20,7 +19,7 @@
   z-index: 1000;
   background-color: var(--primary-color);
   color: var(--letter-color);
-  height: 80px;
+  height: 5rem;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -37,7 +36,7 @@
 }
 .iconItem {
   color: var(--icon-color);
-  font-size: 22px;
+  font-size: 1.4rem;
 }
 .iconContainer {
   display: flex;
@@ -53,6 +52,38 @@
   gap: 1.5rem;
 }
 
-.categoriasContainer p {
-  font-size: 20px;
+.categoriasContainer li a {
+  font-size: 1.4rem;
+}
+.navLinks {
+  display: flex;
+  gap: 75px;
+}
+
+.navLink {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.navLink:hover {
+  color: #f0f0f0;
+}
+
+.navLink:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background-color: white;
+  bottom: -5px;
+  left: 0;
+  transition: width 0.3s ease;
+}
+
+.navLink:hover:after {
+  width: 100%;
 }

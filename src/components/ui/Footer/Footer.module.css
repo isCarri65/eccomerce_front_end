@@ -1,0 +1,99 @@
+.footer {
+  background-color: var(--primary-color);
+  width: 100%;
+  padding: 30px 10% 20px;
+  color: var(--letter-color);
+  font-family: "Assistant", sans-serif;
+}
+.firstSection {
+  height: 75%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-top: solid 1px var(--tertiary-color);
+  border-bottom: solid 1px var(--tertiary-color);
+  padding: 10px 0;
+}
+
+.logoContainer {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logoContainer img {
+  width: 100px;
+}
+
+.contactsContainer {
+  width: 65%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.contactLocation {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.contactLocation i {
+  font-size: 1.5rem;
+}
+.contactLocation p {
+  font-family: "Assistant", sans-serif;
+}
+
+.contactNumberContainer {
+  display: flex;
+  justify-content: start;
+  gap: 20%;
+}
+
+.contactNumberContainer p {
+  font-family: "Assistant", sans-serif;
+}
+
+.contactNumberContainer .contactNumberItem {
+  display: flex;
+  gap: 1rem;
+}
+.contactNumberContainer .contactNumberItem i {
+  font-size: 1.5rem;
+}
+
+.socialNetworksContainer {
+  display: flex;
+  justify-content: start;
+  gap: 1.5rem;
+}
+.socialNetworksContainer p {
+  font-family: "Assistant", sans-serif;
+}
+.secondSection {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+.linksContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.linksContainer p {
+  font-family: "Assistant", sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--letter-color);
+  cursor: pointer;
+  width: 100px;
+}
+.copyrightContainer p {
+  font-family: "Assistant", sans-serif;
+  font-size: 1rem;
+  color: var(--letter-color);
+  text-align: center;
+  width: 100%;
+}

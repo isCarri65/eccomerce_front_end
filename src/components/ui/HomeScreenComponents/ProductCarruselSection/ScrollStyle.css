@@ -12,6 +12,6 @@
 
 /* Reducir el ancho del track si lo deseas */
 .simplebar-track.simplebar-horizontal {
-  height: 16px; /* Ajusta este valor para el track */
+  height: 20px; /* Ajusta este valor para el track */
   background-color: transparent;
 }

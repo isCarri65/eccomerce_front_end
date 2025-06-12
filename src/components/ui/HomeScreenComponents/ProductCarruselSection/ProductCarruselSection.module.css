@@ -1,13 +1,16 @@
 .titleContainer {
   padding: 40px;
 }
+.title {
+  font-size: 2.5rem;
+}
 .carouselContainer {
   position: relative;
   width: 90vw;
   overflow-x: hidden;
-  padding-bottom: 30px;
   display: flex;
   align-items: center;
+  flex-direction: column;
 }
 
 .arrow {
@@ -20,6 +23,10 @@
   padding: 10px;
   cursor: pointer;
   z-index: 10;
+  transition: background-color 0.3s ease;
+}
+.arrow:hover {
+  background-color: #fff4;
 }
 
 .left {
@@ -28,15 +35,24 @@
 .right {
   right: 10px;
 }
+.arrowIcon {
+  height: 40px;
+}
 
 .scrollbarContainer {
-  width: 100%;
   overflow-x: auto;
-  white-space: nowrap;
+  width: 100%;
 }
 .productsTrack {
   display: flex;
   gap: 2rem;
   width: max-content;
-  padding: 40px 0;
+  padding: 40px 0 60px;
+}
+.linea {
+  position: relative;
+  bottom: 12px;
+  background-color: #666;
+  height: 3px;
+  width: 95%;
 }

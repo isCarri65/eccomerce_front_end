@@ -1,8 +1,10 @@
 .categoryCardContainer {
   width: 100%;
   height: 17vw;
+  min-height: 150px;
   position: relative;
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   transition: opacity 0.25s ease;
 }

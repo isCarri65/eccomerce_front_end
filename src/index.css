@@ -1,18 +1,26 @@
 @import "tailwindcss";
 
 * {
+  padding: 0;
+  margin: 0;
   font-family: "Playfair Display", sans-serif;
 }
 :root {
   /*Colors*/
-  --primary-color: #0a143f;
+  --primary-color: #081138;
   --secundary-color: #f8f8f8;
-  --tertiary-color: #a8c3bc;
-  --letter-color: #fff;
+  --tertiary-color: #d3e3df;
+  --letter-color: #f8f8f8;
   --letter-Secundary-color: #000;
   --letter-Tertiary-color: #444;
-  --icon-color: #fff;
+  --icon-color: #f8f8f8;
 
   /*Font Family*/
   --font-family-primary: "Playfair Display", sans-serif;
+}
+
+@media screen and (max-width: 768px) {
+  * {
+    font-size: 12px;
+  }
 }

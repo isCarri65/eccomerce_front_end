@@ -1,10 +1,12 @@
 import styles from "./ProductCarruselSection.module.css";
 import SimpleBar from "simplebar-react";
 import "./ScrollStyle.css";
-import { useRef, useState } from "react";
+import { MouseEvent, useRef, useState } from "react";
 import { IProduct } from "../../../../types/Product/IProduct";
 import { ProductCard } from "../../ProductCard/ProductCard";
 import { ProductGenre } from "../../../../types/enums/ProductGenre";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 const productExample: IProduct[] = [
   {
     id: "1",
@@ -66,7 +68,11 @@ export const ProductCarruselSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Función para mover el carrusel con las flechas
-  const scroll = (direction: "left" | "right") => {
+  const scroll = (
+    direction: "left" | "right",
+    e: MouseEvent<HTMLButtonElement>
+  ) => {
+    e.stopPropagation();
     if (scrollRef.current) {
       const scrollAmount = 350; // Cantidad de desplazamiento
       scrollRef.current.scrollBy({
@@ -78,21 +84,21 @@ export const ProductCarruselSection = () => {
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <div className={styles.titleContainer}>
-        <h2 className={styles.title + ` text-4xl`}>Productos Populares</h2>
+        <h2 className={styles.title}>Productos Populares</h2>
       </div>
       <div className={styles.carouselContainer}>
         {/* Flechas de navegación */}
         <button
           className={`${styles.arrow} ${styles.left}`}
-          onClick={() => scroll("left")}
+          onClick={(e) => scroll("left", e)}
         >
-          ⬅
+          <FontAwesomeIcon icon={faArrowLeft} className={styles.arrowIcon} />
         </button>
         <button
           className={`${styles.arrow} ${styles.right}`}
-          onClick={() => scroll("right")}
+          onClick={(e) => scroll("right", e)}
         >
-          ➡
+          <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
         </button>
 
         {/* Carrusel con scrollbar */}
@@ -106,6 +112,7 @@ export const ProductCarruselSection = () => {
             ))}
           </div>
         </SimpleBar>
+        <div className={styles.linea}></div>
       </div>
     </div>
   );

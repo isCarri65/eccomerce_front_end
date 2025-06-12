@@ -2,7 +2,7 @@ import { ICategory } from "../Category/ICategory";
 import { ProductGenre } from "../enums/ProductGenre";
 
 export interface IProduct {
-  id: string;
+  id: number;
   name: string;
   description: string;
   buyPrice: number;

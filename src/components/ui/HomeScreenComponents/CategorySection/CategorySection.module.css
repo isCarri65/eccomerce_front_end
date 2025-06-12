@@ -3,6 +3,9 @@
   justify-content: center;
   padding: 40px;
 }
+.title {
+  font-size: 2.5rem;
+}
 .sectionContainer {
   display: flex;
   flex-direction: column;
@@ -26,4 +29,10 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+}
+@media screen and (max-width: 600px) {
+  .categoryContainer {
+    grid-template-columns: 1fr;
+    padding: 0 40px;
+  }
 }

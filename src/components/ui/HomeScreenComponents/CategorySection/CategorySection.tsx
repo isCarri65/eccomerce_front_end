@@ -42,16 +42,16 @@ export const CategorySection = () => {
   return (
     <div className={styles.sectionContainer}>
       <div className={styles.titleContainer}>
-        <h2 className={styles.title + ` text-4xl`}>Categorías</h2>
+        <h2 className={styles.title}>Categorías</h2>
       </div>
 
       <SimpleBar
         style={{ height: "80vh" }}
         forceVisible="y"
         autoHide={false}
-        className="w-[90%] md:w-[80%]  lg:w-[66%] xl:w-[66%] categoryContainer"
+        className="w-[90%] md:w-[80%]  lg:w-[66%] xl:w-[66%] "
       >
-        <div className={styles.categoryContainer}>
+        <div className={styles.categoryContainer + " sm:grid-cols-1"}>
           {categories.map((category, index) => (
             <CategoryCard key={index} category={category} />
           ))}

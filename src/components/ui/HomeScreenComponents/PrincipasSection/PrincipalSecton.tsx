@@ -12,23 +12,31 @@ export const PrincipalSection = () => {
           backgroundSize: "cover",
         }}
       ></div>
-      <div className="w-full h-full position absolute left-0 top-0 flex justify-around  items-center ">
-        <div className="text-white w-[24%]  flex flex-col gap-4 left-[12rem] top-[25%]">
-          <p className="xl:text-4xl lg:text-4xl text-2xl font-semibold">
+      <div className="w-full h-full position absolute left-0 top-0 flex justify-around items-center ">
+        <div className="text-[var(--letter-color)] w-[26%]  flex flex-col gap-4 left-[12rem] top-[25%]">
+          <p
+            className="xl:text-4xl lg:text-4xl text-2xl font-semibold"
+            style={{ fontSize: "1.8rem" }}
+          >
             La mejor calidad con el mejor confort
           </p>
           <div className="text-lg xl:text-xl lg:text-xl text-sm">
             <p
               style={{
                 fontFamily: "Open Sans, sans serif",
+                fontSize: "1rem",
+                paddingBottom: "10px",
               }}
             >
               Explora diferentes categorias y encuantra lo que buscabas
             </p>
             <button
-              className="text-white font-medium bg-[var(--primary-color)] px-4 py-2 rounded hover:bg-gray-800 transition duration-300 ease-in-out "
+              className="text-white font-medium bg-[var(--primary-color)] rounded hover:bg-gray-800 transition duration-300 ease-in-out "
               style={{
                 fontFamily: "Open Sans, sans serif",
+                fontWeight: "600",
+                fontSize: "1.6rem",
+                padding: "0.8rem 1rem",
               }}
             >
               Compra Ahora

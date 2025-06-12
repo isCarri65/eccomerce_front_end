@@ -1,4 +1,5 @@
 import { CategorySection } from "../../ui/HomeScreenComponents/CategorySection/CategorySection";
+import { InfoSection } from "../../ui/HomeScreenComponents/InfoSection/InfoSection";
 import { PrincipalSection } from "../../ui/HomeScreenComponents/PrincipasSection/PrincipalSecton";
 import { ProductCarruselSection } from "../../ui/HomeScreenComponents/ProductCarruselSection/ProductCarruselSection";
 export const HomeScreen = () => {
@@ -7,6 +8,7 @@ export const HomeScreen = () => {
       <PrincipalSection />
       <CategorySection />
       <ProductCarruselSection />
+      <InfoSection />
     </main>
   );
 };
