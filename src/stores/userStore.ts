@@ -1,5 +1,17 @@
 import { create } from "zustand";
 import { IUser } from "../types/User/IUser";
+import { UserRole } from "../types/enums/UserRol";
+
+// Usuario de prueba para desarrollo
+const mockUser: IUser = {
+  id: 1,
+  name: "Usuario",
+  lastName: "Prueba",
+  email: "usuario@prueba.com",
+  password: "password123",
+  role: UserRole.User,
+  phone: "123456789"
+};
 
 interface UserState {
   // Estado
@@ -8,6 +20,8 @@ interface UserState {
   currentUserProfile: IUser | null;
   loading: boolean;
   error: string | null;
+  isAuthenticated: boolean;
+  token: string | null;
 
   // Acciones para usuarios (admin)
   setUsers: (users: IUser[]) => void;
@@ -20,6 +34,10 @@ interface UserState {
 
   // Acciones para perfil del usuario actual
   setCurrentUserProfile: (user: IUser | null) => void;
+
+  // Acciones para autenticación
+  login: (token: string, user: IUser) => void;
+  logout: () => void;
 
   // Acciones para loading y error
   setLoading: (loading: boolean) => void;
@@ -34,9 +52,11 @@ interface UserState {
 const initialState = {
   users: [],
   selectedUser: null,
-  currentUserProfile: null,
+  currentUserProfile: mockUser,
   loading: false,
   error: null,
+  isAuthenticated: true,
+  token: "mock-token-for-development",
 };
 
 export const useUserStore = create<UserState>((set, get) => ({
@@ -58,7 +78,6 @@ export const useUserStore = create<UserState>((set, get) => ({
       users: state.users.map((user) => (user.id === id ? updatedUser : user)),
       selectedUser:
         state.selectedUser?.id === id ? updatedUser : state.selectedUser,
-      // También actualizar el perfil actual si coincide el ID
       currentUserProfile:
         state.currentUserProfile?.id === id
           ? updatedUser
@@ -71,7 +90,6 @@ export const useUserStore = create<UserState>((set, get) => ({
     set((state) => ({
       users: state.users.filter((user) => user.id !== id),
       selectedUser: state.selectedUser?.id === id ? null : state.selectedUser,
-      // Si se elimina el usuario actual, limpiar su perfil
       currentUserProfile:
         state.currentUserProfile?.id === id ? null : state.currentUserProfile,
       error: null,
@@ -82,6 +100,27 @@ export const useUserStore = create<UserState>((set, get) => ({
 
   // Establecer perfil del usuario actual
   setCurrentUserProfile: (user) => set({ currentUserProfile: user }),
+
+  // Acciones de autenticación
+  login: (token, user) => {
+    localStorage.setItem('token', token);
+    set({
+      isAuthenticated: true,
+      token,
+      currentUserProfile: user,
+      error: null
+    });
+  },
+
+  logout: () => {
+    localStorage.removeItem('token');
+    set({
+      isAuthenticated: false,
+      token: null,
+      currentUserProfile: null,
+      error: null
+    });
+  },
 
   // Establecer estado de carga
   setLoading: (loading) => set({ loading }),
@@ -94,7 +133,6 @@ export const useUserStore = create<UserState>((set, get) => ({
     set({
       users: [],
       selectedUser: null,
-      // Mantener el perfil del usuario actual
       error: null,
     }),
 

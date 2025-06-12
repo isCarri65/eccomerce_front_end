@@ -1,0 +1,38 @@
+.tabNavBar {
+  display: flex;
+  background: #fff;
+  border-bottom: 2px solid #e0e0e0;
+  border-radius: 14px 14px 0 0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.tabButton {
+  flex: 1;
+  padding: 1.1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4a4e69;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  border-bottom: 3px solid transparent;
+}
+.tabButton:hover {
+  background: #f4f4fa;
+  color: #22223b;
+}
+.tabButtonActive {
+  color: #22223b;
+  background: #f8f8fa;
+  border-bottom: 3px solid #22223b;
+}
+.tabContentCard {
+  background: #fff;
+  border-radius: 0 0 14px 14px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.09);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  min-height: 350px;
+  margin-top: 0;
+} 

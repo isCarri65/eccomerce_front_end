@@ -1,0 +1,143 @@
+.profilePersonalContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 0 4rem 0;
+}
+
+.title {
+  text-align: center;
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  letter-spacing: -1px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 2rem 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #22223b;
+}
+
+.infoBlock {
+  font-size: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.editBtn {
+  margin-top: 1.5rem;
+  width: fit-content;
+  background: #22223b;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.editBtn:hover {
+  background: #4a4e69;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.formRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.formRow label {
+  font-weight: 600;
+  color: #22223b;
+}
+
+.formRow input {
+  padding: 0.6rem 1rem;
+  border: 1.5px solid #c9c9c9;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #f8f8fa;
+  transition: border 0.2s;
+}
+.formRow input:focus {
+  border: 1.5px solid #22223b;
+  outline: none;
+}
+
+.formActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+.addressBlock {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.addAddressBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 90px;
+  background: #e9e9ec;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  color: #22223b;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+.addAddressBtn:hover {
+  background: #d6d6e0;
+  border: 1.5px solid #22223b;
+}
+.plus {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(34, 34, 59, 0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modalContent {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.13);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  min-width: 350px;
+  max-width: 95vw;
+}
+.addressForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+} 
