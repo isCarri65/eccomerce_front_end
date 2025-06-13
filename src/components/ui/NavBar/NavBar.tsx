@@ -7,7 +7,6 @@ import styles from "./NavBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../../../assets/Icon/nike_logo_2.png";
 import { useEffect, useRef, useState } from "react";
-import { IUser } from "../../../types/User/IUser";
 import { IType } from "../../../types/Type/IType";
 import { CategoryOptionSelect } from "../../../types/CategoryOptionSelect";
 import { GenreOptions } from "./GenreOptions";
@@ -38,7 +37,6 @@ export const NavBar = () => {
   const [offsetY, setOffsetY] = useState(0);
   const lastScrollY = useRef(0);
   const navbarHeight = 80;
-
   const [selectedCategoria, setSelectedCategoria] =
     useState<CategoryOptionSelect | null>(null);
 
@@ -82,10 +80,15 @@ export const NavBar = () => {
         className={styles.navBar}
         style={{ transform: `translateY(-${offsetY}px)` }}
       >
-        <div className={styles.logoContainer}>
-          <img src={logo} alt="logo de nike" />
-        </div>
-
+      <div className={styles.logoContainer}>
+        <img
+          src={logo}
+          alt="logo de nike"
+          onClick={() => navigate('/')}
+          style={{ cursor: 'pointer' }}
+        />
+      </div>
+        
         <ul className={styles.categoriasContainer}>
           {categoryOptionsSelects.map((cat) => (
             <li key={`${cat.kind}-${cat.value.toString()}`}>
@@ -100,29 +103,57 @@ export const NavBar = () => {
             </li>
           ))}
 
-          {isAuthenticated && currentUserProfile?.role === 'admin' && (
+          {isAuthenticated && currentUserProfile?.role === 'ADMIN' && (
             <li>
               <button>Administrador</button>
             </li>
           )}
         </ul>
-
+        
         <div className={styles.iconContainer}>
-          <FontAwesomeIcon
-            className={styles.iconItem}
-            icon={faMagnifyingGlass}
-          />
-          <FontAwesomeIcon className={styles.iconItem} icon={faCartShopping} />
-          <FontAwesomeIcon 
-            className={styles.iconItem} 
-            icon={faUser}
-            onClick={() => navigate(isAuthenticated ? '/profile' : '/login')}
-          />
-          {isAuthenticated && currentUserProfile && (
-            <p className={styles.userName}>{currentUserProfile.name}</p>
-          )}
-        </div>
+  <FontAwesomeIcon
+    className={styles.iconItem}
+    icon={faMagnifyingGlass}
+  />
+  <FontAwesomeIcon className={styles.iconItem} icon={faCartShopping} />
+  <FontAwesomeIcon 
+    className={styles.iconItem} 
+    icon={faUser}
+    onClick={() => navigate(isAuthenticated ? '/profile' : '/login')}
+    title={isAuthenticated ? "Perfil" : "Iniciar Sesión"}
+    style={{ cursor: "pointer" }}
+  />
+  {/* Mostrar el nombre del usuario si está logueado */}
+  {isAuthenticated && currentUserProfile && (
+    <p className={styles.userName}>{currentUserProfile.name}</p>
+  )}
+  {/* Botón cerrar sesión (solo si está logueado) */}
+  {isAuthenticated && (
+    <button
+      className={styles.logoutButton}
+      onClick={() => {
+        useUserStore.getState().logout();
+        navigate("/");
+      }}
+      type="button"
+    >
+      Cerrar Sesión
+    </button>
+  )}
+  {/* Botón registro (solo si no está logueado) */}
+  {!isAuthenticated && (
+    <button
+      className={styles.registerButton}
+      onClick={() => navigate('/register')}
+      type="button"
+    >
+      Crear Cuenta
+    </button>
+  )}
+</div>
       </div>
+      {/* Opciones de categoría */}
+
 
       <div className={styles.OptionsCategoryContainer}>
         {selectedCategoria &&
