@@ -1,0 +1,246 @@
+.adminProductsContainer {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2.5rem 0;
+  background: #f8f8fa;
+}
+.headerRow {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+}
+.createBtn {
+  background: #22223b;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 2.2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.createBtn:hover {
+  background: #4a4e69;
+}
+.categorySelect {
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: 1.5px solid #c9c9c9;
+  font-size: 1rem;
+  background: #f8f8fa;
+}
+.tableWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.table {
+  width: 70vw;
+  min-width: 600px;
+  max-width: 1200px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+.table th, .table td {
+  padding: 1rem 1.2rem;
+  text-align: left;
+}
+.table th {
+  background: #f8f8fa;
+  color: #22223b;
+  font-weight: 700;
+  font-size: 1.08rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+.table tr {
+  transition: background 0.18s;
+}
+.table tbody tr:hover {
+  background: #f4f4fa;
+}
+.table td {
+  font-size: 1rem;
+  color: #22223b;
+  border-bottom: 1px solid #f0f0f0;
+}
+.table tr:last-child td {
+  border-bottom: none;
+}
+.editBtn {
+  background: #ffd600;
+  color: #22223b;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.98rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.editBtn:hover {
+  background: #ffe066;
+}
+.deleteBtn {
+  background: #e74c3c;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.deleteBtn:hover {
+  background: #c0392b;
+}
+.productForm {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  width: 520px;
+  max-width: 95vw;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.formGrid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem 2.5rem;
+  width: 100%;
+}
+.leftCol, .rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.formRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.formRow label {
+  font-weight: 600;
+  color: #22223b;
+  margin-bottom: 0.2rem;
+}
+input, select, textarea {
+  font-size: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1.5px solid #c9c9c9;
+  background: #f8f8fa;
+  transition: border 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border: 1.5px solid #22223b;
+  outline: none;
+}
+.textareaDesc {
+  min-height: 120px;
+  width: 100%;
+  resize: vertical;
+}
+.imageDrop {
+  width: 100%;
+  min-height: 80px;
+  border: 2px dashed #bdbdbd;
+  border-radius: 8px;
+  background: #f8f8fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a4e69;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border 0.2s, background 0.2s;
+  margin-bottom: 0.5rem;
+  padding: 0.7rem 1rem;
+  text-align: center;
+}
+.imageDrop:hover {
+  border: 2px solid #22223b;
+  background: #f4f4fa;
+}
+.sizeSwitchRow {
+  display: flex;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
+}
+.sizeSwitch, .sizeSwitchActive {
+  border: 1.5px solid #bdbdbd;
+  background: #f8f8fa;
+  color: #22223b;
+  border-radius: 6px;
+  padding: 0.4rem 1.1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.18s, border 0.18s;
+}
+.sizeSwitchActive {
+  background: #b7eacb;
+  border: 1.5px solid #3bb273;
+  color: #22223b;
+}
+.sizesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.2rem;
+  margin-top: 0.2rem;
+}
+.sizeCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.formActions {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2.2rem;
+  width: 100%;
+  justify-content: center;
+}
+.cancelBtn {
+  background: #bdbdbd;
+  color: #22223b;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 2.2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.cancelBtn:hover {
+  background: #888;
+}
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.productForm h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+} 
