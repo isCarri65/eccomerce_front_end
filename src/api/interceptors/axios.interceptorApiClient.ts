@@ -36,8 +36,8 @@ const refreshToken = async () => {
       "/auth/refresh",
       {},
       {
-        baseURL: BASE_URL, // o usa un dominio separado si es necesario
-        withCredentials: true, // si usás cookies
+        baseURL: BASE_URL,
+        withCredentials: true,
       }
     );
     const newToken = refreshResponse.data.accessToken;

@@ -4,6 +4,7 @@ import { IUser } from "../../types/User/IUser";
 interface LoginResponse {
   token: string;
   user: IUser;
+  role: string;
 }
 
 interface RegisterData {

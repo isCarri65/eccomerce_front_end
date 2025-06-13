@@ -9,7 +9,7 @@ const mockUser: IUser = {
   lastName: "Prueba",
   email: "usuario@prueba.com",
   password: "password123",
-  role: UserRole.User,
+  role: UserRole.Admin,
   phone: "123456789"
 };
 
