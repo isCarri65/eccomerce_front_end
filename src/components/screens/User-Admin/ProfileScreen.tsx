@@ -18,7 +18,6 @@ type ProfileTab =
   | "products"
   | "discounts"
   | "admins";
-type AdminSubTab = "createUser" | "type" | "category" | "color" | null;
 
 export const ProfileScreen = () => {
   const [activeTab, setActiveTab] = useState<ProfileTab>("personal");

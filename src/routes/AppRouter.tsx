@@ -1,23 +1,33 @@
-import { Route, Routes } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { HomeScreen } from "../components/screens/HomeScreen/HomeScreen";
 import { ProductCatalogScreen } from "../components/screens/ProductCatalogScreen/ProductCatalogScreen";
 import { LoginScreen } from "../components/screens/LoginScreen";
 import { RegisterScreen } from "../components/screens/RegisterScreen";
-import { ProfileScreen } from "../components/screens/User-Admin/ProfileScreen";
-import { Footer } from "../components/ui/Footer/Footer";
+
+import { AdminRoute, ProtectedRoute } from "../components/auth/ProtectedRoute";
 import { NavBar } from "../components/ui/NavBar/NavBar";
-import { ProtectedRoute } from "../components/auth/ProtectedRoute";
+import { Footer } from "../components/ui/Footer/Footer";
+
+// Admin screens
+import { ProductListScreen } from "../components/screens/admin/ProductListScreen/ProductListScreen";
+import { CategoryListScreen } from "../components/screens/admin/CategoryListScreen/CategoryListScreen";
+import { DiscountListScreen } from "../components/screens/admin/DiscountListScreen/DiscountListScreen";
+import { ProfileScreen } from "../components/screens/User-Admin/ProfileScreen";
 
 export const AppRouter = () => {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
+
   return (
     <>
-      <NavBar />
+      {/* Solo muestro NavBar y Footer en rutas que NO sean admin */}
+      {!isAdmin && <NavBar />}
       <Routes>
+        {/* PÚBLICO / USUARIO */}
         <Route path="/" element={<HomeScreen />} />
         <Route path="/productsCatalog/*" element={<ProductCatalogScreen />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
-        <Route path="/admin/products" element={<ProductCatalogScreen />} />
         <Route
           path="/profile"
           element={
@@ -26,8 +36,22 @@ export const AppRouter = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin/productos"
+          element={
+            <AdminRoute>
+              <ProductListScreen />
+            </AdminRoute>
+          }
+        />
+
+        {/* ADMIN */}
+        <Route path="/admin/productos" element={<ProductListScreen />} />
+        <Route path="/admin/categorias" element={<CategoryListScreen />} />
+        <Route path="/admin/descuentos" element={<DiscountListScreen />} />
       </Routes>
-      <Footer />
+      {/* Solo muestro Footer en rutas que NO sean admin */}
+      {!isAdmin && <Footer />}
     </>
   );
 };
