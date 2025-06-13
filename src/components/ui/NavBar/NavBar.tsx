@@ -13,8 +13,9 @@ import { CategoryOptionSelect } from "../../../types/CategoryOptionSelect";
 import { GenreOptions } from "./GenreOptions";
 import { TypeOptions } from "./TypeOptions";
 import { ProductGenre } from "../../../types/enums/ProductGenre";
-
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../../stores/userStore";
+
 const genreValues = [
   ProductGenre.Male,
   ProductGenre.Female,
@@ -32,8 +33,7 @@ const typesOptions: IType[] = [
 ];
 
 export const NavBar = () => {
-  const [isLoggin, setIsLoggin] = useState(false);
-  const [user, setUser] = useState<IUser | null>(null);
+  const { isAuthenticated, currentUserProfile } = useUserStore();
   const navigate = useNavigate();
   const [offsetY, setOffsetY] = useState(0);
   const lastScrollY = useRef(0);
@@ -100,7 +100,7 @@ export const NavBar = () => {
             </li>
           ))}
 
-          {isLoggin && (
+          {isAuthenticated && currentUserProfile?.role === 'admin' && (
             <li>
               <button>Administrador</button>
             </li>
@@ -113,8 +113,14 @@ export const NavBar = () => {
             icon={faMagnifyingGlass}
           />
           <FontAwesomeIcon className={styles.iconItem} icon={faCartShopping} />
-          <FontAwesomeIcon className={styles.iconItem} icon={faUser} />
-          {isLoggin && user && <p>{user.name}</p>}
+          <FontAwesomeIcon 
+            className={styles.iconItem} 
+            icon={faUser}
+            onClick={() => navigate(isAuthenticated ? '/profile' : '/login')}
+          />
+          {isAuthenticated && currentUserProfile && (
+            <p className={styles.userName}>{currentUserProfile.name}</p>
+          )}
         </div>
       </div>
 

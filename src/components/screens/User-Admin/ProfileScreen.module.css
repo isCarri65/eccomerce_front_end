@@ -1,0 +1,74 @@
+.tabNavBar {
+  display: flex;
+  background: #fff;
+  border-bottom: 2px solid #e0e0e0;
+  border-radius: 14px 14px 0 0;
+  /* overflow: hidden; */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  overflow: visible; /* <--- cambiar de hidden a visible */
+  position: relative; /* asegurar posicionamiento del dropdown */
+  z-index: 1;
+}
+.tabButton {
+  flex: 1;
+  padding: 1.1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4a4e69;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  border-bottom: 3px solid transparent;
+}
+.tabButton:hover {
+  background: #f4f4fa;
+  color: #22223b;
+}
+.tabButtonActive {
+  color: #22223b;
+  background: #f8f8fa;
+  border-bottom: 3px solid #22223b;
+}
+.tabContentCard {
+  background: #fff;
+  border-radius: 0 0 14px 14px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.09);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  min-height: 350px;
+  margin-top: 0;
+}
+.adminDropdownWrapper {
+  position: relative;
+  display: inline-block;
+  flex: 1;
+}
+
+.adminDropdownMenu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: #fff;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  min-width: 180px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+}
+.adminDropdownMenu button {
+  background: none;
+  border: none;
+  color: #22223b;
+  font-size: 1.08rem;
+  padding: 0.7rem 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.adminDropdownMenu button:hover {
+  background: #f4f4fa;
+} 
