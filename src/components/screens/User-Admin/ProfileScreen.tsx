@@ -4,6 +4,7 @@ import { ProfilePersonal } from './ProfilePersonal';
 import { ProfileFavorites } from './ProfileFavorites';
 import { ProfileHistory } from './ProfileHistory';
 import { AdminProducts } from './AdminProducts';
+import { AdminDiscounts } from './AdminDiscounts';
 import styles from './ProfileScreen.module.css';
 
 type ProfileTab = 'personal' | 'favorites' | 'history' | 'products' | 'discounts' | 'admins';
@@ -27,7 +28,7 @@ export const ProfileScreen = () => {
             case 'products':
               return <AdminProducts />;
             case 'discounts':
-              return <div style={{textAlign:'center',padding:'2rem'}}>Gestión de Descuentos (solo admin)</div>;
+              return <AdminDiscounts />;
             case 'admins':
               return <div style={{textAlign:'center',padding:'2rem'}}>Gestión de Administradores (solo admin)</div>;
           }

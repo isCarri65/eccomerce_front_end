@@ -1,0 +1,207 @@
+.adminDiscountsContainer {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem 0;
+  background: #fff;
+}
+.title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #22223b;
+  width: 100%;
+  text-align: left;
+  padding-left: 2.5rem;
+}
+.filtersRow {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2.2rem;
+  width: 90vw;
+  max-width: 1200px;
+  justify-content: flex-start;
+}
+.filterSelect {
+  background: #d3d3d3;
+  color: #22223b;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 12px;
+  padding: 0.7rem 2.2rem;
+  font-weight: 500;
+  outline: none;
+  transition: background 0.18s;
+}
+.createBtn {
+  background: #22223b;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 2.2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.18s;
+  margin-left: auto;
+}
+.createBtn:hover {
+  background: #4a4e69;
+}
+.tableWrapper {
+  width: 90vw;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 1.08rem;
+}
+.table th, .table td {
+  padding: 1rem 1.2rem;
+  text-align: left;
+  border: 1px solid #d3d3d3;
+}
+.table th {
+  background: #f8f8fa;
+  color: #22223b;
+  font-weight: 700;
+}
+.table tr {
+  transition: background 0.18s;
+}
+.table tbody tr:hover {
+  background: #f4f4fa;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  border-radius: 24px;
+  transition: .4s;
+}
+.switch input:checked + .slider {
+  background-color: #3bb273;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .4s;
+}
+.switch input:checked + .slider:before {
+  transform: translateX(20px);
+}
+.discountForm {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  width: 520px;
+  max-width: 95vw;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.discountFormGrid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem 2.5rem;
+  width: 100%;
+}
+.discountFormLeft, .discountFormRight {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.formRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.formRow label {
+  font-weight: 600;
+  color: #22223b;
+  margin-bottom: 0.2rem;
+}
+.discountForm input[type="text"],
+.discountForm input[type="number"],
+.discountForm input[type="date"] {
+  font-size: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1.5px solid #c9c9c9;
+  background: #f8f8fa;
+  transition: border 0.2s;
+}
+.discountForm input:focus {
+  border: 1.5px solid #22223b;
+  outline: none;
+}
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  background: #fff;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 8px;
+  padding: 0.7rem 1.2rem;
+}
+.categoryCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.08rem;
+  font-weight: 500;
+}
+.categoryCheckbox input[type="checkbox"] {
+  accent-color: #4a90e2;
+  width: 1.1em;
+  height: 1.1em;
+}
+.discountFormActions {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2.2rem;
+  width: 100%;
+  justify-content: center;
+}
+.cancelBtn {
+  background: #bdbdbd;
+  color: #22223b;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 2.2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.cancelBtn:hover {
+  background: #888;
+} 
