@@ -7,6 +7,7 @@ import { AdminProducts } from './AdminProducts';
 import { AdminDiscounts } from './AdminDiscounts';
 import styles from './ProfileScreen.module.css';
 
+
 type ProfileTab = 'personal' | 'favorites' | 'history' | 'products' | 'discounts' | 'admins';
 
 export const ProfileScreen = () => {
