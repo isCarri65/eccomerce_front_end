@@ -35,4 +35,35 @@
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   min-height: 350px;
   margin-top: 0;
+}
+.adminDropdownWrapper {
+  position: relative;
+  display: inline-block;
+}
+.adminDropdownMenu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: #fff;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  min-width: 180px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+}
+.adminDropdownMenu button {
+  background: none;
+  border: none;
+  color: #22223b;
+  font-size: 1.08rem;
+  padding: 0.7rem 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.adminDropdownMenu button:hover {
+  background: #f4f4fa;
 } 
