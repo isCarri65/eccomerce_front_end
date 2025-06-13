@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useUserStore } from '../../../stores/userStore';
 import { ProfilePersonal } from './ProfilePersonal';
 import { ProfileFavorites } from './ProfileFavorites';
@@ -17,8 +17,20 @@ type AdminSubTab = 'createUser' | 'type' | 'category' | 'color' | null;
 export const ProfileScreen = () => {
   const [activeTab, setActiveTab] = useState<ProfileTab>('personal');
   const [adminSubTab, setAdminSubTab] = useState<AdminSubTab>(null);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { currentUserProfile } = useUserStore();
   const isAdmin = currentUserProfile?.role === 'ADMIN';
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const renderContent = () => {
     if (activeTab === 'admins' && isAdmin) {
@@ -32,7 +44,7 @@ export const ProfileScreen = () => {
         case 'color':
           return <AdminColor />;
         default:
-          return <div style={{textAlign:'center',padding:'2rem'}}>Seleccione una opción de administración</div>;
+          return <div style={{ textAlign: 'center', padding: '2rem' }}>Seleccione una opción de administración</div>;
       }
     }
     return (
@@ -63,19 +75,28 @@ export const ProfileScreen = () => {
         <div className={styles.tabNavBar}>
           <button
             className={activeTab === 'personal' ? `${styles.tabButton} ${styles.tabButtonActive}` : styles.tabButton}
-            onClick={() => setActiveTab('personal')}
+            onClick={() => {
+              setActiveTab('personal');
+              setDropdownOpen(false);
+            }}
           >
             Datos Personales
           </button>
           <button
             className={activeTab === 'favorites' ? `${styles.tabButton} ${styles.tabButtonActive}` : styles.tabButton}
-            onClick={() => setActiveTab('favorites')}
+            onClick={() => {
+              setActiveTab('favorites');
+              setDropdownOpen(false);
+            }}
           >
             Favoritos
           </button>
           <button
             className={activeTab === 'history' ? `${styles.tabButton} ${styles.tabButtonActive}` : styles.tabButton}
-            onClick={() => setActiveTab('history')}
+            onClick={() => {
+              setActiveTab('history');
+              setDropdownOpen(false);
+            }}
           >
             Historial
           </button>
@@ -83,28 +104,35 @@ export const ProfileScreen = () => {
             <>
               <button
                 className={activeTab === 'products' ? `${styles.tabButton} ${styles.tabButtonActive}` : styles.tabButton}
-                onClick={() => setActiveTab('products')}
+                onClick={() => {
+                  setActiveTab('products');
+                  setDropdownOpen(false);
+                }}
               >
                 Productos
               </button>
               <button
                 className={activeTab === 'discounts' ? `${styles.tabButton} ${styles.tabButtonActive}` : styles.tabButton}
-                onClick={() => setActiveTab('discounts')}
+                onClick={() => {
+                  setActiveTab('discounts');
+                  setDropdownOpen(false);
+                }}
               >
                 Descuentos
               </button>
-              <div className={styles.adminDropdownWrapper}>
+              <div className={styles.adminDropdownWrapper} ref={dropdownRef}>
                 <button
                   className={activeTab === 'admins' ? `${styles.tabButton} ${styles.tabButtonActive}` : styles.tabButton}
                   onClick={() => {
                     setActiveTab('admins');
                     setAdminSubTab(null);
+                    setDropdownOpen(prev => !prev);
                   }}
                   type="button"
                 >
                   Admins ▼
                 </button>
-                {activeTab === 'admins' && (
+                {isDropdownOpen && activeTab === 'admins' && (
                   <div className={styles.adminDropdownMenu}>
                     <button onClick={() => setAdminSubTab('createUser')}>Crear Usuario</button>
                     <button onClick={() => setAdminSubTab('type')}>Tipo</button>
@@ -122,4 +150,4 @@ export const ProfileScreen = () => {
       </div>
     </div>
   );
-}; 
+};

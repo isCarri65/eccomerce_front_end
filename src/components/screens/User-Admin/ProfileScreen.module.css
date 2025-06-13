@@ -3,8 +3,11 @@
   background: #fff;
   border-bottom: 2px solid #e0e0e0;
   border-radius: 14px 14px 0 0;
-  overflow: hidden;
+  /* overflow: hidden; */
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  overflow: visible; /* <--- cambiar de hidden a visible */
+  position: relative; /* asegurar posicionamiento del dropdown */
+  z-index: 1;
 }
 .tabButton {
   flex: 1;
@@ -39,7 +42,9 @@
 .adminDropdownWrapper {
   position: relative;
   display: inline-block;
+  flex: 1;
 }
+
 .adminDropdownMenu {
   position: absolute;
   top: 110%;
