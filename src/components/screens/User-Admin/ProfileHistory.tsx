@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './ProfileHistory.module.css';
-import { getAllPurchaseOrdersByUserProfile } from '../../api/services/PurcharseOrderService';
+import { getAllPurchaseOrdersByUserProfile } from '../../../api/services/PurcharseOrderService';
 
 interface Purchase {
   id: number;

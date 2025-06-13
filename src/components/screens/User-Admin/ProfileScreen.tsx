@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useUserStore } from '../../stores/userStore';
+import { useUserStore } from '../../../stores/userStore';
 import { ProfilePersonal } from './ProfilePersonal';
 import { ProfileFavorites } from './ProfileFavorites';
 import { ProfileHistory } from './ProfileHistory';

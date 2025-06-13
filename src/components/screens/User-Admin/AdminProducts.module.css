@@ -1,9 +1,12 @@
 .adminProductsContainer {
-  width: 100%;
+  width: 100vw;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem 0;
+  justify-content: flex-start;
+  padding: 2.5rem 0;
+  background: #f8f8fa;
 }
 .headerRow {
   width: 100%;
@@ -19,8 +22,8 @@
   font-weight: 600;
   border: none;
   border-radius: 6px;
-  padding: 0.7rem 1.5rem;
-  font-size: 1rem;
+  padding: 0.7rem 2.2rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: background 0.18s;
 }
@@ -105,19 +108,29 @@
   background: #c0392b;
 }
 .productForm {
-  width: 100%;
-  max-width: 420px;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.09);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
   padding: 2.5rem 2.5rem 2rem 2.5rem;
+  width: 520px;
+  max-width: 95vw;
+  margin: 2rem auto;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
   align-items: center;
 }
-.formRow {
+.formGrid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem 2.5rem;
   width: 100%;
+}
+.leftCol, .rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.formRow {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
@@ -125,23 +138,86 @@
 .formRow label {
   font-weight: 600;
   color: #22223b;
+  margin-bottom: 0.2rem;
 }
-.formRow input, .formRow select {
-  padding: 0.6rem 1rem;
-  border: 1.5px solid #c9c9c9;
-  border-radius: 6px;
+input, select, textarea {
   font-size: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1.5px solid #c9c9c9;
   background: #f8f8fa;
   transition: border 0.2s;
 }
-.formRow input:focus, .formRow select:focus {
+input:focus, select:focus, textarea:focus {
   border: 1.5px solid #22223b;
   outline: none;
 }
+.textareaDesc {
+  min-height: 120px;
+  width: 100%;
+  resize: vertical;
+}
+.imageDrop {
+  width: 100%;
+  min-height: 80px;
+  border: 2px dashed #bdbdbd;
+  border-radius: 8px;
+  background: #f8f8fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a4e69;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border 0.2s, background 0.2s;
+  margin-bottom: 0.5rem;
+  padding: 0.7rem 1rem;
+  text-align: center;
+}
+.imageDrop:hover {
+  border: 2px solid #22223b;
+  background: #f4f4fa;
+}
+.sizeSwitchRow {
+  display: flex;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
+}
+.sizeSwitch, .sizeSwitchActive {
+  border: 1.5px solid #bdbdbd;
+  background: #f8f8fa;
+  color: #22223b;
+  border-radius: 6px;
+  padding: 0.4rem 1.1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.18s, border 0.18s;
+}
+.sizeSwitchActive {
+  background: #b7eacb;
+  border: 1.5px solid #3bb273;
+  color: #22223b;
+}
+.sizesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.2rem;
+  margin-top: 0.2rem;
+}
+.sizeCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
 .formActions {
   display: flex;
-  gap: 1rem;
-  margin-top: 1.2rem;
+  gap: 1.5rem;
+  margin-top: 2.2rem;
+  width: 100%;
+  justify-content: center;
 }
 .cancelBtn {
   background: #bdbdbd;
@@ -149,8 +225,8 @@
   font-weight: 600;
   border: none;
   border-radius: 6px;
-  padding: 0.5rem 1.1rem;
-  font-size: 0.98rem;
+  padding: 0.7rem 2.2rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: background 0.18s;
 }
@@ -161,4 +237,10 @@
   display: flex;
   align-items: center;
   gap: 1.2rem;
+}
+.productForm h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
 } 

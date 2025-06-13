@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './ProfilePersonal.module.css';
-import { getUserProfile, updateUserProfile } from '../../api/services/UserService';
-import { IUser } from '../../types/User/IUser';
-import { Button } from '../ui/Button';
+import { getUserProfile, updateUserProfile } from '../../../api/services/UserService';
+import { IUser } from '../../../types/User/IUser';
+import { Button } from '../../ui/Button';
 
 interface AddressFormProps {
   onClose: () => void;
