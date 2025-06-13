@@ -1,0 +1,92 @@
+.overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+.modal {
+  background: #fff;
+  border-radius: 13px;
+  min-width: 340px;
+  max-width: 96vw;
+  padding: 29px 29px 18px 29px;
+  box-shadow: 0 8px 32px rgba(10,15,40,0.17);
+  position: relative;
+}
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.titulo {
+  font-size: 21px;
+  margin: 0;
+  color: #1e293b;
+}
+.btnCerrar {
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: #1e293b;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 6px;
+}
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.campo label {
+  font-size: 15px;
+  color: #242a38;
+  margin-bottom: 2px;
+  display: block;
+}
+.campo input {
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid #b0b6c4;
+  font-size: 16px;
+  width: 100%;
+  margin-top: 3px;
+}
+.campoRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 3px;
+}
+.actionsRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 14px;
+}
+.btnGuardar {
+  background: #1e293b;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 16px;
+  padding: 9px 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btnGuardar:hover {
+  background: #2563eb;
+}
+.btnCancelar {
+  background: #fff;
+  color: #1e293b;
+  border: 1px solid #b0b6c4;
+  border-radius: 7px;
+  font-size: 16px;
+  padding: 9px 18px;
+  cursor: pointer;
+}

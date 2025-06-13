@@ -17,13 +17,14 @@ export const AppRouter = () => {
         <Route path="/productsCatalog/*" element={<ProductCatalogScreen />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
-        <Route 
-          path="/profile" 
+        <Route path="/admin/products" element={<ProductCatalogScreen />} />
+        <Route
+          path="/profile"
           element={
             <ProtectedRoute>
               <ProfileScreen />
             </ProtectedRoute>
-          } 
+          }
         />
       </Routes>
       <Footer />
