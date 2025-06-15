@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import { RegisterValues, User } from "../types/User/authTypes";
 

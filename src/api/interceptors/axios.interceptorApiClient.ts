@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 
 import { createHTTPError } from "../../utils/errors";
 
-const BASE_URL = "https://localhost:8081/api"; // Cambia si tu endpoint de auth es otro dominio
+const BASE_URL = "http://localhost:8081/api"; // Cambia si tu endpoint de auth es otro dominio
 
 // Crear instancia
 export const interceptorApiClient: AxiosInstance = axios.create({

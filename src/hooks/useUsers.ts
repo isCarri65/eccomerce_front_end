@@ -6,6 +6,8 @@ import {
   createUser,
   updateUserProfile,
   deleteUser,
+  login,
+  register,
 } from "../api/services/UserService";
 import { IUser } from "../types/User/IUser";
 import { useUserStore } from "../stores/userStore";
@@ -30,6 +32,7 @@ interface UseUsersReturn {
   setCurrentUserProfile: (user: IUser | null) => void;
   refreshUsers: () => Promise<void>;
   clearUsers: () => void;
+  autoLogin: () => void;
 }
 
 export const useUsers = (): UseUsersReturn => {
@@ -39,6 +42,7 @@ export const useUsers = (): UseUsersReturn => {
     currentUserProfile,
     setUsers,
     addUser,
+    userLogin,
     updateUserInStore,
     removeUserFromStore,
     setSelectedUser,
@@ -56,6 +60,7 @@ export const useUsers = (): UseUsersReturn => {
       setSelectedUser: state.setSelectedUser,
       setCurrentUserProfile: state.setCurrentUserProfile,
       clearUsers: state.clearUsers,
+      userLogin: state.login,
     }))
   );
 
@@ -136,6 +141,17 @@ export const useUsers = (): UseUsersReturn => {
     }
   };
 
+  const autoLogin = async (): Promise<void> => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      console.log("no hay un token guardado");
+    } else {
+      const user: IUser = await getUserProfile();
+      console.log(user);
+      userLogin(token, user);
+    }
+  };
+
   // Refrescar usuarios
   const refreshUsers = async (): Promise<void> => {
     await fetchUsers();
@@ -148,6 +164,7 @@ export const useUsers = (): UseUsersReturn => {
     currentUserProfile,
 
     // Actions
+    autoLogin,
     fetchUsers,
     fetchUserById,
     fetchUserProfile,

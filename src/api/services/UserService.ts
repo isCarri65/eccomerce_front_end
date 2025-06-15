@@ -4,7 +4,6 @@ import { IUser } from "../../types/User/IUser";
 interface LoginResponse {
   token: string;
   user: IUser;
-  role: string;
 }
 
 interface RegisterData {
@@ -16,10 +15,14 @@ interface RegisterData {
 }
 
 // Funciones de autenticación
-export const login = async (email: string, password: string): Promise<LoginResponse> => {
+export const login = async (
+  email: string,
+  password: string
+): Promise<LoginResponse> => {
+  console.log(email, password);
   const response = await interceptorApiClient.post("/auth/login", {
     email,
-    password
+    password,
   });
   return response.data;
 };
@@ -41,9 +44,7 @@ export const getUserById = async (id: number): Promise<IUser> => {
 };
 
 export const getUserProfile = async (): Promise<IUser> => {
-  const response = await interceptorApiClient.get(
-    `/protected/users/profile`
-  );
+  const response = await interceptorApiClient.get(`/protected/users/profile`);
   return response.data;
 };
 

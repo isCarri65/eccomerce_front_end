@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance } from "axios";
 import Swal from "sweetalert2";
 import { createHTTPError } from "../../utils/errors";
 
-const BASE_URL = "https://localhost:8081/api";
+const BASE_URL = "http://localhost:8081/api";
 
 // Crear instancia sin token
 const publicApiClient: AxiosInstance = axios.create({

@@ -13,11 +13,18 @@ import { ProductListScreen } from "../components/screens/admin/ProductListScreen
 import { CategoryListScreen } from "../components/screens/admin/CategoryListScreen/CategoryListScreen";
 import { DiscountListScreen } from "../components/screens/admin/DiscountListScreen/DiscountListScreen";
 import { ProfileScreen } from "../components/screens/User-Admin/ProfileScreen";
+import { useEffect } from "react";
+import { useUsers } from "../hooks/useUsers";
 
 export const AppRouter = () => {
   const location = useLocation();
-  const isAdmin = location.pathname.startsWith("/admin");
 
+  const isAdmin = location.pathname.startsWith("/admin");
+  const { autoLogin } = useUsers();
+  useEffect(() => {
+    console.log("autologin ejecutado");
+    autoLogin();
+  }, []);
   return (
     <>
       {/* Solo muestro NavBar y Footer en rutas que NO sean admin */}

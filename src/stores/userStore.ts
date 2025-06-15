@@ -9,8 +9,8 @@ const mockUser: IUser = {
   lastName: "Prueba",
   email: "usuario@prueba.com",
   password: "password123",
-  role: UserRole.Admin,
-  phone: "123456789"
+  role: UserRole.User,
+  phone: "123456789",
 };
 
 interface UserState {
@@ -52,11 +52,11 @@ interface UserState {
 const initialState = {
   users: [],
   selectedUser: null,
-  currentUserProfile: mockUser,
+  currentUserProfile: null,
   loading: false,
   error: null,
-  isAuthenticated: true,
-  token: "mock-token-for-development",
+  isAuthenticated: false,
+  token: null,
 };
 
 export const useUserStore = create<UserState>((set, get) => ({
@@ -103,22 +103,22 @@ export const useUserStore = create<UserState>((set, get) => ({
 
   // Acciones de autenticación
   login: (token, user) => {
-    localStorage.setItem('token', token);
+    localStorage.setItem("accessToken", token);
     set({
       isAuthenticated: true,
       token,
       currentUserProfile: user,
-      error: null
+      error: null,
     });
   },
 
   logout: () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("accessToken");
     set({
       isAuthenticated: false,
       token: null,
       currentUserProfile: null,
-      error: null
+      error: null,
     });
   },
 

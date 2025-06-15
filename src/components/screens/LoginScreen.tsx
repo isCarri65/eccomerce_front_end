@@ -1,24 +1,24 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../../api/services/UserService';
-import { useUserStore } from '../../stores/userStore';
-import styles from './Auth.module.css';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../api/services/UserService";
+import { useUserStore } from "../../stores/userStore";
+import styles from "./Auth.module.css";
 
 export const LoginScreen = () => {
   const navigate = useNavigate();
   const { login: loginStore } = useUserStore();
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -29,10 +29,11 @@ export const LoginScreen = () => {
 
     try {
       const response = await login(formData.email, formData.password);
-      loginStore(response.token, response.user);
-      navigate('/profile');
+      sessionStorage.setItem("sesionToken", response.token);
+      loginStore(sessionStorage.getItem("sesionToken"), response.user);
+      navigate("/profile");
     } catch (error) {
-      setError('Credenciales inválidas. Por favor, intente nuevamente.');
+      setError("Credenciales inválidas. Por favor, intente nuevamente.");
     } finally {
       setLoading(false);
     }
@@ -53,7 +54,7 @@ export const LoginScreen = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`${styles.formInput} ${error ? styles.error : ''}`}
+              className={`${styles.formInput} ${error ? styles.error : ""}`}
               required
             />
           </div>
@@ -81,19 +82,19 @@ export const LoginScreen = () => {
               className={styles.primaryButton}
               disabled={loading}
             >
-              {loading ? 'Cargando...' : 'Ingresar'}
+              {loading ? "Cargando..." : "Ingresar"}
             </button>
             <button
               type="button"
               className={styles.secondaryButton}
-              onClick={() => navigate('/register')}
+              onClick={() => navigate("/register")}
             >
               Crear Cuenta
             </button>
             <button
               type="button"
               className={styles.outlineButton}
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
             >
               Regresar
             </button>
@@ -102,4 +103,4 @@ export const LoginScreen = () => {
       </div>
     </div>
   );
-}; 
+};

@@ -15,6 +15,7 @@ import { TypeOptions } from "./TypeOptions";
 import { ProductGenre } from "../../../types/enums/ProductGenre";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../stores/userStore";
+import { UserRole } from "../../../types/enums/UserRol";
 
 const genreValues = [
   ProductGenre.Male,
@@ -75,7 +76,8 @@ export const NavBar = () => {
     const path = `productsCatalog/${paramPath}`;
     navigate(path);
   };
-
+  console.log(currentUserProfile);
+  console.log(isAuthenticated);
   return (
     <nav className={styles.navBarContainer}>
       <div
@@ -100,10 +102,17 @@ export const NavBar = () => {
             </li>
           ))}
 
-          {isAuthenticated && currentUserProfile?.role === 'admin' && (
+          {isAuthenticated && currentUserProfile?.role === UserRole.Admin ? (
             <li>
-              <button>Administrador</button>
+              <button
+                className={styles.navLink}
+                onClick={() => navigate("/admin/productos")}
+              >
+                Administrador
+              </button>
             </li>
+          ) : (
+            <div></div>
           )}
         </ul>
 
@@ -113,10 +122,10 @@ export const NavBar = () => {
             icon={faMagnifyingGlass}
           />
           <FontAwesomeIcon className={styles.iconItem} icon={faCartShopping} />
-          <FontAwesomeIcon 
-            className={styles.iconItem} 
+          <FontAwesomeIcon
+            className={styles.iconItem}
             icon={faUser}
-            onClick={() => navigate(isAuthenticated ? '/profile' : '/login')}
+            onClick={() => navigate(isAuthenticated ? "/profile" : "/login")}
           />
           {isAuthenticated && currentUserProfile && (
             <p className={styles.userName}>{currentUserProfile.name}</p>
