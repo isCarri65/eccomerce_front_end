@@ -141,3 +141,23 @@
   text-align: center;
   /* Podés agregar icono o imagen acá si querés */
 }
+.addToCartBtn {
+  background-color: #111a36;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 7px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.6rem;
+  transition: background 0.2s;
+}
+.addToCartBtn:hover {
+  background-color: #222857;
+}
+.addToCartBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
