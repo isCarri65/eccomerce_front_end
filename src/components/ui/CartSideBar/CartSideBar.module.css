@@ -1,0 +1,288 @@
+.cartSidebar {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Start off-screen */
+    width: 30%; /* Approximately a quarter of the screen */
+    height: 100%;
+    background-color: white; /* Or your preferred background color */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    transition: right 0.3s ease-in-out;
+    overflow-y: auto;
+    z-index: 1000; /* Make sure it's above other content */
+}
+
+@media (max-width: 1235px) {
+  .cartSidebar {
+    width: 40%; /* En pantallas chicas, ocupa todo el ancho */
+  }
+}
+
+.cartSidebar.open {
+    right: 0; /* Slide in */
+}
+
+.content{
+    padding: 13px;
+}
+.cartHeader {
+    display: flex;
+    background-color: var(--car-header-color);
+    padding: 13px;
+    color: white;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.cartHeader h2 {
+    margin: 0;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.emptyCart {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.emptyCart p {
+    margin-bottom: 20px;
+}
+
+.shopNowButton {
+    background-color: #000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.cartItemList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cartItem {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.cartItem img {
+    width: 100px;
+    height: auto;
+    margin-right: 15px;
+    border: 1px solid #eee;
+}
+
+.itemInfo {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.itemDetails {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.itemDetails h4 {
+    margin: 0 0 5px 0;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.itemDetails p {
+    margin: 2px 0;
+    font-size: 0.8em;
+    color: #555;
+}
+
+.itemActions{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.quantitySelector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: fit-content;
+    margin-top: 5px;
+}
+
+.quantitySelector button {
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 1em;
+}
+.mayorButtonQuantity,
+.minorButtonQuantity{
+    background: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 1em;
+}
+.minorButtonQuantity:hover,
+.mayorButtonQuantity:hover {
+  background-color: rgba(128, 128, 128, 0.205);
+border-radius: 6px;
+
+}
+
+.quantitySelector span {
+    padding: 0 10px;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    font-size: 0.9em;
+}
+
+.deleteButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    font-size: 1.2em;
+    margin-left: 15px;
+}
+
+.deleteButton:hover {
+    color: #555;
+}
+
+.shippingSection {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.shippingSection div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.shippingSection input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.shippingSection button {
+    background-color: #000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.cartSummary {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    text-align: right;
+}
+
+.bagOption {
+    display: flex;
+    align-items: center;
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.bagOption img {
+    width: 40px;
+    height: auto;
+    margin-right: 15px;
+}
+
+.bagDetails {
+    flex-grow: 1;
+}
+
+.bagDetails p {
+    margin: 0;
+    font-size: 1em;
+}
+
+.bagDetails span {
+    font-weight: bold;
+}
+
+.bagOption button {
+    background-color: #000;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.cartSummary  {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+
+.total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.checkoutButton {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 30px;
+    padding: 15px 0;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    width: 100%;
+    text-align: center;
+    transition: background-color 0.6s ease;
+}
+.checkoutButton:hover {
+    background-color: #081138c7;
+}
+
+.bottomLinks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.bottomLinks a {
+    color: #555;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.bottomLinks a:hover {
+    text-decoration: underline;
+}

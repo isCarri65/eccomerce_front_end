@@ -1,0 +1,52 @@
+.mercadoPagoContainer {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.mercadoPagoContainer button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.mercadoPagoContainer button:hover {
+    opacity: 0.9;
+}
+
+.summaryContainer {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #fff;
+    display: none; /* Hidden by default */
+}
+
+.summaryContainer p {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.summaryContainer button {
+    padding: 8px 12px;
+    margin-right: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.summaryContainer button:first-of-type {
+    background-color: #007bff;
+    color: white;
+}
+
+.summaryContainer button:last-of-type {
+    background-color: #dc3545;
+    color: white;
+}

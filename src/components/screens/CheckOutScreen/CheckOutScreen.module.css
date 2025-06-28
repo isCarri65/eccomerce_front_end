@@ -1,0 +1,163 @@
+.container {
+  display: flex;
+  padding: 40px 20px; /* Aumentar padding */
+  max-width: 1200px; /* Limitar ancho máximo */
+  margin: 0 auto; /* Centrar el contenedor */
+}
+
+.infoSection {
+  flex: 2; /* Sigue tomando más espacio */
+  padding-right: 40px; /* Aumentar espacio entre secciones */
+}
+
+.orderSummary {
+  flex: 1; /* Sigue tomando menos espacio */
+  border-left: 1px solid #e0e0e0; /* Borde más sutil */
+  padding-left: 40px; /* Aumentar padding */
+}
+
+/* Añadir estilos para el título del resumen */
+.orderSummary h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+
+
+/* Estilos para los detalles del resumen (si no los tienes ya) */
+.summaryDetails {
+  margin-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 15px;
+}
+
+.summaryDetails p {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between; /* Alinear texto y valores */
+  font-size: 1rem;
+}
+
+.summaryDetails p:last-child {
+    font-weight: bold; /* Total en negrita */
+    font-size: 1.1rem;
+}
+/* Add these to your existing styles in CheckoutScreen.module.css */
+
+.checkoutSection {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden; /* Hide overflow when content is hidden */
+    background-color: #fff;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f9f9f9; /* Slightly different background for header */
+    cursor: pointer; /* Indicate clickable header */
+}
+
+.sectionHeader h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-left: 10px; /* Space between number and title */
+}
+
+.stepNumber {
+    display: inline-flex; /* Use inline-flex for centering */
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%; /* Circular shape */
+    background-color: #000; /* Black background for step number */
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.sectionContent {
+    padding: 20px;
+    /* Add transition for smooth unfolding if desired */
+    /* transition: all 0.3s ease-in-out; */
+}
+
+/* Style for active section header (optional) */
+/* .checkoutSection.active .sectionHeader {
+    background-color: #eee;
+} */
+
+/* Style for discount section placeholder */
+.discountSection {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.discountSection input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+/* Style for back to cart link */
+.backToCart {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.backToCart a {
+    color: #007bff; /* Example link color */
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.backToCart a:hover {
+    text-decoration: underline;
+}
+/* Add this to your existing styles in CheckoutScreen.module.css */
+
+.checkoutSection.active {
+    /* Example: Add a different border color for the active section */
+    border-color: #000;
+}
+
+/* Example: Change background color of the active section header */
+.checkoutSection.active .sectionHeader {
+    background-color: #eee;
+}
+/* Add or modify the existing .itemList style */
+.itemList {
+  margin-top: 20px;
+  max-height: 300px; /* Set a maximum height for the scrollable area */
+  overflow-y: auto; /* Add vertical scroll when content exceeds max-height */
+  padding-right: 15px; /* Add padding to the right for the scrollbar */
+}
+
+/* Optional: Style the scrollbar (this is non-standard but widely supported in modern browsers) */
+.itemList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.itemList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.itemList::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.itemList::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
