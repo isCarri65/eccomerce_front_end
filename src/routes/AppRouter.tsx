@@ -1,8 +1,9 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { HomeScreen } from "../components/screens/HomeScreen/HomeScreen";
-import { ProductCatalogScreen } from "../components/screens/ProductCatalogScreen/ProductCatalogScreen";
+import { ProductCatalogScreen } from "../components/screens/Catalog/ProductCatalogScreen/ProductCatalogScreen";
 import { LoginScreen } from "../components/screens/LoginScreen";
 import { RegisterScreen } from "../components/screens/RegisterScreen";
+import { ProductDetailScreen } from "../components/screens/Catalog/ProductDetailScreen/ProductDetailScreen";
 
 import { AdminRoute, ProtectedRoute } from "../components/auth/ProtectedRoute";
 import { NavBar } from "../components/ui/NavBar/NavBar";
@@ -34,6 +35,7 @@ export const AppRouter = () => {
         {/* PÚBLICO / USUARIO */}
         <Route path="/" element={<HomeScreen />} />
         <Route path="/productsCatalog/*" element={<ProductCatalogScreen />} />
+        <Route path="/product/:id" element={<ProductDetailScreen />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
         <Route
