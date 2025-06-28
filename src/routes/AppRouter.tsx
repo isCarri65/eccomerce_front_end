@@ -17,6 +17,7 @@ import { DiscountListScreen } from "../components/screens/admin/DiscountListScre
 import { ProfileScreen } from "../components/screens/User-Admin/ProfileScreen";
 import { useEffect } from "react";
 import { useUsers } from "../hooks/useUsers";
+import CheckoutScreen from "../components/screens/CheckOutScreen/CheckOutScreen";
 
 export const AppRouter = () => {
   const location = useLocation();
@@ -38,6 +39,7 @@ export const AppRouter = () => {
         <Route path="/product/:id" element={<ProductDetailScreen />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
+        <Route path="/checkout" element={<CheckoutScreen />} />
         <Route
           path="/profile"
           element={
