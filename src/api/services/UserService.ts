@@ -56,6 +56,20 @@ export const register = async (data: RegisterData): Promise<LoginResponse> => {
   }
 };
 
+export const logout = async (): Promise<void> => {
+  try {
+    await interceptorApiClient.post("/auth/logout");
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      throw new Error("Sesión expirada.");
+    } else if (error.response?.status >= 500) {
+      throw new Error("Error del servidor. Intente más tarde.");
+    } else {
+      throw new Error(error.response?.data?.message || "Error al cerrar sesión.");
+    }
+  }
+};
+
 // Funciones existentes
 export const getAllUsers = async (): Promise<IUser[]> => {
   const response = await interceptorApiClient.get("/admin/users");

@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './ProfilePersonal.module.css';
-import { getUserProfile, updateUserProfile } from '../../../api/services/UserService';
+import { getUserProfile, updateUserProfile, logout } from '../../../api/services/UserService';
 import { IUser } from '../../../types/User/IUser';
 import { Button } from '../../ui/Button';
+import { useUserStore } from '../../../stores/userStore';
+import { useMessageStore } from '../../../stores/messageStore';
 
 interface AddressFormProps {
   onClose: () => void;
@@ -75,10 +78,14 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose }) => {
 };
 
 export const ProfilePersonal: React.FC = () => {
+  const navigate = useNavigate();
+  const { logout: logoutStore } = useUserStore();
+  const { addMessage } = useMessageStore();
   const [user, setUser] = useState<IUser | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [form, setForm] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getUserProfile().then(setUser);
@@ -97,9 +104,32 @@ export const ProfilePersonal: React.FC = () => {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (form) {
-      const updated = await updateUserProfile(form);
-      setUser(updated);
-      setEditMode(false);
+      try {
+        const updated = await updateUserProfile(form);
+        setUser(updated);
+        setEditMode(false);
+        addMessage("Perfil actualizado exitosamente", "success");
+      } catch (error: any) {
+        addMessage(error.message || "Error al actualizar el perfil", "error");
+      }
+    }
+  };
+
+  const handleLogout = async () => {
+    setLoading(true);
+    try {
+      // Llamar al endpoint de logout
+      await logout();
+
+      // Limpiar el store y navegar
+      logoutStore();
+      sessionStorage.removeItem("sesionToken");
+      addMessage("Sesión cerrada exitosamente", "success");
+      navigate("/");
+    } catch (error: any) {
+      addMessage(error.message || "Error al cerrar sesión", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -118,7 +148,7 @@ export const ProfilePersonal: React.FC = () => {
             <div><b>Apellido:</b> {user?.lastName}</div>
             <div><b>Correo Electrónico:</b> {user?.email}</div>
             <div><b>Fecha de Nacimiento:</b> {user?.birthDate || '-'}</div>
-            <div><b>Nro de telefono:</b> {user?.phone || '-'}</div>
+            <div><b>Nro de telefono:</b> {user?.phoneNumber || '-'}</div>
             <Button variant="primary" onClick={handleEdit} className={styles.editBtn}>Editar Información</Button>
           </div>
         ) : (
@@ -141,7 +171,7 @@ export const ProfilePersonal: React.FC = () => {
             </div>
             <div className={styles.formRow}>
               <label>Teléfono</label>
-              <input name="phone" value={form?.phone || ''} onChange={handleChange} />
+              <input name="phoneNumber" value={form?.phoneNumber || ''} onChange={handleChange} />
             </div>
             <div className={styles.formActions}>
               <Button type="submit" variant="primary">Guardar</Button>
@@ -157,6 +187,18 @@ export const ProfilePersonal: React.FC = () => {
             <span className={styles.plus}>+</span>
             <span>Agregar dirección</span>
           </button>
+        </div>
+      </div>
+      <div className={styles.card}>
+        <div className={styles.sessionBlock}>
+          <Button 
+            variant="outline" 
+            onClick={handleLogout} 
+            className={styles.logoutBtn}
+            disabled={loading}
+          >
+            {loading ? "Cerrando sesión..." : "Cerrar Sesión"}
+          </Button>
         </div>
       </div>
     </div>

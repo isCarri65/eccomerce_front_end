@@ -140,4 +140,32 @@
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
+}
+
+.sessionBlock {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logoutBtn {
+  background: #dc3545;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  transition: background 0.2s;
+  border: 1px solid #dc3545;
+}
+
+.logoutBtn:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+.logoutBtn:disabled {
+  background: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed;
 } 
