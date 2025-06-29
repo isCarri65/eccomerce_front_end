@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import styles from './ProfilePersonal.module.css';
 import { getUserProfile, updateUserProfile, logout } from '../../../api/services/UserService';
 import { IUser } from '../../../types/User/IUser';
-import { Button } from '../../ui/Button';
+import { Button } from '../../ui/ElementsHTML/Button';
 import { useUserStore } from '../../../stores/userStore';
 import { useMessageStore } from '../../../stores/messageStore';
+import axios from 'axios';
 
 interface AddressFormProps {
   onClose: () => void;
@@ -22,17 +23,41 @@ const initialAddress = {
 };
 
 const AddressForm: React.FC<AddressFormProps> = ({ onClose }) => {
+  const BASEURL = "http://localhost:8081/"
   const [form, setForm] = useState(initialAddress);
+  const { currentUserProfile } = useUserStore();
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Aquí se llamará a createAddress en el futuro
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const token = sessionStorage.getItem('sesionToken'); // O como lo hayas guardado
+    const response = await axios.post(
+      `${BASEURL}api/protected/addresses/create`,
+      {
+        ...form,
+        user: { id: currentUserProfile?.id } // o el ID dinámico del usuario actual
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    console.log('Dirección creada:', response.data);
     onClose();
-  };
+  } catch (error: any) {
+    console.error('Error al crear la dirección:', error.response?.data || error.message, error);
+    alert('Error al crear la dirección');
+  }
+};
 
   return (
     <div className={styles.modalOverlay}>

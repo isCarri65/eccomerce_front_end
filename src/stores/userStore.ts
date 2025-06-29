@@ -1,17 +1,6 @@
 import { create } from "zustand";
 import { IUser } from "../types/User/IUser";
-import { UserRole } from "../types/enums/UserRol";
 
-// Usuario de prueba para desarrollo
-const mockUser: IUser = {
-  id: 1,
-  name: "Usuario",
-  lastName: "Prueba",
-  email: "usuario@prueba.com",
-  password: "password123",
-  role: UserRole.User,
-  phone: "123456789",
-};
 
 interface UserState {
   // Estado

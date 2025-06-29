@@ -7,6 +7,7 @@ import styles from "./NavBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../../../assets/Icon/nike_logo_2.png";
 import { useEffect, useRef, useState } from "react";
+import { IUser } from "../../../types/User/IUser";
 import { IType } from "../../../types/Type/IType";
 import { CategoryOptionSelect } from "../../../types/CategoryOptionSelect";
 import { GenreOptions } from "./GenreOptions";
@@ -41,41 +42,14 @@ export const NavBar = () => {
   const navbarHeight = 80;
 
   const [showCart, setShowCart] = useState(false);
-  const [selectedCategoria, setSelectedCategoria] =
-    useState<CategoryOptionSelect | null>(null);
+  const [selectedCategoria, setSelectedCategoria] =useState<CategoryOptionSelect | null>(null);
 
-
-//   //TEMPORAL SACAR
-//   const addToCart = (product: CartItem) => {
-//   const stored = sessionStorage.getItem('cartItems');
-//   let cart = stored ? JSON.parse(stored) : [];
-
-//   // Verificar si ya está en el carrito
-//   const existingItemIndex = cart.findIndex((item: any) => item.id === product.id);
-
-//   if (existingItemIndex !== -1) {
-//     // Si ya está, sumamos cantidad
-//     cart[existingItemIndex].quantity += product.quantity;
-//   } else {
-//     // Si no está, lo agregamos
-//     cart.push({
-//       id: product.id,
-//       quantity: product.quantity,
-//       size: product.size,
-//       color: product.color,
-//     });
-//   }
-//   sessionStorage.setItem('cartItems', JSON.stringify(cart));
-// };
-
-
-
-
-
-  // Manejo del scroll para ocultar/mostrar el navbar
   const handleCart = ()=>{
+    console.log(showCart)
     setShowCart(!showCart)
   }
+
+  // Manejo del scroll para ocultar/mostrar el navbar
   const handleScroll = () => {
     const currentY = window.scrollY;
     const delta = currentY - lastScrollY.current;
@@ -108,22 +82,14 @@ export const NavBar = () => {
     const path = `productsCatalog/${paramPath}`;
     navigate(path);
   };
-
+  console.log(currentUserProfile);
+  console.log(isAuthenticated);
   return (
     <nav className={styles.navBarContainer}>
       <div
         className={styles.navBar}
         style={{ transform: `translateY(-${offsetY}px)` }}
       >
-        {/* <button onClick={() => addToCart({
-  id: '1',
-  name: 'Product A',
-  price: 25.99,
-  size: 'M',
-  quantity: 1,
-  color: 'Red'
-})}>Agregar Producto A</button> */}
-
         <div className={styles.logoContainer}>
           <img 
             src={logo} 
@@ -165,10 +131,11 @@ export const NavBar = () => {
             className={styles.iconItem}
             icon={faMagnifyingGlass}
           />
+          <FontAwesomeIcon className={styles.iconItem} icon={faCartShopping} onClick={handleCart}/>
           <FontAwesomeIcon
             className={styles.iconItem}
-            icon={faCartShopping}
-            onClick={() => handleCart()}
+            icon={faUser}
+            onClick={() => navigate(isAuthenticated ? "/profile" : "/login")}
           />
           {isAuthenticated && currentUserProfile && (
             <p className={styles.userName}>{currentUserProfile.name}</p>

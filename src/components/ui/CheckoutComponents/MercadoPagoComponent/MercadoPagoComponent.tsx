@@ -89,7 +89,7 @@ const MercadoPagoSection: React.FC<MercadoPagoSectionProps> = ({ product, user, 
             {product && user && size && color ? (
               <>
                 <p>Producto: {product.name}</p>
-                <p>Dirección: {address.street}, {address?.province}</p> 
+                <p>Dirección: {address?.street}, {address?.province}</p> 
                 <p>Total: ${product.sellPrice * (1 - (product.discount?.percentage || 0))}</p> 
               </>
             ) : <p>Cargando resumen...</p>}

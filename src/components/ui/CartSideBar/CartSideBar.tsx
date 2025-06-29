@@ -3,6 +3,7 @@ import styles from './CartSidebar.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, Link } from 'react-router-dom';
+import { Button } from '../ElementsHTML/Button';
 
 interface CartItem {
   id: string;
@@ -131,7 +132,6 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
               {cartItems.map(item => (
                 <li key={item.id} className={styles.cartItem}>
                   <div className={styles.itemImage}>
-                    {/* Placeholder for product image */}
                     <img src={/*item.image */"asd"} alt={item.name} />
                   </div>
                   <div className={styles.itemInfo}>
@@ -165,7 +165,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
                 <span>Total:</span>
                 <span>${calculateTotal()}</span>
               </div>
-              <button className={styles.checkoutButton} onClick={checkoutHandle}>Checkout</button>
+              <Button onClick={checkoutHandle}>Checkout</Button>
             </div>
                   <div className={styles.bottomLinks}>
         <Link to="#" className={styles.bottomLinks} onClick={handleCloseCart}>&lt; Seguir comprando</Link>
