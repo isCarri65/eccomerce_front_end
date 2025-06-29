@@ -9,8 +9,11 @@ import Swal from "sweetalert2";
 //TODO: documentacion axios interceptor https://axios-http.com/docs/interceptors
 
 import { createHTTPError } from "../../utils/errors";
+import { useAuth } from "../../hooks/useAuth";
 
 const BASE_URL = "http://localhost:8081/api"; // Cambia si tu endpoint de auth es otro dominio
+
+//TODO:TOKEN
 
 // Crear instancia
 export const interceptorApiClient: AxiosInstance = axios.create({
@@ -21,19 +24,12 @@ export const interceptorApiClient: AxiosInstance = axios.create({
   timeout: 10000, //es la demora de una peticion hasta que se cancele
 });
 
-//TODO:TOKEN
-// Helper para guardar el token nuevo
-const saveToken = (token: string) => {
-  localStorage.setItem("accessToken", token);
-};
-// Helper para obtener el token del localStorage
-const getToken = () => localStorage.getItem("accessToken");
-
 // Intentar renovar token
 const refreshToken = async () => {
+  const { setAccessToken } = useAuth();
   try {
     const refreshResponse = await axios.post(
-      "api/auth/refresh",
+      "/auth/refresh",
       {},
       {
         baseURL: BASE_URL,
@@ -41,7 +37,7 @@ const refreshToken = async () => {
       }
     );
     const newToken = refreshResponse.data.accessToken;
-    saveToken(newToken);
+    setAccessToken(newToken);
     return newToken;
   } catch (err) {
     throw new Error("No se pudo renovar el token.");
@@ -51,9 +47,9 @@ const refreshToken = async () => {
 // Añadir token a cada request
 interceptorApiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = getToken();
-    if (token && config.headers) {
-      config.headers.set("Authorization", `Bearer ${token}`);
+    const { accessToken } = useAuth();
+    if (accessToken && config.headers) {
+      config.headers.set("Authorization", `Bearer ${accessToken}`);
     }
     return config;
   },
@@ -122,7 +118,7 @@ interceptorApiClient.interceptors.response.use(
       text: "Unable to reach the server. Please check your internet connection or try again later.",
       confirmButtonColor: "#d33",
     });
-
+    console.log(error.message);
     return Promise.reject(error);
   }
 );

@@ -30,7 +30,6 @@ interface UseUsersReturn {
   setCurrentUserProfile: (user: IUser | null) => void;
   refreshUsers: () => Promise<void>;
   clearUsers: () => void;
-  autoLogin: () => void;
 }
 
 export const useUsers = (): UseUsersReturn => {
@@ -40,7 +39,6 @@ export const useUsers = (): UseUsersReturn => {
     currentUserProfile,
     setUsers,
     addUser,
-    userLogin,
     updateUserInStore,
     removeUserFromStore,
     setSelectedUser,
@@ -58,7 +56,6 @@ export const useUsers = (): UseUsersReturn => {
       setSelectedUser: state.setSelectedUser,
       setCurrentUserProfile: state.setCurrentUserProfile,
       clearUsers: state.clearUsers,
-      userLogin: state.login,
     }))
   );
 
@@ -139,12 +136,6 @@ export const useUsers = (): UseUsersReturn => {
     }
   };
 
-  const autoLogin = async (): Promise<void> => {
-    const user: IUser = await getUserProfile();
-    console.log(user);
-    userLogin(user);
-  };
-
   // Refrescar usuarios
   const refreshUsers = async (): Promise<void> => {
     await fetchUsers();
@@ -155,9 +146,6 @@ export const useUsers = (): UseUsersReturn => {
     users,
     selectedUser,
     currentUserProfile,
-
-    // Actions
-    autoLogin,
     fetchUsers,
     fetchUserById,
     fetchUserProfile,

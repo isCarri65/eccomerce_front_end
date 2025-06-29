@@ -5,7 +5,10 @@ import {
   login as loginService,
   register as registerService,
   logout as logoutService,
+  autoRefreshToken,
 } from "../api/services/AuthService";
+import { useShallow } from "zustand/react/shallow";
+import { useUsers } from "./useUsers";
 
 interface RegisterData {
   name: string;
@@ -17,8 +20,16 @@ interface RegisterData {
 
 export const useAuth = () => {
   const { user, accessToken, setUser, setAccessToken, clearAuth } =
-    useAuthStore();
-
+    useAuthStore(
+      useShallow((state) => ({
+        user: state.user,
+        accessToken: state.accessToken,
+        setUser: state.setUser,
+        setAccessToken: state.setAccessToken,
+        clearAuth: state.clearAuth,
+      }))
+    );
+  const { fetchUserProfile, setCurrentUserProfile } = useUsers();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,6 +39,7 @@ export const useAuth = () => {
     try {
       const { token, user } = await loginService(email, password);
       setUser(user);
+      setCurrentUserProfile(user);
       setAccessToken(token);
     } catch (err: any) {
       setError(err.message);
@@ -44,6 +56,7 @@ export const useAuth = () => {
       const { token, user } = await registerService(data);
       setUser(user);
       setAccessToken(token);
+      setCurrentUserProfile;
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -65,14 +78,22 @@ export const useAuth = () => {
       setLoading(false);
     }
   };
+  const autoLogin = async () => {
+    const token = await autoRefreshToken();
+    if (token) {
+      setAccessToken(token);
+    }
+  };
 
   return {
+    autoLogin,
     user,
     accessToken,
     isAuthenticated: !!user,
     isAdmin: user?.role === "ADMIN",
     loading,
     error,
+    setAccessToken,
     login,
     register,
     logout,

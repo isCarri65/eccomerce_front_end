@@ -12,14 +12,14 @@ import { MessageContainer } from "../components/ui/MessageContainer/MessageConta
 
 import { ProfileScreen } from "../components/screens/User-Admin/ProfileScreen";
 import { useEffect } from "react";
-import { useUsers } from "../hooks/useUsers";
 import CheckoutScreen from "../components/screens/CheckOutScreen/CheckOutScreen";
+import { useAuth } from "../hooks/useAuth";
 
 export const AppRouter = () => {
   const location = useLocation();
 
   const isAdmin = location.pathname.startsWith("/admin");
-  const { autoLogin } = useUsers();
+  const { autoLogin } = useAuth();
   useEffect(() => {
     console.log("autologin ejecutado");
     autoLogin();
