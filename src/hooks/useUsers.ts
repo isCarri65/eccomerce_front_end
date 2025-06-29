@@ -6,8 +6,6 @@ import {
   createUser,
   updateUserProfile,
   deleteUser,
-  login,
-  register,
 } from "../api/services/UserService";
 import { IUser } from "../types/User/IUser";
 import { useUserStore } from "../stores/userStore";
@@ -142,14 +140,9 @@ export const useUsers = (): UseUsersReturn => {
   };
 
   const autoLogin = async (): Promise<void> => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      console.log("no hay un token guardado");
-    } else {
-      const user: IUser = await getUserProfile();
-      console.log(user);
-      userLogin(token, user);
-    }
+    const user: IUser = await getUserProfile();
+    console.log(user);
+    userLogin(user);
   };
 
   // Refrescar usuarios

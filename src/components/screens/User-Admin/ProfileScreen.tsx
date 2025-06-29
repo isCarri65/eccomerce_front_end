@@ -21,7 +21,7 @@ type ProfileTab =
 
 export const ProfileScreen = () => {
   const [activeTab, setActiveTab] = useState<ProfileTab>("personal");
-  const [adminSubTab, setAdminSubTab] = useState<AdminSubTab>(null);
+  const [adminSubTab, setAdminSubTab] = useState<String | null>(null);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { currentUserProfile } = useUserStore();

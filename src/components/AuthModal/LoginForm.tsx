@@ -1,17 +1,18 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { login } from "../../services/authService";
 import styles from "./AuthModal.module.css";
-import { LoginValues, User } from "../../types/User/authTypes";
+import { useAuth } from "../../hooks/useAuth";
 
 interface Props {
   onSwitch: () => void;
-  onLoginSuccess: (user: User) => void;
 }
-
+interface LoginValues {
+  email: string;
+  password: string;
+}
 export const LoginForm = ({ onSwitch }: Props) => {
   const initialValues: LoginValues = { email: "", password: "" };
-    
+  const { login } = useAuth();
   const validationSchema = Yup.object({
     email: Yup.string().email("Email inválido").required("Requerido"),
     password: Yup.string().required("Requerido"),
@@ -27,7 +28,11 @@ export const LoginForm = ({ onSwitch }: Props) => {
   };
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
       <Form className={styles.form}>
         <label>Email</label>
         <Field name="email" type="email" />
@@ -35,9 +40,15 @@ export const LoginForm = ({ onSwitch }: Props) => {
 
         <label>Contraseña</label>
         <Field name="password" type="password" />
-        <ErrorMessage name="password" component="div" className={styles.error} />
+        <ErrorMessage
+          name="password"
+          component="div"
+          className={styles.error}
+        />
 
-        <button type="submit" className={styles.submit}>Ingresar</button>
+        <button type="submit" className={styles.submit}>
+          Ingresar
+        </button>
         <button type="button" className={styles.switch} onClick={onSwitch}>
           ¿No tenés cuenta? Registrate
         </button>

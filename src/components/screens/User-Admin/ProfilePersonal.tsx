@@ -1,24 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styles from './ProfilePersonal.module.css';
-import { getUserProfile, updateUserProfile, logout } from '../../../api/services/UserService';
-import { IUser } from '../../../types/User/IUser';
-import { Button } from '../../ui/Button';
-import { useUserStore } from '../../../stores/userStore';
-import { useMessageStore } from '../../../stores/messageStore';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./ProfilePersonal.module.css";
+import {
+  getUserProfile,
+  updateUserProfile,
+} from "../../../api/services/UserService";
+import { IUser } from "../../../types/User/IUser";
+import { Button } from "../../ui/Button";
+import { useUserStore } from "../../../stores/userStore";
+import { useMessageStore } from "../../../stores/messageStore";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface AddressFormProps {
   onClose: () => void;
 }
 
 const initialAddress = {
-  street: '',
-  number: '',
-  apartment: '',
-  aptNumberAndFloor: '',
-  province: '',
-  locality: '',
-  postal: '',
+  street: "",
+  number: "",
+  apartment: "",
+  aptNumberAndFloor: "",
+  province: "",
+  locality: "",
+  postal: "",
 };
 
 const AddressForm: React.FC<AddressFormProps> = ({ onClose }) => {
@@ -41,35 +45,72 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose }) => {
         <form className={styles.addressForm} onSubmit={handleSubmit}>
           <div className={styles.formRow}>
             <label>Calle</label>
-            <input name="street" value={form.street} onChange={handleChange} required />
+            <input
+              name="street"
+              value={form.street}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className={styles.formRow}>
             <label>Número</label>
-            <input name="number" value={form.number} onChange={handleChange} required />
+            <input
+              name="number"
+              value={form.number}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className={styles.formRow}>
             <label>Apartamento</label>
-            <input name="apartment" value={form.apartment} onChange={handleChange} />
+            <input
+              name="apartment"
+              value={form.apartment}
+              onChange={handleChange}
+            />
           </div>
           <div className={styles.formRow}>
             <label>Piso y Número</label>
-            <input name="aptNumberAndFloor" value={form.aptNumberAndFloor} onChange={handleChange} />
+            <input
+              name="aptNumberAndFloor"
+              value={form.aptNumberAndFloor}
+              onChange={handleChange}
+            />
           </div>
           <div className={styles.formRow}>
             <label>Provincia</label>
-            <input name="province" value={form.province} onChange={handleChange} required />
+            <input
+              name="province"
+              value={form.province}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className={styles.formRow}>
             <label>Localidad</label>
-            <input name="locality" value={form.locality} onChange={handleChange} required />
+            <input
+              name="locality"
+              value={form.locality}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className={styles.formRow}>
             <label>Código Postal</label>
-            <input name="postal" value={form.postal} onChange={handleChange} required />
+            <input
+              name="postal"
+              value={form.postal}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className={styles.formActions}>
-            <Button type="submit" variant="primary">Confirmar</Button>
-            <Button type="button" variant="outline" onClick={onClose}>Regresar</Button>
+            <Button type="submit" variant="primary">
+              Confirmar
+            </Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Regresar
+            </Button>
           </div>
         </form>
       </div>
@@ -115,6 +156,8 @@ export const ProfilePersonal: React.FC = () => {
     }
   };
 
+  const { logout } = useAuth();
+
   const handleLogout = async () => {
     setLoading(true);
     try {
@@ -144,38 +187,86 @@ export const ProfilePersonal: React.FC = () => {
         <h2 className={styles.sectionTitle}>Informacion de usuario</h2>
         {!editMode ? (
           <div className={styles.infoBlock}>
-            <div><b>Nombre:</b> {user?.name}</div>
-            <div><b>Apellido:</b> {user?.lastName}</div>
-            <div><b>Correo Electrónico:</b> {user?.email}</div>
-            <div><b>Fecha de Nacimiento:</b> {user?.birthDate || '-'}</div>
-            <div><b>Nro de telefono:</b> {user?.phoneNumber || '-'}</div>
-            <Button variant="primary" onClick={handleEdit} className={styles.editBtn}>Editar Información</Button>
+            <div>
+              <b>Nombre:</b> {user?.name}
+            </div>
+            <div>
+              <b>Apellido:</b> {user?.lastName}
+            </div>
+            <div>
+              <b>Correo Electrónico:</b> {user?.email}
+            </div>
+            <div>
+              <b>Fecha de Nacimiento:</b> {user?.birthDate || "-"}
+            </div>
+            <div>
+              <b>Nro de telefono:</b> {user?.phoneNumber || "-"}
+            </div>
+            <Button
+              variant="primary"
+              onClick={handleEdit}
+              className={styles.editBtn}
+            >
+              Editar Información
+            </Button>
           </div>
         ) : (
           <form className={styles.editForm} onSubmit={handleSave}>
             <div className={styles.formRow}>
               <label>Nombre</label>
-              <input name="name" value={form?.name || ''} onChange={handleChange} required />
+              <input
+                name="name"
+                value={form?.name || ""}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className={styles.formRow}>
               <label>Apellido</label>
-              <input name="lastName" value={form?.lastName || ''} onChange={handleChange} required />
+              <input
+                name="lastName"
+                value={form?.lastName || ""}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className={styles.formRow}>
               <label>Correo Electrónico</label>
-              <input name="email" value={form?.email || ''} onChange={handleChange} required />
+              <input
+                name="email"
+                value={form?.email || ""}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className={styles.formRow}>
               <label>Fecha de Nacimiento</label>
-              <input name="birthDate" value={form?.birthDate || ''} onChange={handleChange} type="date" />
+              <input
+                name="birthDate"
+                value={form?.birthDate || ""}
+                onChange={handleChange}
+                type="date"
+              />
             </div>
             <div className={styles.formRow}>
               <label>Teléfono</label>
-              <input name="phoneNumber" value={form?.phoneNumber || ''} onChange={handleChange} />
+              <input
+                name="phoneNumber"
+                value={form?.phoneNumber || ""}
+                onChange={handleChange}
+              />
             </div>
             <div className={styles.formActions}>
-              <Button type="submit" variant="primary">Guardar</Button>
-              <Button type="button" variant="outline" onClick={() => setEditMode(false)}>Cancelar</Button>
+              <Button type="submit" variant="primary">
+                Guardar
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setEditMode(false)}
+              >
+                Cancelar
+              </Button>
             </div>
           </form>
         )}
@@ -183,7 +274,10 @@ export const ProfilePersonal: React.FC = () => {
       <div className={styles.card}>
         <h2 className={styles.sectionTitle}>Direcciones</h2>
         <div className={styles.addressBlock}>
-          <button className={styles.addAddressBtn} onClick={() => setShowAddressForm(true)}>
+          <button
+            className={styles.addAddressBtn}
+            onClick={() => setShowAddressForm(true)}
+          >
             <span className={styles.plus}>+</span>
             <span>Agregar dirección</span>
           </button>
@@ -191,9 +285,9 @@ export const ProfilePersonal: React.FC = () => {
       </div>
       <div className={styles.card}>
         <div className={styles.sessionBlock}>
-          <Button 
-            variant="outline" 
-            onClick={handleLogout} 
+          <Button
+            variant="outline"
+            onClick={handleLogout}
             className={styles.logoutBtn}
             disabled={loading}
           >
@@ -203,4 +297,4 @@ export const ProfilePersonal: React.FC = () => {
       </div>
     </div>
   );
-}; 
+};

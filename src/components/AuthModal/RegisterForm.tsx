@@ -1,33 +1,38 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { register } from "../../services/authService";
 import styles from "./AuthModal.module.css";
-import { RegisterValues, User } from "../../types/User/authTypes";
+import { useAuth } from "../../hooks/useAuth";
 
 interface Props {
   onSwitch: () => void;
-  onRegisterSuccess: (user: User) => void;
 }
-
-
+interface RegisterValues {
+  name: string;
+  lastName: string;
+  email: string;
+  password: string;
+  birthDate: string;
+}
 export const RegisterForm = ({ onSwitch }: Props) => {
   const initialValues: RegisterValues = {
-    nombre: "",
-    apellido: "",
+    name: "",
+    lastName: "",
     email: "",
     password: "",
-    fechaNacimiento: "",
-    aceptarTyC: false,
-    recibirNotificaciones: false,
+    birthDate: "",
   };
+  const { register } = useAuth();
 
   const validationSchema = Yup.object({
-    nombre: Yup.string().required("Requerido"),
-    apellido: Yup.string().required("Requerido"),
+    name: Yup.string().required("Requerido"),
+    lastName: Yup.string().required("Requerido"),
     email: Yup.string().email("Email inválido").required("Requerido"),
-    password: Yup.string().min(6, "Mínimo 6 caracteres").required("Requerido"),
-    fechaNacimiento: Yup.date().required("Requerido"),
-    aceptarTyC: Yup.boolean().oneOf([true], "Debes aceptar los Términos y Condiciones"),
+    password: Yup.string().min(8, "Mínimo 8 caracteres").required("Requerido"),
+    birthDate: Yup.date().required("Requerido"),
+    aceptarTyC: Yup.boolean().oneOf(
+      [true],
+      "Debes aceptar los Términos y Condiciones"
+    ),
   });
 
   const handleSubmit = async (values: RegisterValues) => {
@@ -40,7 +45,11 @@ export const RegisterForm = ({ onSwitch }: Props) => {
   };
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
       <Form className={styles.form}>
         <label>Nombre</label>
         <Field name="nombre" />
@@ -48,7 +57,11 @@ export const RegisterForm = ({ onSwitch }: Props) => {
 
         <label>Apellido</label>
         <Field name="apellido" />
-        <ErrorMessage name="apellido" component="div" className={styles.error} />
+        <ErrorMessage
+          name="apellido"
+          component="div"
+          className={styles.error}
+        />
 
         <label>Email</label>
         <Field name="email" type="email" />
@@ -56,24 +69,38 @@ export const RegisterForm = ({ onSwitch }: Props) => {
 
         <label>Contraseña</label>
         <Field name="password" type="password" />
-        <ErrorMessage name="password" component="div" className={styles.error} />
+        <ErrorMessage
+          name="password"
+          component="div"
+          className={styles.error}
+        />
 
         <label>Fecha de nacimiento</label>
         <Field name="fechaNacimiento" type="date" />
-        <ErrorMessage name="fechaNacimiento" component="div" className={styles.error} />
+        <ErrorMessage
+          name="fechaNacimiento"
+          component="div"
+          className={styles.error}
+        />
 
         <label>
           <Field type="checkbox" name="aceptarTyC" />
           Acepto los Términos y Condiciones
         </label>
-        <ErrorMessage name="aceptarTyC" component="div" className={styles.error} />
+        <ErrorMessage
+          name="aceptarTyC"
+          component="div"
+          className={styles.error}
+        />
 
         <label>
           <Field type="checkbox" name="recibirNotificaciones" />
           Quiero recibir novedades
         </label>
 
-        <button type="submit" className={styles.submit}>Registrarse</button>
+        <button type="submit" className={styles.submit}>
+          Registrarse
+        </button>
         <button type="button" className={styles.switch} onClick={onSwitch}>
           ¿Ya tenés cuenta? Iniciá sesión
         </button>

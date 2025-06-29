@@ -1,17 +1,5 @@
 import { create } from "zustand";
 import { IUser } from "../types/User/IUser";
-import { UserRole } from "../types/enums/UserRol";
-
-// Usuario de prueba para desarrollo
-const mockUser: IUser = {
-  id: 1,
-  name: "Usuario",
-  lastName: "Prueba",
-  email: "usuario@prueba.com",
-  password: "password123",
-  role: UserRole.User,
-  phone: "123456789",
-};
 
 interface UserState {
   // Estado
@@ -36,7 +24,7 @@ interface UserState {
   setCurrentUserProfile: (user: IUser | null) => void;
 
   // Acciones para autenticación
-  login: (token: string, user: IUser) => void;
+  login: (user: IUser) => void;
   logout: () => void;
 
   // Acciones para loading y error
@@ -102,11 +90,9 @@ export const useUserStore = create<UserState>((set, get) => ({
   setCurrentUserProfile: (user) => set({ currentUserProfile: user }),
 
   // Acciones de autenticación
-  login: (token, user) => {
-    localStorage.setItem("accessToken", token);
+  login: (user: IUser) => {
     set({
       isAuthenticated: true,
-      token,
       currentUserProfile: user,
       error: null,
     });

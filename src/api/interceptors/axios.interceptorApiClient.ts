@@ -33,7 +33,7 @@ const getToken = () => localStorage.getItem("accessToken");
 const refreshToken = async () => {
   try {
     const refreshResponse = await axios.post(
-      "/auth/refresh",
+      "api/auth/refresh",
       {},
       {
         baseURL: BASE_URL,

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../api/services/UserService";
 import { useUserStore } from "../../stores/userStore";
 import { useMessageStore } from "../../stores/messageStore";
 import styles from "./Auth.module.css";
@@ -33,12 +32,14 @@ export const LoginScreen = () => {
       const response = await login(formData.email, formData.password);
       sessionStorage.setItem("sesionToken", response.token);
       loginStore(response.token, response.user);
-      
+
       // Mostrar mensaje de éxito y navegar a HomeScreen
       addMessage("¡Inicio de sesión exitoso! Bienvenido.", "success");
       navigate("/");
     } catch (error: any) {
-      const errorMessage = error.message || "Credenciales inválidas. Por favor, intente nuevamente.";
+      const errorMessage =
+        error.message ||
+        "Credenciales inválidas. Por favor, intente nuevamente.";
       setError(errorMessage);
       addMessage(errorMessage, "error");
     } finally {

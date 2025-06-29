@@ -10,10 +10,6 @@ import { NavBar } from "../components/ui/NavBar/NavBar";
 import { Footer } from "../components/ui/Footer/Footer";
 import { MessageContainer } from "../components/ui/MessageContainer/MessageContainer";
 
-// Admin screens
-import { ProductListScreen } from "../components/screens/admin/ProductListScreen/ProductListScreen";
-import { CategoryListScreen } from "../components/screens/admin/CategoryListScreen/CategoryListScreen";
-import { DiscountListScreen } from "../components/screens/admin/DiscountListScreen/DiscountListScreen";
 import { ProfileScreen } from "../components/screens/User-Admin/ProfileScreen";
 import { useEffect } from "react";
 import { useUsers } from "../hooks/useUsers";
@@ -48,19 +44,6 @@ export const AppRouter = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/admin/productos"
-          element={
-            <AdminRoute>
-              <ProductListScreen />
-            </AdminRoute>
-          }
-        />
-
-        {/* ADMIN */}
-        <Route path="/admin/productos" element={<ProductListScreen />} />
-        <Route path="/admin/categorias" element={<CategoryListScreen />} />
-        <Route path="/admin/descuentos" element={<DiscountListScreen />} />
       </Routes>
       {/* Solo muestro Footer en rutas que NO sean admin */}
       {!isAdmin && <Footer />}

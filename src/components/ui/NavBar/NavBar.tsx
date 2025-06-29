@@ -105,6 +105,10 @@ export const NavBar = () => {
     navigate(path);
   };
 
+  const moveToProfile = () => {
+    navigate("/profile");
+  };
+
   return (
     <nav className={styles.navBarContainer}>
       <div
@@ -137,19 +141,6 @@ export const NavBar = () => {
               </button>
             </li>
           ))}
-
-          {isAuthenticated && currentUserProfile?.role === UserRole.Admin ? (
-            <li>
-              <button
-                className={styles.navLink}
-                onClick={() => navigate("/admin/productos")}
-              >
-                Administrador
-              </button>
-            </li>
-          ) : (
-            <div></div>
-          )}
         </ul>
 
         <div className={styles.iconContainer}>
@@ -161,6 +152,11 @@ export const NavBar = () => {
             className={styles.iconItem}
             icon={faCartShopping}
             onClick={() => handleCart()}
+          />
+          <FontAwesomeIcon
+            icon={faUser}
+            className={styles.iconItem}
+            onClick={moveToProfile}
           />
           {isAuthenticated && currentUserProfile && (
             <p className={styles.userName}>{currentUserProfile.name}</p>
