@@ -7,7 +7,6 @@ import styles from "./NavBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../../../assets/Icon/nike_logo_2.png";
 import { useEffect, useRef, useState } from "react";
-import { IUser } from "../../../types/User/IUser";
 import { IType } from "../../../types/Type/IType";
 import { CategoryOptionSelect } from "../../../types/CategoryOptionSelect";
 import { GenreOptions } from "./GenreOptions";

@@ -73,7 +73,7 @@ const CheckoutScreen: React.FC<CheckoutScreenProps> = () => {
         const productGalleryResponse = await axios.get(`${BASEURL}api/public/productgalleries/product/${productId}`);
         setProductGallery(productGalleryResponse.data as IProductGallery);
         
-        const addressResponse = await axios.get(`${BASEURL}api/protected/addresses/getAll}`);
+        const addressResponse = await axios.get(`${BASEURL}api/protected/addresses/getAll`);
         setAddress(addressResponse.data as Address);
 
       } catch (err) {
