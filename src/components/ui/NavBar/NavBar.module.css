@@ -33,7 +33,14 @@
 }
 .logoContainer img {
   width: 60px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
+
+.logoContainer img:hover {
+  transform: scale(1.05);
+}
+
 .iconItem {
   color: var(--icon-color);
   font-size: 1.4rem;

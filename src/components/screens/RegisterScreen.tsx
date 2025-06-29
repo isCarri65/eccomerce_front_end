@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../../api/services/UserService';
 import { useUserStore } from '../../stores/userStore';
+import { useMessageStore } from '../../stores/messageStore';
 import styles from './Auth.module.css';
 
 export const RegisterScreen = () => {
   const navigate = useNavigate();
   const { login: loginStore } = useUserStore();
+  const { addMessage } = useMessageStore();
   const [formData, setFormData] = useState({
     name: '',
     lastName: '',
@@ -33,9 +35,14 @@ export const RegisterScreen = () => {
     try {
       const response = await register(formData);
       loginStore(response.token, response.user);
-      navigate('/profile');
-    } catch (error) {
-      setError('Error al crear la cuenta. Por favor, intente nuevamente.');
+      
+      // Mostrar mensaje de éxito y navegar a HomeScreen
+      addMessage("¡Cuenta creada exitosamente! Bienvenido.", "success");
+      navigate('/');
+    } catch (error: any) {
+      const errorMessage = error.message || 'Error al crear la cuenta. Por favor, intente nuevamente.';
+      setError(errorMessage);
+      addMessage(errorMessage, "error");
     } finally {
       setLoading(false);
     }

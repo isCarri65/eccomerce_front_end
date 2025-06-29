@@ -125,10 +125,11 @@ export const NavBar = () => {
 })}>Agregar Producto A</button> */}
 
         <div className={styles.logoContainer}>
-          <img src={logo} alt="logo de nike"
+          <img 
+            src={logo} 
+            alt="logo de nike" 
             onClick={() => navigate("/")}
-           />
-          
+          />
         </div>
 
         <ul className={styles.categoriasContainer}>
