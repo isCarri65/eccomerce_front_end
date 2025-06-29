@@ -8,6 +8,7 @@ import { ProductDetailScreen } from "../components/screens/Catalog/ProductDetail
 import { AdminRoute, ProtectedRoute } from "../components/auth/ProtectedRoute";
 import { NavBar } from "../components/ui/NavBar/NavBar";
 import { Footer } from "../components/ui/Footer/Footer";
+import { MessageContainer } from "../components/ui/MessageContainer/MessageContainer";
 
 // Admin screens
 import { ProductListScreen } from "../components/screens/admin/ProductListScreen/ProductListScreen";
@@ -61,6 +62,8 @@ export const AppRouter = () => {
       </Routes>
       {/* Solo muestro Footer en rutas que NO sean admin */}
       {!isAdmin && <Footer />}
+      {/* MessageContainer global */}
+      <MessageContainer />
     </>
   );
 };
