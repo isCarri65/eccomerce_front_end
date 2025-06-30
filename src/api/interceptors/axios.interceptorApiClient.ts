@@ -25,21 +25,40 @@ export const interceptorApiClient: AxiosInstance = axios.create({
   timeout: 10000, //es la demora de una peticion hasta que se cancele
 });
 
+//TODO:TOKEN
+// Helper para guardar el token nuevo
+const saveToken = (token: string) => {
+  sessionStorage.setItem("accessToken", token);
+};
+// Helper para obtener el token del sessionStorage
+const getToken = () => sessionStorage.getItem("accessToken");
+
 // Intentar renovar token
 const refreshToken = async () => {
-  const setAccessToken = useAuthStore.getState().setAccessToken;
   try {
+    const storedRefreshToken = sessionStorage.getItem("refreshToken");
+    if (!storedRefreshToken)
+      throw new Error("No hay refresh token para renovar la sesión.");
+
     const refreshResponse = await axios.post(
       "/auth/refresh",
       {},
       {
         baseURL: BASE_URL,
+        headers: {
+          Authorization: `Bearer ${storedRefreshToken}`,
+        },
         withCredentials: true,
       }
     );
-    const newToken = refreshResponse.data.accessToken;
-    setAccessToken(newToken);
-    return newToken;
+
+    const newAccessToken = refreshResponse.data.token;
+    const newRefreshToken = refreshResponse.data.refreshToken;
+
+    saveToken(newAccessToken);
+    sessionStorage.setItem("refreshToken", newRefreshToken);
+
+    return newAccessToken;
   } catch (err) {
     throw new Error("No se pudo renovar el token.");
   }
