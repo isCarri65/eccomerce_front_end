@@ -4,6 +4,7 @@ import styles from "./ProfilePersonal.module.css";
 import {
   getAllAddresses,
   createAddress,
+  updateAddress,
 } from "../../../api/services/AddressService";
 import { IUser } from "../../../types/User/IUser";
 import { Address } from "../../../types/Address/IAddress";
@@ -13,23 +14,20 @@ import { useMessageStore } from "../../../stores/messageStore";
 import { useUsers } from "../../../hooks/useUsers";
 import { useAuth } from "../../../hooks/useAuth";
 
-interface AddressFormProps {
-  onClose: () => void;
-  onAddressCreated: () => void;
-}
-
 const initialAddress: ICreateAddress = {
   street: "",
-  locality: "",
+  number: 0,
+  apartment: "",
+  aptNumberAndFloor: "",
   province: "",
-  cp: "",
-  dptoFloor: "",
+  locality: "",
+  postal: "",
 };
 
-const AddressForm: React.FC<AddressFormProps> = ({
-  onClose,
-  onAddressCreated,
-}) => {
+const AddressForm: React.FC<{
+  onClose: () => void;
+  onAddressCreated: () => void;
+}> = ({ onClose, onAddressCreated }) => {
   const [form, setForm] = useState(initialAddress);
   const [loading, setLoading] = useState(false);
   const { addMessage } = useMessageStore();
@@ -60,42 +58,31 @@ const AddressForm: React.FC<AddressFormProps> = ({
         <form className={styles.addressForm} onSubmit={handleSubmit}>
           <div className={styles.formRow}>
             <label>Calle</label>
-            <input
-              name="street"
-              value={form.street}
-              onChange={handleChange}
-              required
-            />
+            <input name="street" value={form.street} onChange={handleChange} required />
           </div>
           <div className={styles.formRow}>
-            <label>Localidad</label>
-            <input
-              name="locality"
-              value={form.locality}
-              onChange={handleChange}
-              required
-            />
+            <label>Número</label>
+            <input name="number" type="number" value={form.number} onChange={handleChange} required />
           </div>
           <div className={styles.formRow}>
-            <label>Provincia</label>
-            <input
-              name="province"
-              value={form.province}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className={styles.formRow}>
-            <label>Código Postal</label>
-            <input name="cp" value={form.cp} onChange={handleChange} required />
+            <label>Departamento</label>
+            <input name="apartment" value={form.apartment} onChange={handleChange} />
           </div>
           <div className={styles.formRow}>
             <label>Departamento/Piso</label>
-            <input
-              name="dptoFloor"
-              value={form.dptoFloor}
-              onChange={handleChange}
-            />
+            <input name="aptNumberAndFloor" value={form.aptNumberAndFloor} onChange={handleChange} />
+          </div>
+          <div className={styles.formRow}>
+            <label>Provincia</label>
+            <input name="province" value={form.province} onChange={handleChange} required />
+          </div>
+          <div className={styles.formRow}>
+            <label>Localidad</label>
+            <input name="locality" value={form.locality} onChange={handleChange} required />
+          </div>
+          <div className={styles.formRow}>
+            <label>Código Postal</label>
+            <input name="postal" value={form.postal} onChange={handleChange} required />
           </div>
           <div className={styles.formActions}>
             <Button type="submit" variant="primary" disabled={loading}>
@@ -111,24 +98,107 @@ const AddressForm: React.FC<AddressFormProps> = ({
   );
 };
 
+const EditAddressForm: React.FC<{
+  address: Address;
+  onClose: () => void;
+  onAddressUpdated: () => void;
+}> = ({ address, onClose, onAddressUpdated }) => {
+  const [form, setForm] = useState({ ...address });
+  const [loading, setLoading] = useState(false);
+  const { addMessage } = useMessageStore();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await updateAddress(address.id, form);
+      addMessage("Dirección actualizada exitosamente", "success");
+      onAddressUpdated();
+      onClose();
+    } catch (error: any) {
+      addMessage(error.message || "Error al actualizar la dirección", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContent}>
+        <h3>Editar dirección</h3>
+        <form className={styles.addressForm} onSubmit={handleSubmit}>
+          <div className={styles.formRow}>
+            <label>Calle</label>
+            <input name="street" value={form.street || ""} onChange={handleChange} required />
+          </div>
+          <div className={styles.formRow}>
+            <label>Número</label>
+            <input
+              name="number"
+              type="number"
+              value={form.number !== null && form.number !== undefined ? form.number : ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className={styles.formRow}>
+            <label>Departamento</label>
+            <input name="apartment" value={form.apartment || ""} onChange={handleChange} />
+          </div>
+          <div className={styles.formRow}>
+            <label>Departamento/Piso</label>
+            <input
+              name="aptNumberAndFloor"
+              value={form.aptNumberAndFloor || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className={styles.formRow}>
+            <label>Provincia</label>
+            <input name="province" value={form.province || ""} onChange={handleChange} required />
+          </div>
+          <div className={styles.formRow}>
+            <label>Localidad</label>
+            <input name="locality" value={form.locality || ""} onChange={handleChange} required />
+          </div>
+          <div className={styles.formRow}>
+            <label>Código Postal</label>
+            <input name="postal" value={form.postal || ""} onChange={handleChange} />
+          </div>
+          <div className={styles.formActions}>
+            <Button type="submit" variant="primary" disabled={loading}>
+              {loading ? "Guardando..." : "Guardar"}
+            </Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancelar
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 export const ProfilePersonal = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { addMessage } = useMessageStore();
-  const [user, setUser] = useState<IUser | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [form, setForm] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(false);
-  const { currentUserProfile, handleUpdateUserProfile, fetchUserProfile } =
-    useUsers();
+  const { currentUserProfile, handleUpdateUserProfile, fetchUserProfile } = useUsers();
+  const [editAddress, setEditAddress] = useState<Address | null>(null);
+  const [showEditAddressForm, setShowEditAddressForm] = useState(false);
 
   useEffect(() => {
     if (currentUserProfile === null) {
       fetchUserProfile();
     } else {
-      setUser(currentUserProfile);
       setForm(currentUserProfile);
       loadAddresses();
     }
@@ -160,7 +230,6 @@ export const ProfilePersonal = () => {
       try {
         const success = await handleUpdateUserProfile(form);
         if (success) {
-          setUser(form);
           setEditMode(false);
           addMessage("Perfil actualizado exitosamente", "success");
         } else {
@@ -175,9 +244,7 @@ export const ProfilePersonal = () => {
   const handleLogout = async () => {
     setLoading(true);
     try {
-      // Llamar al endpoint de logout
       await logout();
-
       sessionStorage.removeItem("sesionToken");
       addMessage("Sesión cerrada exitosamente", "success");
       navigate("/");
@@ -190,9 +257,16 @@ export const ProfilePersonal = () => {
 
   if (showAddressForm) {
     return (
-      <AddressForm
-        onClose={() => setShowAddressForm(false)}
-        onAddressCreated={loadAddresses}
+      <AddressForm onClose={() => setShowAddressForm(false)} onAddressCreated={loadAddresses} />
+    );
+  }
+
+  if (showEditAddressForm && editAddress) {
+    return (
+      <EditAddressForm
+        address={editAddress}
+        onClose={() => setShowEditAddressForm(false)}
+        onAddressUpdated={loadAddresses}
       />
     );
   }
@@ -201,7 +275,7 @@ export const ProfilePersonal = () => {
     <div className={styles.profilePersonalContainer}>
       <h1 className={styles.title}>Perfil de usuario</h1>
       <div className={styles.card}>
-        <h2 className={styles.sectionTitle}>Informacion de usuario</h2>
+        <h2 className={styles.sectionTitle}>Información de usuario</h2>
         {!editMode ? (
           <div className={styles.infoBlock}>
             <div>
@@ -216,11 +290,7 @@ export const ProfilePersonal = () => {
             <div>
               <b>Nro de teléfono:</b> {currentUserProfile?.phoneNumber || "-"}
             </div>
-            <Button
-              variant="primary"
-              onClick={handleEdit}
-              className={styles.editBtn}
-            >
+            <Button variant="primary" onClick={handleEdit} className={styles.editBtn}>
               Editar Información
             </Button>
           </div>
@@ -230,21 +300,11 @@ export const ProfilePersonal = () => {
           <form className={styles.editForm} onSubmit={handleSave}>
             <div className={styles.formRow}>
               <label>Nombre</label>
-              <input
-                name="name"
-                value={form.name || ""}
-                onChange={handleChange}
-                required
-              />
+              <input name="name" value={form.name || ""} onChange={handleChange} required />
             </div>
             <div className={styles.formRow}>
               <label>Apellido</label>
-              <input
-                name="lastName"
-                value={form.lastName || ""}
-                onChange={handleChange}
-                required
-              />
+              <input name="lastName" value={form.lastName || ""} onChange={handleChange} required />
             </div>
             <div className={styles.formRow}>
               <label>Fecha de Nacimiento</label>
@@ -257,28 +317,20 @@ export const ProfilePersonal = () => {
             </div>
             <div className={styles.formRow}>
               <label>Teléfono</label>
-              <input
-                name="phoneNumber"
-                value={form.phoneNumber || ""}
-                onChange={handleChange}
-              />
+              <input name="phoneNumber" value={form.phoneNumber || ""} onChange={handleChange} />
             </div>
             <div className={styles.formActions}>
               <Button type="submit" variant="primary">
                 Guardar
               </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setEditMode(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setEditMode(false)}>
                 Cancelar
               </Button>
             </div>
           </form>
-
         )}
       </div>
+
       <div className={styles.card}>
         <div className={styles.addressHeader}>
           <h2 className={styles.sectionTitle}>Direcciones</h2>
@@ -297,29 +349,30 @@ export const ProfilePersonal = () => {
             addresses.map((address) => (
               <div key={address.id} className={styles.addressItem}>
                 <div className={styles.addressInfo}>
-                  <p>
-                    <strong>Calle:</strong> {address.street}
-                  </p>
-                  <p>
-                    <strong>Localidad:</strong> {address.locality}
-                  </p>
-                  <p>
-                    <strong>Provincia:</strong> {address.province}
-                  </p>
-                  <p>
-                    <strong>Código Postal:</strong> {address.cp}
-                  </p>
-                  {address.dptoFloor && (
-                    <p>
-                      <strong>Departamento/Piso:</strong> {address.dptoFloor}
-                    </p>
-                  )}
+                  <p><strong>Calle:</strong> {address.street}</p>
+                  <p><strong>Número:</strong> {address.number || "-"}</p>
+                  <p><strong>Departamento:</strong> {address.apartment || "-"}</p>
+                  <p><strong>Departamento/Piso:</strong> {address.aptNumberAndFloor || "-"}</p>
+                  <p><strong>Provincia:</strong> {address.province}</p>
+                  <p><strong>Localidad:</strong> {address.locality}</p>
+                  <p><strong>Código Postal:</strong> {address.postal || "-"}</p>
                 </div>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setEditAddress(address);
+                    setShowEditAddressForm(true);
+                  }}
+                  className={styles.editBtn}
+                >
+                  Editar
+                </Button>
               </div>
             ))
           )}
         </div>
       </div>
+
       <div className={styles.card}>
         <div className={styles.sessionBlock}>
           <Button
