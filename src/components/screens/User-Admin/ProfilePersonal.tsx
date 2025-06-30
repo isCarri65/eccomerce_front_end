@@ -127,8 +127,13 @@ export const ProfilePersonal = () => {
   useEffect(() => {
     if (currentUserProfile === null) {
       fetchUserProfile();
+    } else {
+      setUser(currentUserProfile);
+      setForm(currentUserProfile);
+      loadAddresses();
     }
-  }, []);
+    // eslint-disable-next-line
+  }, [currentUserProfile]);
 
   const loadAddresses = async () => {
     try {
@@ -140,7 +145,7 @@ export const ProfilePersonal = () => {
   };
 
   const handleEdit = () => {
-    setForm(user);
+    setForm(currentUserProfile);
     setEditMode(true);
   };
 
@@ -153,10 +158,14 @@ export const ProfilePersonal = () => {
     e.preventDefault();
     if (form) {
       try {
-        const updated = await updateUserProfile(form);
-        setUser(updated);
-        setEditMode(false);
-        addMessage("Perfil actualizado exitosamente", "success");
+        const success = await handleUpdateUserProfile(form);
+        if (success) {
+          setUser(form);
+          setEditMode(false);
+          addMessage("Perfil actualizado exitosamente", "success");
+        } else {
+          addMessage("Error al actualizar el perfil", "error");
+        }
       } catch (error: any) {
         addMessage(error.message || "Error al actualizar el perfil", "error");
       }
@@ -202,13 +211,10 @@ export const ProfilePersonal = () => {
               <b>Apellido:</b> {currentUserProfile?.lastName}
             </div>
             <div>
-              <b>Correo Electrónico:</b> {currentUserProfile?.email}
-            </div>
-            <div>
               <b>Fecha de Nacimiento:</b> {currentUserProfile?.birthDate || "-"}
             </div>
             <div>
-              <b>Nro de telefono:</b> {currentUserProfile?.phoneNumber || "-"}
+              <b>Nro de teléfono:</b> {currentUserProfile?.phoneNumber || "-"}
             </div>
             <Button
               variant="primary"
@@ -218,13 +224,15 @@ export const ProfilePersonal = () => {
               Editar Información
             </Button>
           </div>
+        ) : !form ? (
+          <p className={styles.loading}>Cargando formulario...</p>
         ) : (
           <form className={styles.editForm} onSubmit={handleSave}>
             <div className={styles.formRow}>
               <label>Nombre</label>
               <input
                 name="name"
-                value={form?.name || ""}
+                value={form.name || ""}
                 onChange={handleChange}
                 required
               />
@@ -233,16 +241,7 @@ export const ProfilePersonal = () => {
               <label>Apellido</label>
               <input
                 name="lastName"
-                value={form?.lastName || ""}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className={styles.formRow}>
-              <label>Correo Electrónico</label>
-              <input
-                name="email"
-                value={form?.email || ""}
+                value={form.lastName || ""}
                 onChange={handleChange}
                 required
               />
@@ -251,7 +250,7 @@ export const ProfilePersonal = () => {
               <label>Fecha de Nacimiento</label>
               <input
                 name="birthDate"
-                value={form?.birthDate || ""}
+                value={form.birthDate || ""}
                 onChange={handleChange}
                 type="date"
               />
@@ -260,7 +259,7 @@ export const ProfilePersonal = () => {
               <label>Teléfono</label>
               <input
                 name="phoneNumber"
-                value={form?.phoneNumber || ""}
+                value={form.phoneNumber || ""}
                 onChange={handleChange}
               />
             </div>
@@ -277,6 +276,7 @@ export const ProfilePersonal = () => {
               </Button>
             </div>
           </form>
+
         )}
       </div>
       <div className={styles.card}>
