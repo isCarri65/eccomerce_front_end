@@ -3,19 +3,19 @@ import { IFavorite } from "../../types/Favorite/IFavorite";
 import { IProduct } from "../../types/Product/IProduct";
 
 export const getAllFavorites = async (): Promise<IFavorite[]> => {
-  const response = await interceptorApiClient.get("/favorites");
+  const response = await interceptorApiClient.get("/protected/favorites/getProducts");
   return response.data;
 };
 
 export const getFavoriteById = async (id: number): Promise<IFavorite> => {
-  const response = await interceptorApiClient.get(`/favorites/${id}`);
+  const response = await interceptorApiClient.get(`/protected/favorites/${id}`);
   return response.data;
 };
 
 export const addFavorite = async (
   favorite: IFavorite
 ): Promise<ICreateFavorite> => {
-  const response = await interceptorApiClient.post("/favorites", favorite);
+  const response = await interceptorApiClient.post("/protected/favorites", favorite);
   return response.data;
 };
 
@@ -23,17 +23,15 @@ export const getProductsFavoritesByUserId = async (
   userId: number
 ): Promise<IProduct[]> => {
   const response = await interceptorApiClient.get(
-    `/favorites/get-products-by-user-id/${userId}`
+    `/protected/favorites/get-products-by-user-id/${userId}`
   );
   return response.data;
 };
 
 export const removeFavorite = async (
-  userId: number,
   productId: number
 ): Promise<void> => {
   await interceptorApiClient.delete(
-    `/favorites/remove/user-id/${userId}/product-id/${productId}`
+    `/protected/favorites/remove/${productId}`
   );
-  // No return value for delete operation
 };

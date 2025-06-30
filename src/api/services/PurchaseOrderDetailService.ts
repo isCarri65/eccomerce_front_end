@@ -4,7 +4,7 @@ import { IPurchaseOrderDetail } from "../../types/PurchaseOrderDetail/IPurchaseO
 export const getAllPurchaseOrderDetails = async (): Promise<
   IPurchaseOrderDetail[]
 > => {
-  const response = await interceptorApiClient.get("/purchaseorderdetails");
+  const response = await interceptorApiClient.get("/protected/purchaseorderdetails");
   return response.data;
 };
 
@@ -12,7 +12,7 @@ export const getPurchaseOrderDetailById = async (
   id: number
 ): Promise<IPurchaseOrderDetail> => {
   const response = await interceptorApiClient.get(
-    `/purchaseorderdetails/${id}`
+    `/protected/purchaseorderdetails/getAllByOrderId/${id}`
   );
   return response.data;
 };
@@ -21,7 +21,7 @@ export const createPurchaseOrderDetail = async (
   data: IPurchaseOrderDetail
 ): Promise<ICreatePurchaseOrderDetail> => {
   const response = await interceptorApiClient.post(
-    "/purchaseorderdetails",
+    "/protected/purchaseorderdetails",
     data
   );
   return response.data;
@@ -32,12 +32,12 @@ export const updatePurchaseOrderDetail = async (
   data: IPurchaseOrderDetail
 ): Promise<IUpdatePurchaseOrderDetail> => {
   const response = await interceptorApiClient.put(
-    `/purchaseorderdetails/${id}`,
+    `/protected/purchaseorderdetails/${id}`,
     data
   );
   return response.data;
 };
 
 export const deletePurchaseOrderDetail = async (id: number): Promise<void> => {
-  await interceptorApiClient.delete(`/purchaseorderdetails/${id}`);
+  await interceptorApiClient.delete(`/protected/purchaseorderdetails/${id}`);
 };
