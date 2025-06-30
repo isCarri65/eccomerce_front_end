@@ -7,17 +7,25 @@ import { IColor } from '../../../../types/Color/IColor';
 import { Address } from '../../../../types/Address/IAddress';
 import axios from 'axios';
 
+interface CartItem {
+  product: IProduct;
+  size: ISize;
+  color: IColor;
+  quantity: number;
+  discountPercentage?: number;
+}
+
 interface MercadoPagoSectionProps {
-  product: IProduct | null;
+  cartItems: CartItem[];
   user: IUser | null;
-  size: ISize | null;
-  color: IColor | null;
   showSummary: boolean;
   toggleSummary: Function;
   address: Address | null;
 }
 
-const MercadoPagoSection: React.FC<MercadoPagoSectionProps> = ({ product, user, size, color,showSummary,toggleSummary, address }) => {
+const MercadoPagoSection: React.FC<MercadoPagoSectionProps> = ({ cartItems, user, showSummary, toggleSummary, address }) => {
+  const BASEURL = "http://localhost:8081/";
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,53 +33,59 @@ const MercadoPagoSection: React.FC<MercadoPagoSectionProps> = ({ product, user, 
     toggleSummary(true);
   };
 
-  const handlePagarClick = () => {
-    // Handle payment logic here
-    console.log('Pagar clicked');
-  };
-
   const handleCancelarClick = () => {
     toggleSummary(false);
   };
 
-  const handlePayment = () => {
-    if (!product || !user || !size || !color) {
-      setError("Product, user, size, or color data is missing.");
+  const handlePayment = async () => {
+    if (!user) {
+      setError("User data is missing.");
       return;
     }
 
-    setLoading(true);
-    setError(null);
+    try {
+      setLoading(true);
+      setError(null);
 
-    const productVariantData = {
-      quantity: 1, // Assuming quantity is 1 for now based on the summary
-      state: true, // Assuming state is true
-      product: { id: product.id },
-      size: { id: size.id }, // Use size.id from props
-      color: { id: color.id }, // Use color.id from props
-    };
+      const variantPromises = cartItems.map(item =>
+        axios.post(`${BASEURL}api/produtVariants`, {
+          quantity: item.quantity,
+          state: true,
+          product: { id: item.product.id },
+          size: { id: item.size.id },
+          color: { id: item.color.id },
+        })
+      );
 
-    axios.post('/api/produtVariants', productVariantData)
-      .then(response => {
-        const productVariant = response.data;
+      const variantResponses = await Promise.all(variantPromises);
+      const productos = variantResponses.map((response, index) => ({
+        variantId: response.data.id,
+        discountId: null // Ajustar si tienes lógica de descuentos
+      }));
 
-        const mercadopagoPaymentData = {
-          productos: [{ variantId: productVariant.id, discountId: null }], // Assuming no discount for now
-          idUser: user.id,
-        };
+      const paymentData = {
+        productos,
+        idUser: user.id,
+      };
 
-        return axios.post('/pay/mp', mercadopagoPaymentData);
-      })
-      .then(response => {
-        console.log('Mercado Pago payment initiated:', response.data);
-        setLoading(false);
-        // Redirect to Mercado Pago or handle the response as needed
-      })
-      .catch(error => {
-        console.error('Error during payment process:', error);
-        setError("Payment failed. Please try again.");
-        setLoading(false);
-      });
+      const paymentResponse = await axios.post('/pay/mp', paymentData);
+      console.log('Mercado Pago payment initiated:', paymentResponse.data);
+      // Redirigir o manejar respuesta
+    } catch (err) {
+      console.error('Error during payment process:', err);
+      setError("Payment failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const calculateTotal = () => {
+    return cartItems.reduce((acc, item) => {
+      const basePrice = item.product.sellPrice * item.quantity;
+      const discount = item.discountPercentage || 0;
+      const finalPrice = basePrice * (1 - discount / 100.0);
+      return acc + finalPrice;
+    }, 0).toFixed(2);
   };
 
   return (
@@ -86,16 +100,25 @@ const MercadoPagoSection: React.FC<MercadoPagoSectionProps> = ({ product, user, 
         <div className={styles.summaryContainer}>
           <div>
             <h2>Resumen del Pedido</h2>
-            {product && user && size && color ? (
+            {cartItems.length > 0 && user ? (
               <>
-                <p>Producto: {product.name}</p>
-                <p>Dirección: {address?.street}, {address?.province}</p> 
-                <p>Total: ${product.sellPrice * (1 - (product.discount?.percentage || 0))}</p> 
+                {cartItems.map((item, idx) => (
+                  <div key={idx}>
+                    <p>Producto: {item.product.name}</p>
+                    <p>Talla: {item.size.name}, Color: {item.color.name}</p>
+                    <p>Cantidad: {item.quantity}</p>
+                  </div>
+                ))}
+                <p>Dirección: {address?.street}, {address?.province}</p>
+                <p>Total: ${calculateTotal()}</p>
               </>
             ) : <p>Cargando resumen...</p>}
           </div>
-          <button className={styles.payButton} onClick={handlePayment}>Pagar</button>
+          <button className={styles.payButton} onClick={handlePayment} disabled={loading}>
+            {loading ? 'Procesando...' : 'Pagar'}
+          </button>
           <button className={styles.cancelButton} onClick={handleCancelarClick}>Cancelar</button>
+          {error && <p className={styles.error}>{error}</p>}
         </div>
       )}
     </div>
