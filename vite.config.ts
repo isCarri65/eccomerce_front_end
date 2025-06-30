@@ -6,18 +6,4 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), svgr(), tailwindcss()],
-  server: {
-    proxy: {
-      "/api": {
-        target: "http://localhost:8081",
-        changeOrigin: true,
-        secure: false,
-
-        // Reescribe cualquier "Domain=localhost:8080" → "Domain=localhost"
-        cookieDomainRewrite: "localhost",
-        // Reescribe path de backend (/api/auth/refresh) → /
-        cookiePathRewrite: "/",
-      },
-    },
-  },
 });
