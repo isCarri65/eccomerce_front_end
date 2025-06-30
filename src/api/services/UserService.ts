@@ -3,6 +3,7 @@ import { IUser } from "../../types/User/IUser";
 
 interface LoginResponse {
   token: string;
+  refreshToken: string;
   user: IUser;
 }
 
@@ -82,7 +83,7 @@ export const getUserById = async (id: number): Promise<IUser> => {
 };
 
 export const getUserProfile = async (): Promise<IUser> => {
-  const response = await interceptorApiClient.get(`/protected/users/profile`);
+  const response = await interceptorApiClient.get(`/profile`);
   return response.data;
 };
 

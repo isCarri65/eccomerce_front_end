@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ProfilePersonal.module.css';
 import { getUserProfile, updateUserProfile, logout } from '../../../api/services/UserService';
+import { getAllAddresses, createAddress } from '../../../api/services/AddressService';
 import { IUser } from '../../../types/User/IUser';
+import { Address } from '../../../types/Address/IAddress';
+import { ICreateAddress } from '../../../types/Address/ICreateAddress';
 import { Button } from '../../ui/ElementsHTML/Button';
 import { useUserStore } from '../../../stores/userStore';
 import { useMessageStore } from '../../../stores/messageStore';
@@ -10,21 +13,22 @@ import axios from 'axios';
 
 interface AddressFormProps {
   onClose: () => void;
+  onAddressCreated: () => void;
 }
 
-const initialAddress = {
+const initialAddress: ICreateAddress = {
   street: '',
-  number: '',
-  apartment: '',
-  aptNumberAndFloor: '',
-  province: '',
   locality: '',
-  postal: '',
+  province: '',
+  cp: '',
+  dptoFloor: '',
 };
 
-const AddressForm: React.FC<AddressFormProps> = ({ onClose }) => {
+const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressCreated }) => {
   const BASEURL = "http://localhost:8081/"
   const [form, setForm] = useState(initialAddress);
+  const [loading, setLoading] = useState(false);
+  const { addMessage } = useMessageStore();
   const { currentUserProfile } = useUserStore();
 
 
@@ -69,31 +73,25 @@ const handleSubmit = async (e: React.FormEvent) => {
             <input name="street" value={form.street} onChange={handleChange} required />
           </div>
           <div className={styles.formRow}>
-            <label>Número</label>
-            <input name="number" value={form.number} onChange={handleChange} required />
-          </div>
-          <div className={styles.formRow}>
-            <label>Apartamento</label>
-            <input name="apartment" value={form.apartment} onChange={handleChange} />
-          </div>
-          <div className={styles.formRow}>
-            <label>Piso y Número</label>
-            <input name="aptNumberAndFloor" value={form.aptNumberAndFloor} onChange={handleChange} />
+            <label>Localidad</label>
+            <input name="locality" value={form.locality} onChange={handleChange} required />
           </div>
           <div className={styles.formRow}>
             <label>Provincia</label>
             <input name="province" value={form.province} onChange={handleChange} required />
           </div>
           <div className={styles.formRow}>
-            <label>Localidad</label>
-            <input name="locality" value={form.locality} onChange={handleChange} required />
+            <label>Código Postal</label>
+            <input name="cp" value={form.cp} onChange={handleChange} required />
           </div>
           <div className={styles.formRow}>
-            <label>Código Postal</label>
-            <input name="postal" value={form.postal} onChange={handleChange} required />
+            <label>Departamento/Piso</label>
+            <input name="dptoFloor" value={form.dptoFloor} onChange={handleChange} />
           </div>
           <div className={styles.formActions}>
-            <Button type="submit" variant="primary">Confirmar</Button>
+            <Button type="submit" variant="primary" disabled={loading}>
+              {loading ? "Creando..." : "Confirmar"}
+            </Button>
             <Button type="button" variant="outline" onClick={onClose}>Regresar</Button>
           </div>
         </form>
@@ -107,6 +105,7 @@ export const ProfilePersonal: React.FC = () => {
   const { logout: logoutStore } = useUserStore();
   const { addMessage } = useMessageStore();
   const [user, setUser] = useState<IUser | null>(null);
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [form, setForm] = useState<IUser | null>(null);
@@ -114,7 +113,17 @@ export const ProfilePersonal: React.FC = () => {
 
   useEffect(() => {
     getUserProfile().then(setUser);
+    loadAddresses();
   }, []);
+
+  const loadAddresses = async () => {
+    try {
+      const addressesData = await getAllAddresses();
+      setAddresses(addressesData);
+    } catch (error: any) {
+      addMessage(error.message || "Error al cargar las direcciones", "error");
+    }
+  };
 
   const handleEdit = () => {
     setForm(user);
@@ -159,7 +168,7 @@ export const ProfilePersonal: React.FC = () => {
   };
 
   if (showAddressForm) {
-    return <AddressForm onClose={() => setShowAddressForm(false)} />;
+    return <AddressForm onClose={() => setShowAddressForm(false)} onAddressCreated={loadAddresses} />;
   }
 
   return (
@@ -206,12 +215,34 @@ export const ProfilePersonal: React.FC = () => {
         )}
       </div>
       <div className={styles.card}>
-        <h2 className={styles.sectionTitle}>Direcciones</h2>
-        <div className={styles.addressBlock}>
-          <button className={styles.addAddressBtn} onClick={() => setShowAddressForm(true)}>
-            <span className={styles.plus}>+</span>
-            <span>Agregar dirección</span>
-          </button>
+        <div className={styles.addressHeader}>
+          <h2 className={styles.sectionTitle}>Direcciones</h2>
+          <Button 
+            variant="primary" 
+            onClick={() => setShowAddressForm(true)}
+            className={styles.addAddressBtn}
+          >
+            Agregar Dirección
+          </Button>
+        </div>
+        <div className={styles.addressList}>
+          {addresses.length === 0 ? (
+            <p className={styles.noAddresses}>No hay direcciones registradas</p>
+          ) : (
+            addresses.map((address) => (
+              <div key={address.id} className={styles.addressItem}>
+                <div className={styles.addressInfo}>
+                  <p><strong>Calle:</strong> {address.street}</p>
+                  <p><strong>Localidad:</strong> {address.locality}</p>
+                  <p><strong>Provincia:</strong> {address.province}</p>
+                  <p><strong>Código Postal:</strong> {address.cp}</p>
+                  {address.dptoFloor && (
+                    <p><strong>Departamento/Piso:</strong> {address.dptoFloor}</p>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
       <div className={styles.card}>

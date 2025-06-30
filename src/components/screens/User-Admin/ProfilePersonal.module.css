@@ -92,26 +92,64 @@
   gap: 2rem;
 }
 
+.addressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
 .addAddressBtn {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 160px;
-  height: 90px;
-  background: #e9e9ec;
-  border: 1.5px solid #bdbdbd;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  color: #22223b;
-  font-weight: 500;
+  background: #22223b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, border 0.2s;
+  transition: background 0.2s;
+  text-decoration: none;
 }
+
 .addAddressBtn:hover {
-  background: #d6d6e0;
-  border: 1.5px solid #22223b;
+  background: #4a4e69;
 }
+
+.addressList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.addressItem {
+  background: #f8f8fa;
+  border: 1px solid #e9e9ec;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: border 0.2s;
+}
+
+.addressItem:hover {
+  border-color: #22223b;
+}
+
+.addressInfo p {
+  margin: 0.3rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.noAddresses {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 2rem 0;
+}
+
 .plus {
   font-size: 2.2rem;
   font-weight: 700;

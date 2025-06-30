@@ -31,8 +31,10 @@ export const LoginScreen = () => {
 
     try {
       const response = await login(formData.email, formData.password);
-      sessionStorage.setItem("sesionToken", response.token);
+      sessionStorage.setItem("accessToken", response.token);          // cambio clave a "accessToken"
+      sessionStorage.setItem("refreshToken", response.refreshToken);  // guardar refresh token
       loginStore(response.token, response.user);
+      
       
       // Mostrar mensaje de éxito y navegar a HomeScreen
       addMessage("¡Inicio de sesión exitoso! Bienvenido.", "success");
