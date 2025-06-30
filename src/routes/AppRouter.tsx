@@ -37,7 +37,15 @@ export const AppRouter = () => {
         <Route path="/productsCatalog/*" element={<ProductCatalogScreen />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
-        <Route path="/checkout" element={<CheckoutScreen />} />
+        
+        {/*Protegido, ya que solo se puede comprar si se esta registrado */}
+  
+        <Route path="/checkout" element={
+                <ProtectedRoute>
+          <CheckoutScreen />
+        </ProtectedRoute>
+          } />
+        
         <Route
           path="/profile"
           element={
