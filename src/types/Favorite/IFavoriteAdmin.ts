@@ -1,6 +1,7 @@
 import { IProduct } from "../product/IProduct";
 
-export interface IFavorite {
+export interface IFavoriteAdmin {
   id: number;
   product: IProduct;
+  userId: number;
 }

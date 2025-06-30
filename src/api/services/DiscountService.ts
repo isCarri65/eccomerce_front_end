@@ -1,5 +1,5 @@
 import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
-import { IDiscount } from "../../types/Discount/IDiscount";
+import { IDiscount } from "../../types/Discount/IDiscountRule";
 
 export const getAllDiscounts = async (): Promise<IDiscount[]> => {
   const response = await interceptorApiClient.get("/discounts");

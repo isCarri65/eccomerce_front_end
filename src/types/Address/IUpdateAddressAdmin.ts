@@ -1,4 +1,4 @@
-export interface IUpdateAddress {
+export interface IUpdateAddressAdmin {
   street: string;
   number: number;
   apartment?: string;
@@ -6,5 +6,6 @@ export interface IUpdateAddress {
   province: string;
   locality: string;
   postal: string;
-  userId?: number;
+  userId: number;
+  deleted: boolean;
 }

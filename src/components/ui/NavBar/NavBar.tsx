@@ -13,14 +13,13 @@ import { GenreOptions } from "./GenreOptions";
 import { TypeOptions } from "./TypeOptions";
 import { ProductGenre } from "../../../types/enums/ProductGenre";
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "../../../stores/userStore";
 import { CartSidebar } from "../CartSideBar/CartSideBar";
 import { useAuth } from "../../../hooks/useAuth";
 
 const genreValues = [
-  ProductGenre.Male,
-  ProductGenre.Female,
-  ProductGenre.Children,
+  ProductGenre.MALE,
+  ProductGenre.FEMALE,
+  ProductGenre.CHILDREN,
 ];
 const typesOptions: IType[] = [
   {
@@ -129,14 +128,14 @@ export const NavBar = () => {
 
         <ul className={styles.categoriasContainer}>
           {categoryOptionsSelects.map((cat) => (
-            <li key={`${cat.kind}-${cat.value.toString()}`}>
+            <li key={`${cat.kind}-${cat.value}`}>
               <button
                 className={styles.navLink}
                 onMouseEnter={() => setSelectedCategoria(cat)}
                 onMouseLeave={() => setSelectedCategoria(null)}
                 onClick={() => changePage(cat.value)}
               >
-                {cat.value.toString()}
+                {cat.value}
               </button>
             </li>
           ))}

@@ -1,4 +1,4 @@
-export interface IAddress {
+export interface IAddressAdmin {
   id: number;
   street: string;
   number: number;
@@ -7,4 +7,6 @@ export interface IAddress {
   province: string;
   locality: string;
   postal: string;
+  deleted: boolean;
+  userId: number;
 }

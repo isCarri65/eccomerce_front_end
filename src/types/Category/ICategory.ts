@@ -1,5 +1,8 @@
+import { IType } from "../Type/IType";
+
 export interface ICategory {
   id: number;
   name: string;
-  image: string;
+  imageUrl: string;
+  type: IType;
 }

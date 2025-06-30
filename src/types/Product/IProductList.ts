@@ -1,9 +1,7 @@
 import { ICategory } from "../Category/ICategory";
 import { ProductGenre } from "../enums/ProductGenre";
-import { IProductGallery } from "./IProductGallery";
-import { IProductVariant } from "./IProductVariant";
 
-export interface IProduct {
+export interface IProductList {
   id: number;
   name: string;
   description: string;
@@ -13,6 +11,5 @@ export interface IProduct {
   discountPercentage: number;
   stockAvailable: boolean;
   categories: ICategory[];
-  productGalleries: IProductGallery[];
-  productVariants: IProductVariant[];
+  imageUrl: string;
 }

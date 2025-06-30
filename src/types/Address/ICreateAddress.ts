@@ -1,7 +1,10 @@
 export interface ICreateAddress {
   street: string;
-  locality: string;
+  number: number;
+  apartment?: string;
+  aptNumberAndFloor?: string;
   province: string;
-  cp: string;
-  dptoFloor?: string;
+  locality: string;
+  postal: string;
+  userId?: number;
 }

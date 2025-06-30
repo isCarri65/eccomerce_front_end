@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { IDiscount } from "../types/Discount/IDiscount";
+import { IDiscount } from "../types/Discount/IDiscountRule";
 
 interface DiscountState {
   // Estado

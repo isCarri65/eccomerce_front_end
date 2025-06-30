@@ -1,6 +1,6 @@
 export enum ProductGenre {
-  Male = "Hombre",
-  Female = "Mujer",
-  Unisex = "Unisex",
-  Children = "Niño",
+  MALE = "Hombre",
+  FEMALE = "Mujer",
+  UNISEX = "Unisex",
+  CHILDREN = "Niño",
 }
