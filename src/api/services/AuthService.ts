@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { IUser } from "../../types/User/IUser";
 import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
 import publicApiClient from "../interceptors/axios.publicApiClient";
@@ -6,6 +6,7 @@ import publicApiClient from "../interceptors/axios.publicApiClient";
 interface LoginResponse {
   token: string;
   user: IUser;
+  refreshToken: string;
 }
 
 interface RegisterData {
@@ -31,7 +32,7 @@ export const login = async (
 };
 
 export const register = async (data: RegisterData): Promise<LoginResponse> => {
-  const response = await interceptorApiClient.post("/auth/register", data);
+  const response = await publicApiClient.post("/auth/register", data);
   return response.data;
 };
 
