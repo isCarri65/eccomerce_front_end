@@ -1,0 +1,48 @@
+.checkoutItem {
+    display: flex;
+    align-items: flex-start; /* Alineación al inicio para la imagen y texto */
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.itemImage {
+    width: 60px; /* Ajustar tamaño de imagen */
+    height: 60px;
+    margin-right: 15px;
+    border: 1px solid #eee; /* Borde sutil */
+    border-radius: 4px; /* Bordes redondeados */
+    overflow: hidden; /* Esconder partes de la imagen que se salgan del borde */
+}
+
+.itemImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.itemInfo {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alineación al inicio */
+    flex-direction: column; /* Apilar detalles y precio/acciones */
+}
+
+.itemDetails h4 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.itemDetails p {
+    margin: 0;
+    font-size: 0.85rem; /* Ajustar tamaño de fuente */
+    color: #555;
+}
+
+.itemPrice {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 10px; /* Espacio entre detalles y precio */
+    align-self: flex-end; /* Alinear precio a la derecha */
+}

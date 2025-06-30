@@ -1,29 +1,28 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { register } from '../../api/services/UserService';
-import { useUserStore } from '../../stores/userStore';
-import { useMessageStore } from '../../stores/messageStore';
-import styles from './Auth.module.css';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useMessageStore } from "../../stores/messageStore";
+import styles from "./Auth.module.css";
+import { useAuth } from "../../hooks/useAuth";
 
 export const RegisterScreen = () => {
   const navigate = useNavigate();
-  const { login: loginStore } = useUserStore();
   const { addMessage } = useMessageStore();
   const [formData, setFormData] = useState({
-    name: '',
-    lastName: '',
-    email: '',
-    password: '',
-    birthDate: ''
+    name: "",
+    lastName: "",
+    email: "",
+    password: "",
+    birthDate: "",
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { register } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -33,14 +32,14 @@ export const RegisterScreen = () => {
     setLoading(true);
 
     try {
-      const response = await register(formData);
-      loginStore(response.token, response.user);
-      
+      await register(formData);
       // Mostrar mensaje de éxito y navegar a HomeScreen
       addMessage("¡Cuenta creada exitosamente! Bienvenido.", "success");
-      navigate('/');
+      navigate("/");
     } catch (error: any) {
-      const errorMessage = error.message || 'Error al crear la cuenta. Por favor, intente nuevamente.';
+      const errorMessage =
+        error.message ||
+        "Error al crear la cuenta. Por favor, intente nuevamente.";
       setError(errorMessage);
       addMessage(errorMessage, "error");
     } finally {
@@ -63,7 +62,7 @@ export const RegisterScreen = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={`${styles.formInput} ${error ? styles.error : ''}`}
+              className={`${styles.formInput} ${error ? styles.error : ""}`}
               required
             />
           </div>
@@ -136,12 +135,12 @@ export const RegisterScreen = () => {
               className={styles.primaryButton}
               disabled={loading}
             >
-              {loading ? 'Cargando...' : 'Registrar'}
+              {loading ? "Cargando..." : "Registrar"}
             </button>
             <button
               type="button"
               className={styles.outlineButton}
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
             >
               Regresar
             </button>
@@ -150,4 +149,4 @@ export const RegisterScreen = () => {
       </div>
     </div>
   );
-}; 
+};

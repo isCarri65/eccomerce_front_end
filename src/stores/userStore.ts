@@ -1,17 +1,5 @@
 import { create } from "zustand";
 import { IUser } from "../types/User/IUser";
-import { UserRole } from "../types/enums/UserRol";
-
-// Usuario de prueba para desarrollo
-const mockUser: IUser = {
-  id: 1,
-  name: "Usuario",
-  lastName: "Prueba",
-  email: "usuario@prueba.com",
-  password: "password123",
-  role: UserRole.User,
-  phone: "123456789",
-};
 
 interface UserState {
   // Estado
@@ -20,8 +8,6 @@ interface UserState {
   currentUserProfile: IUser | null;
   loading: boolean;
   error: string | null;
-  isAuthenticated: boolean;
-  token: string | null;
 
   // Acciones para usuarios (admin)
   setUsers: (users: IUser[]) => void;
@@ -34,10 +20,6 @@ interface UserState {
 
   // Acciones para perfil del usuario actual
   setCurrentUserProfile: (user: IUser | null) => void;
-
-  // Acciones para autenticación
-  login: (token: string, user: IUser) => void;
-  logout: () => void;
 
   // Acciones para loading y error
   setLoading: (loading: boolean) => void;
@@ -100,27 +82,6 @@ export const useUserStore = create<UserState>((set, get) => ({
 
   // Establecer perfil del usuario actual
   setCurrentUserProfile: (user) => set({ currentUserProfile: user }),
-
-  // Acciones de autenticación
-  login: (token, user) => {
-    localStorage.setItem("accessToken", token);
-    set({
-      isAuthenticated: true,
-      token,
-      currentUserProfile: user,
-      error: null,
-    });
-  },
-
-  logout: () => {
-    localStorage.removeItem("accessToken");
-    set({
-      isAuthenticated: false,
-      token: null,
-      currentUserProfile: null,
-      error: null,
-    });
-  },
 
   // Establecer estado de carga
   setLoading: (loading) => set({ loading }),

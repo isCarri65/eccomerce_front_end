@@ -1,7 +1,9 @@
 export interface IUpdateAddress {
   street?: string;
-  locality?: string;
+  number?: number;
+  apartment?: string;
+  aptNumberAndFloor?: string;
   province?: string;
-  cp?: string;
-  dptoFloor?: string;
+  locality?: string;
+  postal?: string;
 }

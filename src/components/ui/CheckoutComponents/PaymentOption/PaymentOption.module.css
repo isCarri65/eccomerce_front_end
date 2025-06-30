@@ -1,0 +1,41 @@
+.container {
+  margin-top: 30px; /* Más espacio arriba */
+   border: 1px solid #e0e0e0; /* Borde similar al de la imagen */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 20px; /* Añadir padding */
+  background-color: #fff; /* Fondo blanco */
+}
+
+.container h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+     border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre botones */
+}
+
+.paymentButton {
+  padding: 12px; /* Aumentar padding */
+  font-size: 1em;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  text-align: left;
+  border-radius: 4px; /* Bordes redondeados */
+}
+
+.paymentButton:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.disabledButton {
+  opacity: 0.6; /* Menos opacidad para deshabilitados */
+  cursor: not-allowed;
+  background-color: #f9f9f9; /* Fondo ligeramente diferente para deshabilitados */
+}

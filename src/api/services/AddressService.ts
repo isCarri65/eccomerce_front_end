@@ -24,7 +24,7 @@ export const updateAddress = async (
   id: number,
   address: IUpdateAddress
 ): Promise<Address> => {
-  const response = await interceptorApiClient.put(`/addresses/${id}`, address);
+  const response = await interceptorApiClient.put(`/profile/addresses/update/${id}`, address);
   return response.data;
 };
 

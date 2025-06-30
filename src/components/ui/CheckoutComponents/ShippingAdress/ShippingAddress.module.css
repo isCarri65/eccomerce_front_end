@@ -1,0 +1,83 @@
+.container {
+  margin-bottom: 30px; /* Más espacio abajo */
+  border: 1px solid #e0e0e0; /* Borde similar al de la imagen */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 20px; /* Añadir padding */
+  background-color: #fff; /* Fondo blanco */
+}
+
+.container h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+
+.addressDetails {
+  border: 1px solid #ccc; /* Mantener borde para diferenciar */
+  padding: 15px; /* Aumentar padding */
+  margin-bottom: 20px; /* Más espacio abajo */
+  border-radius: 4px; /* Bordes ligeramente redondeados */
+  background-color: #f9f9f9; /* Fondo suave */
+}
+
+.addAddressPlaceholder {
+  border: 1px dashed #ccc;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #888;
+  border-radius: 4px;
+}
+
+.question {
+  margin-top: 20px; /* Más espacio arriba */
+  margin-bottom: 15px;
+}
+
+.buttons button {
+  margin-right: 15px; /* Más espacio entre botones */
+  padding: 10px 20px; /* Aumentar padding */
+  cursor: pointer;
+  border: none; /* Sin borde */
+  border-radius: 4px; /* Bordes redondeados */
+  font-size: 1em;
+}
+
+.buttons button:first-child {
+    background-color: #007bff; /* Color para el botón "Sí" */
+    color: white;
+}
+
+.buttons button:first-child:hover {
+     background-color: #0056b3;
+}
+
+.buttons button:last-child {
+    background-color: #f0f0f0; /* Color para el botón "No" */
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.buttons button:last-child:hover {
+    background-color: #e0e0e0;
+}
+
+
+.continueButton {
+  margin-top: 20px;
+  padding: 12px 25px; /* Aumentar padding del botón continuar */
+  background-color: #000; /* Color oscuro como en la imagen */
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1em;
+  border-radius: 4px; /* Bordes redondeados */
+  width: 100%; /* Ancho completo */
+  text-align: center;
+}
+
+.continueButton:hover {
+  background-color: #333; /* Color hover oscuro */
+}

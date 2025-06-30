@@ -1,8 +1,0 @@
-.imagesSection { margin-bottom: 10px; }
-.label { display: block; font-size: 15px; margin-bottom: 6px; color: #1e293b; }
-.imgRow { display: flex; align-items: center; margin-bottom: 8px; gap: 10px; }
-.input { flex: 1; padding: 7px 10px; border-radius: 6px; border: 1px solid #b0b6c4; font-size: 16px; }
-.removeBtn { background: #ffb7b7; color: #b71c1c; border: none; border-radius: 5px; padding: 4px 9px; cursor: pointer; font-size: 17px; }
-.addBtn { background: #1e293b; color: #fff; border: none; border-radius: 7px; font-size: 15px; padding: 7px 16px; cursor: pointer; }
-.addBtn:hover { background: #2563eb; }
-.previewImg { height: 42px; border-radius: 5px; margin-left: 6px; }

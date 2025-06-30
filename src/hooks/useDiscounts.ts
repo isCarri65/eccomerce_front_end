@@ -6,8 +6,11 @@ import {
   updateDiscount,
   deleteDiscount,
 } from "../api/services/DiscountService";
-import { IDiscount } from "../types/Discount/IDiscount";
-import { ICreateDiscount, IUpdateDiscount } from "../types/Discount/IDiscount"; // Asumiendo que existen estos tipos
+import { IDiscount } from "../types/Discount/IDiscountRule";
+import {
+  ICreateDiscount,
+  IUpdateDiscount,
+} from "../types/Discount/IDiscountRule"; // Asumiendo que existen estos tipos
 import { useDiscountStore } from "../stores/discountStore";
 
 // Hook principal para Discounts
