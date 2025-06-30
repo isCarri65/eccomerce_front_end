@@ -37,6 +37,7 @@ publicApiClient.interceptors.response.use(
       });
       return Promise.reject(httpError);
     }
+    console.log(error.response?.data);
 
     // Errores de red u otros
     Swal.fire({

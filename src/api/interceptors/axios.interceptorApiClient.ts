@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 //TODO: documentacion axios interceptor https://axios-http.com/docs/interceptors
 
 import { createHTTPError } from "../../utils/errors";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 const BASE_URL = "http://localhost:8081/api"; // Cambia si tu endpoint de auth es otro dominio
 
@@ -20,13 +20,14 @@ export const interceptorApiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
+    withCredentials: true, // Permite enviar cookies con las peticiones
   },
   timeout: 10000, //es la demora de una peticion hasta que se cancele
 });
 
 // Intentar renovar token
 const refreshToken = async () => {
-  const { setAccessToken } = useAuth();
+  const setAccessToken = useAuthStore.getState().setAccessToken;
   try {
     const refreshResponse = await axios.post(
       "/auth/refresh",
@@ -47,7 +48,7 @@ const refreshToken = async () => {
 // Añadir token a cada request
 interceptorApiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const { accessToken } = useAuth();
+    const accessToken = useAuthStore((state) => state.accessToken);
     if (accessToken && config.headers) {
       config.headers.set("Authorization", `Bearer ${accessToken}`);
     }
@@ -64,6 +65,7 @@ interceptorApiClient.interceptors.response.use(
     const status = error.response?.status;
     //toma server message
     const serverMessage = (error.response?.data as any)?.message;
+    const clearAuth = useAuthStore((state) => state.clearAuth);
 
     //TODO:TOKEN
     //guarda la peticion que hicimos con el token viejo
@@ -81,7 +83,7 @@ interceptorApiClient.interceptors.response.use(
         }
         return interceptorApiClient(originalRequest); // Reintentar original
       } catch (refreshErr) {
-        localStorage.removeItem("accessToken"); // Limpia si falla  del local
+        clearAuth(); // Limpia si falla  del local
         Swal.fire({
           icon: "error",
           title: "Session expired",

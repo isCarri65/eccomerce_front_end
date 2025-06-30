@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./ProfilePersonal.module.css";
-import {
-  getUserProfile,
-  updateUserProfile,
-} from "../../../api/services/UserService";
 import { IUser } from "../../../types/User/IUser";
 import { Button } from "../../ui/Button";
-import { useUserStore } from "../../../stores/userStore";
 import { useMessageStore } from "../../../stores/messageStore";
 import { useAuth } from "../../../hooks/useAuth";
+import { useUsers } from "../../../hooks/useUsers";
 
 interface AddressFormProps {
   onClose: () => void;
@@ -118,18 +114,22 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose }) => {
   );
 };
 
-export const ProfilePersonal: React.FC = () => {
+export const ProfilePersonal = () => {
   const navigate = useNavigate();
-  const { logout: logoutStore } = useUserStore();
+  const { logout } = useAuth();
   const { addMessage } = useMessageStore();
   const [user, setUser] = useState<IUser | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [form, setForm] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(false);
+  const { currentUserProfile, handleUpdateUserProfile, fetchUserProfile } =
+    useUsers();
 
   useEffect(() => {
-    getUserProfile().then(setUser);
+    if (currentUserProfile === null) {
+      fetchUserProfile();
+    }
   }, []);
 
   const handleEdit = () => {
@@ -156,16 +156,12 @@ export const ProfilePersonal: React.FC = () => {
     }
   };
 
-  const { logout } = useAuth();
-
   const handleLogout = async () => {
     setLoading(true);
     try {
       // Llamar al endpoint de logout
       await logout();
 
-      // Limpiar el store y navegar
-      logoutStore();
       sessionStorage.removeItem("sesionToken");
       addMessage("Sesión cerrada exitosamente", "success");
       navigate("/");
@@ -188,19 +184,19 @@ export const ProfilePersonal: React.FC = () => {
         {!editMode ? (
           <div className={styles.infoBlock}>
             <div>
-              <b>Nombre:</b> {user?.name}
+              <b>Nombre:</b> {currentUserProfile?.name}
             </div>
             <div>
-              <b>Apellido:</b> {user?.lastName}
+              <b>Apellido:</b> {currentUserProfile?.lastName}
             </div>
             <div>
-              <b>Correo Electrónico:</b> {user?.email}
+              <b>Correo Electrónico:</b> {currentUserProfile?.email}
             </div>
             <div>
-              <b>Fecha de Nacimiento:</b> {user?.birthDate || "-"}
+              <b>Fecha de Nacimiento:</b> {currentUserProfile?.birthDate || "-"}
             </div>
             <div>
-              <b>Nro de telefono:</b> {user?.phoneNumber || "-"}
+              <b>Nro de telefono:</b> {currentUserProfile?.phoneNumber || "-"}
             </div>
             <Button
               variant="primary"

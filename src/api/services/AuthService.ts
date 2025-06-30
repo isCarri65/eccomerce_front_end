@@ -22,51 +22,17 @@ export const login = async (
   password: string
 ): Promise<LoginResponse> => {
   console.log(email, password);
-  try {
-    const response = await interceptorApiClient.post("/auth/login", {
-      email,
-      password,
-    });
-    console.log("hola " + response.data);
-    return response.data;
-  } catch (error: any) {
-    if (error.response?.status === 401) {
-      console.log(error.response?.data);
-      throw new Error(
-        "Credenciales inválidas. Verifique su email y contraseña."
-      );
-    } else if (error.response?.status === 404) {
-      console.log(error.response?.data);
-      throw new Error("Usuario no encontrado.");
-    } else if (error.response?.status >= 500) {
-      console.log(error.response?.data);
-      throw new Error("Error del servidor. Intente más tarde.");
-    } else {
-      console.log(error.response?.data);
-      throw new Error(
-        error.response?.data?.message || "Error al iniciar sesión."
-      );
-    }
-  }
+  const response = await publicApiClient.post("/auth/login", {
+    email,
+    password,
+  });
+  console.log("hola " + response.data);
+  return response.data;
 };
 
 export const register = async (data: RegisterData): Promise<LoginResponse> => {
-  try {
-    const response = await interceptorApiClient.post("/auth/register", data);
-    return response.data;
-  } catch (error: any) {
-    if (error.response?.status === 409) {
-      throw new Error("El email ya está registrado.");
-    } else if (error.response?.status === 400) {
-      throw new Error("Datos inválidos. Verifique la información ingresada.");
-    } else if (error.response?.status >= 500) {
-      throw new Error("Error del servidor. Intente más tarde.");
-    } else {
-      throw new Error(
-        error.response?.data?.message || "Error al crear la cuenta."
-      );
-    }
-  }
+  const response = await interceptorApiClient.post("/auth/register", data);
+  return response.data;
 };
 
 export const logout = async (): Promise<void> => {
@@ -88,16 +54,16 @@ export const logout = async (): Promise<void> => {
 export const autoRefreshToken = async () => {
   try {
     const refreshResponse = await axios.post<{ token: string }>(
-      "/auth/refresh",
+      "http://localhost:8081/api/auth/refresh",
       {},
       {
-        baseURL: "http://localhost:8081/api",
         withCredentials: true,
       }
     );
     const newToken = refreshResponse.data.token;
     return newToken;
-  } catch (err) {
+  } catch (err: any) {
+    console.log(err.response?.data || err.message);
     console.log("No se pudo renovar el token.");
   }
 };

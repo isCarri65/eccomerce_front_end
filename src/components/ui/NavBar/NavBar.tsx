@@ -7,7 +7,6 @@ import styles from "./NavBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../../../assets/Icon/nike_logo_2.png";
 import { useEffect, useRef, useState } from "react";
-import { IUser } from "../../../types/User/IUser";
 import { IType } from "../../../types/Type/IType";
 import { CategoryOptionSelect } from "../../../types/CategoryOptionSelect";
 import { GenreOptions } from "./GenreOptions";
@@ -15,8 +14,8 @@ import { TypeOptions } from "./TypeOptions";
 import { ProductGenre } from "../../../types/enums/ProductGenre";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../stores/userStore";
-import { UserRole } from "../../../types/enums/UserRol";
 import { CartSidebar } from "../CartSideBar/CartSideBar";
+import { useAuth } from "../../../hooks/useAuth";
 
 const genreValues = [
   ProductGenre.Male,
@@ -35,7 +34,7 @@ const typesOptions: IType[] = [
 ];
 
 export const NavBar = () => {
-  const { isAuthenticated, currentUserProfile } = useUserStore();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const [offsetY, setOffsetY] = useState(0);
   const lastScrollY = useRef(0);
@@ -158,8 +157,8 @@ export const NavBar = () => {
             className={styles.iconItem}
             onClick={moveToProfile}
           />
-          {isAuthenticated && currentUserProfile && (
-            <p className={styles.userName}>{currentUserProfile.name}</p>
+          {isAuthenticated && user && (
+            <p className={styles.userName}>{user.name}</p>
           )}
         </div>
       </div>
