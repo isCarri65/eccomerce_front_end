@@ -54,9 +54,11 @@ export const logout = async (): Promise<void> => {
 
 export const autoRefreshToken = async () => {
   try {
+    const token = sessionStorage.getItem("refreshToken");
+    console.log(token);
     const refreshResponse = await axios.post<{ token: string }>(
       "http://localhost:8081/api/auth/refresh",
-      {},
+      { refreshToken: { token } },
       {
         withCredentials: true,
       }

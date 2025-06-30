@@ -1,13 +1,13 @@
 import { Navigate } from "react-router-dom";
-import { useUserStore } from "../../stores/userStore";
-import { useAuth } from "../../hooks/useAuth";
+import { useUsers } from "../hooks/useUsers";
+import { useAuth } from "../hooks/useAuth";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const { currentUserProfile } = useUserStore();
+  const { currentUserProfile } = useUsers();
   if (!currentUserProfile) return <Navigate to="/login" />;
   if (currentUserProfile.role !== "ADMIN") return <Navigate to="/" />;
   return <>{children}</>;

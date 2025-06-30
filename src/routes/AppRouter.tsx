@@ -5,7 +5,7 @@ import { LoginScreen } from "../components/screens/LoginScreen";
 import { RegisterScreen } from "../components/screens/RegisterScreen";
 import { ProductDetailScreen } from "../components/screens/Catalog/ProductDetailScreen/ProductDetailScreen";
 
-import { AdminRoute, ProtectedRoute } from "../components/auth/ProtectedRoute";
+import { ProtectedRoute } from "./ProtectedRoute";
 import { NavBar } from "../components/ui/NavBar/NavBar";
 import { Footer } from "../components/ui/Footer/Footer";
 import { MessageContainer } from "../components/ui/MessageContainer/MessageContainer";

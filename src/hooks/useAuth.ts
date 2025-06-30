@@ -37,10 +37,11 @@ export const useAuth = () => {
     setLoading(true);
     setError(null);
     try {
-      const { token, user } = await loginService(email, password);
+      const { token, user, refreshToken } = await loginService(email, password);
       setUser(user);
       setCurrentUserProfile(user);
       setAccessToken(token);
+      sessionStorage.setItem("refreshToken", refreshToken);
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -82,6 +83,8 @@ export const useAuth = () => {
     const token = await autoRefreshToken();
     if (token) {
       setAccessToken(token);
+      const user = await fetchUserProfile();
+      if (user) setUser(user);
     }
   };
 
