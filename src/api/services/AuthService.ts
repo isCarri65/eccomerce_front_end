@@ -54,15 +54,22 @@ export const logout = async (): Promise<void> => {
 
 export const autoRefreshToken = async () => {
   try {
-    const token = sessionStorage.getItem("refreshToken");
-    console.log(token);
-    const refreshResponse = await axios.post<{ token: string }>(
+    const storedRefreshToken = sessionStorage.getItem("refreshToken");
+    console.log(storedRefreshToken);
+    if (!storedRefreshToken)
+      throw new Error("No hay refresh token para renovar la sesión.");
+
+    const refreshResponse = await axios.post(
       "http://localhost:8081/api/auth/refresh",
-      { refreshToken: { token } },
+      {},
       {
+        headers: {
+          Authorization: `Bearer ${storedRefreshToken}`,
+        },
         withCredentials: true,
       }
     );
+
     const newToken = refreshResponse.data.token;
     return newToken;
   } catch (err: any) {

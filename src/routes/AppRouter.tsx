@@ -11,19 +11,13 @@ import { Footer } from "../components/ui/Footer/Footer";
 import { MessageContainer } from "../components/ui/MessageContainer/MessageContainer";
 
 import { ProfileScreen } from "../components/screens/User-Admin/ProfileScreen";
-import { useEffect } from "react";
 import CheckoutScreen from "../components/screens/CheckOutScreen/CheckOutScreen";
-import { useAuth } from "../hooks/useAuth";
 
 export const AppRouter = () => {
   const location = useLocation();
 
   const isAdmin = location.pathname.startsWith("/admin");
-  const { autoLogin } = useAuth();
-  useEffect(() => {
-    console.log("autologin ejecutado");
-    autoLogin();
-  }, []);
+
   return (
     <>
       {/* Solo muestro NavBar y Footer en rutas que NO sean admin */}

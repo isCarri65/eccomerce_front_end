@@ -30,7 +30,7 @@ export const useAuth = () => {
       }))
     );
   const { fetchUserProfile, setCurrentUserProfile } = useUsers();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const login = async (email: string, password: string) => {
@@ -80,11 +80,16 @@ export const useAuth = () => {
     }
   };
   const autoLogin = async () => {
-    const token = await autoRefreshToken();
-    if (token) {
-      setAccessToken(token);
-      const user = await fetchUserProfile();
-      if (user) setUser(user);
+    setLoading(true);
+    try {
+      const token = await autoRefreshToken();
+      if (token) {
+        setAccessToken(token);
+        const user = await fetchUserProfile();
+        if (user) setUser(user);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 

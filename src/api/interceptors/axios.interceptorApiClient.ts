@@ -60,7 +60,7 @@ const refreshToken = async () => {
 // Añadir token a cada request
 interceptorApiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const accessToken = useAuthStore((state) => state.accessToken);
+    const accessToken = useAuthStore.getState().accessToken;
     if (accessToken && config.headers) {
       config.headers.set("Authorization", `Bearer ${accessToken}`);
     }
@@ -77,7 +77,7 @@ interceptorApiClient.interceptors.response.use(
     const status = error.response?.status;
     //toma server message
     const serverMessage = (error.response?.data as any)?.message;
-    const clearAuth = useAuthStore((state) => state.clearAuth);
+    const clearAuth = useAuthStore.getState().clearAuth;
 
     //TODO:TOKEN
     //guarda la peticion que hicimos con el token viejo
