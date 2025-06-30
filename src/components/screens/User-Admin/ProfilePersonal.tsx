@@ -349,13 +349,13 @@ export const ProfilePersonal = () => {
             addresses.map((address) => (
               <div key={address.id} className={styles.addressItem}>
                 <div className={styles.addressInfo}>
-                  <p><strong>Calle:</strong> {address.street}</p>
-                  <p><strong>Número:</strong> {address.number || "-"}</p>
-                  <p><strong>Departamento:</strong> {address.apartment || "-"}</p>
-                  <p><strong>Departamento/Piso:</strong> {address.aptNumberAndFloor || "-"}</p>
-                  <p><strong>Provincia:</strong> {address.province}</p>
-                  <p><strong>Localidad:</strong> {address.locality}</p>
-                  <p><strong>Código Postal:</strong> {address.postal || "-"}</p>
+                  <div><strong>Calle:</strong> {address.street}</div>
+                  <div><strong>Número:</strong> {address.number || "-"}</div>
+                  <div><strong>Departamento:</strong> {address.apartment || "-"}</div>
+                  <div><strong>Departamento/Piso:</strong> {address.aptNumberAndFloor || "-"}</div>
+                  <div><strong>Provincia:</strong> {address.province}</div>
+                  <div><strong>Localidad:</strong> {address.locality}</div>
+                  <div><strong>Código Postal:</strong> {address.postal || "-"}</div>
                 </div>
                 <Button
                   variant="outline"

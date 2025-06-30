@@ -125,22 +125,59 @@
   gap: 1rem;
 }
 
+.addressInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1.5rem;
+  align-items: start;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 700px) {
+  .addressInfo {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem 2rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .addressInfo {
+    grid-template-columns: 1fr;
+    gap: 0.4rem 0;
+  }
+}
+
+.addressInfo p {
+  margin: 0.1rem 0;
+  font-size: 1.02rem;
+  color: #333;
+  font-weight: 500;
+}
+.addressInfo strong {
+  font-weight: 700;
+  color: #22223b;
+  font-size: 1.01em;
+}
+
 .addressItem {
   background: #f8f8fa;
   border: 1px solid #e9e9ec;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 1.1rem 1.2rem;
   transition: border 0.2s;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.2rem;
 }
 
-.addressItem:hover {
-  border-color: #22223b;
-}
-
-.addressInfo p {
-  margin: 0.3rem 0;
-  font-size: 1rem;
-  color: #333;
+@media (max-width: 600px) {
+  .addressItem {
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 0.9rem 0.7rem;
+  }
 }
 
 .noAddresses {
