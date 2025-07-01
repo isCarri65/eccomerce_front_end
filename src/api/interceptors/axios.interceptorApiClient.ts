@@ -9,31 +9,29 @@ import Swal from "sweetalert2";
 //TODO: documentacion axios interceptor https://axios-http.com/docs/interceptors
 
 import { createHTTPError } from "../../utils/errors";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 const BASE_URL = "http://localhost:8081/api"; // Cambia si tu endpoint de auth es otro dominio
+
+//TODO:TOKEN
 
 // Crear instancia
 export const interceptorApiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
+    withCredentials: true, // Permite enviar cookies con las peticiones
   },
   timeout: 10000, //es la demora de una peticion hasta que se cancele
 });
 
-//TODO:TOKEN
-// Helper para guardar el token nuevo
-const saveToken = (token: string) => {
-  sessionStorage.setItem("accessToken", token);
-};
-// Helper para obtener el token del sessionStorage
-const getToken = () => sessionStorage.getItem("accessToken");
-
 // Intentar renovar token
 const refreshToken = async () => {
   try {
+    const setAccessToken = useAuthStore.getState().setAccessToken;
     const storedRefreshToken = sessionStorage.getItem("refreshToken");
-    if (!storedRefreshToken) throw new Error("No hay refresh token para renovar la sesión.");
+    if (!storedRefreshToken)
+      throw new Error("No hay refresh token para renovar la sesión.");
 
     const refreshResponse = await axios.post(
       "/auth/refresh",
@@ -50,7 +48,7 @@ const refreshToken = async () => {
     const newAccessToken = refreshResponse.data.token;
     const newRefreshToken = refreshResponse.data.refreshToken;
 
-    saveToken(newAccessToken);
+    setAccessToken(newAccessToken);
     sessionStorage.setItem("refreshToken", newRefreshToken);
 
     return newAccessToken;
@@ -59,13 +57,12 @@ const refreshToken = async () => {
   }
 };
 
-
 // Añadir token a cada request
 interceptorApiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = getToken();
-    if (token && config.headers) {
-      config.headers.set("Authorization", `Bearer ${token}`);
+    const accessToken = useAuthStore.getState().accessToken;
+    if (accessToken && config.headers) {
+      config.headers.set("Authorization", `Bearer ${accessToken}`);
     }
     return config;
   },
@@ -80,6 +77,7 @@ interceptorApiClient.interceptors.response.use(
     const status = error.response?.status;
     //toma server message
     const serverMessage = (error.response?.data as any)?.message;
+    const clearAuth = useAuthStore.getState().clearAuth;
 
     //TODO:TOKEN
     //guarda la peticion que hicimos con el token viejo
@@ -97,7 +95,7 @@ interceptorApiClient.interceptors.response.use(
         }
         return interceptorApiClient(originalRequest); // Reintentar original
       } catch (refreshErr) {
-        localStorage.removeItem("accessToken"); // Limpia si falla  del local
+        clearAuth(); // Limpia si falla  del local
         Swal.fire({
           icon: "error",
           title: "Session expired",
@@ -134,7 +132,7 @@ interceptorApiClient.interceptors.response.use(
       text: "Unable to reach the server. Please check your internet connection or try again later.",
       confirmButtonColor: "#d33",
     });
-
+    console.log(error.message);
     return Promise.reject(error);
   }
 );

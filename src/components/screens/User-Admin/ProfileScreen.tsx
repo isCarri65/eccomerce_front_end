@@ -10,6 +10,7 @@ import { AdminType } from "./AdminType";
 import { AdminCategory } from "./AdminCategory";
 import { AdminColor } from "./AdminColor";
 import styles from "./ProfileScreen.module.css";
+import { useUsers } from "../../../hooks/useUsers";
 
 type ProfileTab =
   | "personal"
@@ -21,13 +22,17 @@ type ProfileTab =
 
 export const ProfileScreen = () => {
   const [activeTab, setActiveTab] = useState<ProfileTab>("personal");
-  const [adminSubTab, setAdminSubTab] = useState<AdminSubTab>(null);
+  const [adminSubTab, setAdminSubTab] = useState<String | null>(null);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { currentUserProfile } = useUserStore();
+  const { currentUserProfile, fetchUserProfile } = useUsers();
   const isAdmin = currentUserProfile?.role === "ADMIN";
 
+  const getProfile = async () => {
+    await fetchUserProfile();
+  };
   useEffect(() => {
+    getProfile();
     const handleClickOutside = (e: MouseEvent) => {
       if (
         dropdownRef.current &&

@@ -45,6 +45,9 @@
   color: var(--icon-color);
   font-size: 1.4rem;
 }
+.iconItem:hover {
+  cursor: pointer;
+}
 .iconContainer {
   display: flex;
   gap: 1.5rem;

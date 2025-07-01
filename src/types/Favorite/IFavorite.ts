@@ -1,5 +1,6 @@
+import { IProduct } from "../product/IProduct";
+
 export interface IFavorite {
   id: number;
-  userId: number;
-  productId: number;
+  product: IProduct;
 }

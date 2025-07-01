@@ -1,29 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styles from './ProfilePersonal.module.css';
-import { getUserProfile, updateUserProfile, logout } from '../../../api/services/UserService';
-import { getAllAddresses, createAddress } from '../../../api/services/AddressService';
-import { IUser } from '../../../types/User/IUser';
-import { Address } from '../../../types/Address/IAddress';
-import { ICreateAddress } from '../../../types/Address/ICreateAddress';
-import { Button } from '../../ui/ElementsHTML/Button';
-import { useUserStore } from '../../../stores/userStore';
-import { useMessageStore } from '../../../stores/messageStore';
-
-interface AddressFormProps {
-  onClose: () => void;
-  onAddressCreated: () => void;
-}
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./ProfilePersonal.module.css";
+import {
+  getAllAddresses,
+  createAddress,
+  updateAddress,
+} from "../../../api/services/AddressService";
+import { IUser } from "../../../types/User/IUser";
+import { Address } from "../../../types/Address/IAddress";
+import { ICreateAddress } from "../../../types/Address/ICreateAddress";
+import { Button } from "../../ui/ElementsHTML/Button";
+import { useMessageStore } from "../../../stores/messageStore";
+import { useUsers } from "../../../hooks/useUsers";
+import { useAuth } from "../../../hooks/useAuth";
 
 const initialAddress: ICreateAddress = {
-  street: '',
-  locality: '',
-  province: '',
-  cp: '',
-  dptoFloor: '',
+  street: "",
+  number: 0,
+  apartment: "",
+  aptNumberAndFloor: "",
+  province: "",
+  locality: "",
+  postal: "",
 };
 
-const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressCreated }) => {
+const AddressForm: React.FC<{
+  onClose: () => void;
+  onAddressCreated: () => void;
+}> = ({ onClose, onAddressCreated }) => {
   const [form, setForm] = useState(initialAddress);
   const [loading, setLoading] = useState(false);
   const { addMessage } = useMessageStore();
@@ -70,26 +74,36 @@ const handleSubmit = async (e: React.FormEvent) => {
             <input name="street" value={form.street} onChange={handleChange} required />
           </div>
           <div className={styles.formRow}>
-            <label>Localidad</label>
-            <input name="locality" value={form.locality} onChange={handleChange} required />
+            <label>Número</label>
+            <input name="number" type="number" value={form.number} onChange={handleChange} required />
+          </div>
+          <div className={styles.formRow}>
+            <label>Departamento</label>
+            <input name="apartment" value={form.apartment} onChange={handleChange} />
+          </div>
+          <div className={styles.formRow}>
+            <label>Departamento/Piso</label>
+            <input name="aptNumberAndFloor" value={form.aptNumberAndFloor} onChange={handleChange} />
           </div>
           <div className={styles.formRow}>
             <label>Provincia</label>
             <input name="province" value={form.province} onChange={handleChange} required />
           </div>
           <div className={styles.formRow}>
-            <label>Código Postal</label>
-            <input name="cp" value={form.cp} onChange={handleChange} required />
+            <label>Localidad</label>
+            <input name="locality" value={form.locality} onChange={handleChange} required />
           </div>
           <div className={styles.formRow}>
-            <label>Departamento/Piso</label>
-            <input name="dptoFloor" value={form.dptoFloor} onChange={handleChange} />
+            <label>Código Postal</label>
+            <input name="postal" value={form.postal} onChange={handleChange} required />
           </div>
           <div className={styles.formActions}>
             <Button type="submit" variant="primary" disabled={loading}>
               {loading ? "Creando..." : "Confirmar"}
             </Button>
-            <Button type="button" variant="outline" onClick={onClose}>Regresar</Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Regresar
+            </Button>
           </div>
         </form>
       </div>
@@ -97,21 +111,112 @@ const handleSubmit = async (e: React.FormEvent) => {
   );
 };
 
-export const ProfilePersonal: React.FC = () => {
-  const navigate = useNavigate();
-  const { logout: logoutStore } = useUserStore();
+const EditAddressForm: React.FC<{
+  address: Address;
+  onClose: () => void;
+  onAddressUpdated: () => void;
+}> = ({ address, onClose, onAddressUpdated }) => {
+  const [form, setForm] = useState({ ...address });
+  const [loading, setLoading] = useState(false);
   const { addMessage } = useMessageStore();
-  const [user, setUser] = useState<IUser | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await updateAddress(address.id, form);
+      addMessage("Dirección actualizada exitosamente", "success");
+      onAddressUpdated();
+      onClose();
+    } catch (error: any) {
+      addMessage(error.message || "Error al actualizar la dirección", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContent}>
+        <h3>Editar dirección</h3>
+        <form className={styles.addressForm} onSubmit={handleSubmit}>
+          <div className={styles.formRow}>
+            <label>Calle</label>
+            <input name="street" value={form.street || ""} onChange={handleChange} required />
+          </div>
+          <div className={styles.formRow}>
+            <label>Número</label>
+            <input
+              name="number"
+              type="number"
+              value={form.number !== null && form.number !== undefined ? form.number : ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className={styles.formRow}>
+            <label>Departamento</label>
+            <input name="apartment" value={form.apartment || ""} onChange={handleChange} />
+          </div>
+          <div className={styles.formRow}>
+            <label>Departamento/Piso</label>
+            <input
+              name="aptNumberAndFloor"
+              value={form.aptNumberAndFloor || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className={styles.formRow}>
+            <label>Provincia</label>
+            <input name="province" value={form.province || ""} onChange={handleChange} required />
+          </div>
+          <div className={styles.formRow}>
+            <label>Localidad</label>
+            <input name="locality" value={form.locality || ""} onChange={handleChange} required />
+          </div>
+          <div className={styles.formRow}>
+            <label>Código Postal</label>
+            <input name="postal" value={form.postal || ""} onChange={handleChange} />
+          </div>
+          <div className={styles.formActions}>
+            <Button type="submit" variant="primary" disabled={loading}>
+              {loading ? "Guardando..." : "Guardar"}
+            </Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancelar
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export const ProfilePersonal = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { addMessage } = useMessageStore();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [form, setForm] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(false);
+  const { currentUserProfile, handleUpdateUserProfile, fetchUserProfile } = useUsers();
+  const [editAddress, setEditAddress] = useState<Address | null>(null);
+  const [showEditAddressForm, setShowEditAddressForm] = useState(false);
 
   useEffect(() => {
-    getUserProfile().then(setUser);
-    loadAddresses();
-  }, []);
+    if (currentUserProfile === null) {
+      fetchUserProfile();
+    } else {
+      setForm(currentUserProfile);
+      loadAddresses();
+    }
+    // eslint-disable-next-line
+  }, [currentUserProfile]);
 
   const loadAddresses = async () => {
     try {
@@ -124,7 +229,7 @@ export const ProfilePersonal: React.FC = () => {
   };
 
   const handleEdit = () => {
-    setForm(user);
+    setForm(currentUserProfile);
     setEditMode(true);
   };
 
@@ -137,10 +242,13 @@ export const ProfilePersonal: React.FC = () => {
     e.preventDefault();
     if (form) {
       try {
-        const updated = await updateUserProfile(form);
-        setUser(updated);
-        setEditMode(false);
-        addMessage("Perfil actualizado exitosamente", "success");
+        const success = await handleUpdateUserProfile(form);
+        if (success) {
+          setEditMode(false);
+          addMessage("Perfil actualizado exitosamente", "success");
+        } else {
+          addMessage("Error al actualizar el perfil", "error");
+        }
       } catch (error: any) {
         addMessage(error.message || "Error al actualizar el perfil", "error");
       }
@@ -150,11 +258,7 @@ export const ProfilePersonal: React.FC = () => {
   const handleLogout = async () => {
     setLoading(true);
     try {
-      // Llamar al endpoint de logout
       await logout();
-
-      // Limpiar el store y navegar
-      logoutStore();
       sessionStorage.removeItem("sesionToken");
       addMessage("Sesión cerrada exitosamente", "success");
       navigate("/");
@@ -166,55 +270,91 @@ export const ProfilePersonal: React.FC = () => {
   };
 
   if (showAddressForm) {
-    return <AddressForm onClose={() => setShowAddressForm(false)} onAddressCreated={loadAddresses} />;
+    return (
+      <AddressForm onClose={() => setShowAddressForm(false)} onAddressCreated={loadAddresses} />
+    );
+  }
+
+  if (showEditAddressForm && editAddress) {
+    return (
+      <EditAddressForm
+        address={editAddress}
+        onClose={() => setShowEditAddressForm(false)}
+        onAddressUpdated={loadAddresses}
+      />
+    );
   }
 
   return (
     <div className={styles.profilePersonalContainer}>
       <h1 className={styles.title}>Perfil de usuario</h1>
       <div className={styles.card}>
-        <h2 className={styles.sectionTitle}>Informacion de usuario</h2>
+        <h2 className={styles.sectionTitle}>Información de usuario</h2>
         {!editMode ? (
           <div className={styles.infoBlock}>
-            <div><b>Nombre:</b> {user?.name}</div>
-            <div><b>Apellido:</b> {user?.lastName}</div>
-            <div><b>Correo Electrónico:</b> {user?.email}</div>
-            <div><b>Fecha de Nacimiento:</b> {user?.birthDate || '-'}</div>
-            <div><b>Nro de telefono:</b> {user?.phoneNumber || '-'}</div>
-            <Button variant="primary" onClick={handleEdit} className={styles.editBtn}>Editar Información</Button>
+            <div>
+              <b>Nombre:</b> {currentUserProfile?.name}
+            </div>
+            <div>
+              <b>Apellido:</b> {currentUserProfile?.lastName}
+            </div>
+            <div>
+              <b>Fecha de Nacimiento:</b> {currentUserProfile?.birthDate || "-"}
+            </div>
+            <div>
+              <b>Nro de teléfono:</b> {currentUserProfile?.phoneNumber || "-"}
+            </div>
+            <Button variant="primary" onClick={handleEdit} className={styles.editBtn}>
+              Editar Información
+            </Button>
           </div>
+        ) : !form ? (
+          <p className={styles.loading}>Cargando formulario...</p>
         ) : (
           <form className={styles.editForm} onSubmit={handleSave}>
             <div className={styles.formRow}>
               <label>Nombre</label>
-              <input name="name" value={form?.name || ''} onChange={handleChange} required />
+              <input name="name" value={form.name || ""} onChange={handleChange} required />
             </div>
             <div className={styles.formRow}>
               <label>Apellido</label>
-              <input name="lastName" value={form?.lastName || ''} onChange={handleChange} required />
-            </div>
-            <div className={styles.formRow}>
-              <label>Correo Electrónico</label>
-              <input name="email" value={form?.email || ''} onChange={handleChange} required />
+              <input name="lastName" value={form.lastName || ""} onChange={handleChange} required />
             </div>
             <div className={styles.formRow}>
               <label>Fecha de Nacimiento</label>
-              <input name="birthDate" value={form?.birthDate || ''} onChange={handleChange} type="date" />
+              <input
+                name="birthDate"
+                value={form.birthDate || ""}
+                onChange={handleChange}
+                type="date"
+              />
             </div>
             <div className={styles.formRow}>
               <label>Teléfono</label>
-              <input name="phoneNumber" value={form?.phoneNumber || ''} onChange={handleChange} />
+              <input name="phoneNumber" value={form.phoneNumber || ""} onChange={handleChange} />
             </div>
             <div className={styles.formActions}>
-              <Button type="submit" variant="primary">Guardar</Button>
-              <Button type="button" variant="outline" onClick={() => setEditMode(false)}>Cancelar</Button>
+              <Button type="submit" variant="primary">
+                Guardar
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setEditMode(false)}>
+                Cancelar
+              </Button>
             </div>
           </form>
         )}
       </div>
+
       <div className={styles.card}>
         <div className={styles.addressHeader}>
           <h2 className={styles.sectionTitle}>Direcciones</h2>
+          <Button
+            variant="primary"
+            onClick={() => setShowAddressForm(true)}
+            className={styles.addAddressBtn}
+          >
+            Agregar Dirección
+          </Button>
         </div>
         <div className={styles.addressList}>
           {addresses.length === 0 ? (
@@ -223,14 +363,24 @@ export const ProfilePersonal: React.FC = () => {
             addresses.map((address) => (
               <div key={address.id} className={styles.addressItem}>
                 <div className={styles.addressInfo}>
-                  <p><strong>Calle:</strong> {address.street}</p>
-                  <p><strong>Localidad:</strong> {address.locality}</p>
-                  <p><strong>Provincia:</strong> {address.province}</p>
-                  <p><strong>Código Postal:</strong> {address.cp}</p>
-                  {address.dptoFloor && (
-                    <p><strong>Departamento/Piso:</strong> {address.dptoFloor}</p>
-                  )}
+                  <div><strong>Calle:</strong> {address.street}</div>
+                  <div><strong>Número:</strong> {address.number || "-"}</div>
+                  <div><strong>Departamento:</strong> {address.apartment || "-"}</div>
+                  <div><strong>Departamento/Piso:</strong> {address.aptNumberAndFloor || "-"}</div>
+                  <div><strong>Provincia:</strong> {address.province}</div>
+                  <div><strong>Localidad:</strong> {address.locality}</div>
+                  <div><strong>Código Postal:</strong> {address.postal || "-"}</div>
                 </div>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setEditAddress(address);
+                    setShowEditAddressForm(true);
+                  }}
+                  className={styles.editBtn}
+                >
+                  Editar
+                </Button>
               </div>
             ))
           )}
@@ -243,11 +393,12 @@ export const ProfilePersonal: React.FC = () => {
             Agregar Dirección
           </Button>
       </div>
+
       <div className={styles.card}>
         <div className={styles.sessionBlock}>
-          <Button 
-            variant="outline" 
-            onClick={handleLogout} 
+          <Button
+            variant="outline"
+            onClick={handleLogout}
             className={styles.logoutBtn}
             disabled={loading}
           >
@@ -257,4 +408,4 @@ export const ProfilePersonal: React.FC = () => {
       </div>
     </div>
   );
-}; 
+};

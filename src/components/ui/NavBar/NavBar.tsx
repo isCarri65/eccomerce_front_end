@@ -7,21 +7,19 @@ import styles from "./NavBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../../../assets/Icon/nike_logo_2.png";
 import { useEffect, useRef, useState } from "react";
-import { IUser } from "../../../types/User/IUser";
 import { IType } from "../../../types/Type/IType";
 import { CategoryOptionSelect } from "../../../types/CategoryOptionSelect";
 import { GenreOptions } from "./GenreOptions";
 import { TypeOptions } from "./TypeOptions";
 import { ProductGenre } from "../../../types/enums/ProductGenre";
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "../../../stores/userStore";
-import { UserRole } from "../../../types/enums/UserRol";
 import { CartSidebar } from "../CartSideBar/CartSideBar";
+import { useAuth } from "../../../hooks/useAuth";
 
 const genreValues = [
-  ProductGenre.Male,
-  ProductGenre.Female,
-  ProductGenre.Children,
+  ProductGenre.MALE,
+  ProductGenre.FEMALE,
+  ProductGenre.CHILDREN,
 ];
 const typesOptions: IType[] = [
   {
@@ -35,7 +33,7 @@ const typesOptions: IType[] = [
 ];
 
 export const NavBar = () => {
-  const { isAuthenticated, currentUserProfile } = useUserStore();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const [offsetY, setOffsetY] = useState(0);
   const lastScrollY = useRef(0);
@@ -82,8 +80,10 @@ export const NavBar = () => {
     const path = `productsCatalog/${paramPath}`;
     navigate(path);
   };
-  console.log(currentUserProfile);
-  console.log(isAuthenticated);
+
+  const moveToProfile = () => {
+    navigate("/profile");
+  };
   return (
     <nav className={styles.navBarContainer}>
       <div
@@ -100,30 +100,17 @@ export const NavBar = () => {
 
         <ul className={styles.categoriasContainer}>
           {categoryOptionsSelects.map((cat) => (
-            <li key={`${cat.kind}-${cat.value.toString()}`}>
+            <li key={`${cat.kind}-${cat.value}`}>
               <button
                 className={styles.navLink}
                 onMouseEnter={() => setSelectedCategoria(cat)}
                 onMouseLeave={() => setSelectedCategoria(null)}
                 onClick={() => changePage(cat.value)}
               >
-                {cat.value.toString()}
+                {cat.value}
               </button>
             </li>
           ))}
-
-          {isAuthenticated && currentUserProfile?.role === UserRole.Admin ? (
-            <li>
-              <button
-                className={styles.navLink}
-                onClick={() => navigate("/admin/productos")}
-              >
-                Administrador
-              </button>
-            </li>
-          ) : (
-            <div></div>
-          )}
         </ul>
 
         <div className={styles.iconContainer}>
@@ -137,8 +124,13 @@ export const NavBar = () => {
             icon={faUser}
             onClick={() => navigate(isAuthenticated ? "/profile" : "/login")}
           />
-          {isAuthenticated && currentUserProfile && (
-            <p className={styles.userName}>{currentUserProfile.name}</p>
+          <FontAwesomeIcon
+            icon={faUser}
+            className={styles.iconItem}
+            onClick={moveToProfile}
+          />
+          {isAuthenticated && user && (
+            <p className={styles.userName}>{user.name}</p>
           )}
         </div>
       </div>

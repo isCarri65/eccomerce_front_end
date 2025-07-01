@@ -1,9 +1,10 @@
-export interface Address {
+export interface IAddress {
   id: number;
   street: string;
-  locality: string;
+  number: number;
+  apartment: string;
+  aptNumberAndFloor: string;
   province: string;
-  cp: string;
-  dptoFloor: string;
-  userId: number;
+  locality: string;
+  postal: string;
 }

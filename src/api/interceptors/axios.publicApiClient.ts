@@ -5,7 +5,7 @@ import { createHTTPError } from "../../utils/errors";
 const BASE_URL = "http://localhost:8081/api";
 
 // Crear instancia sin token
-const publicApiClient: AxiosInstance = axios.create({
+export const publicApiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
@@ -37,6 +37,7 @@ publicApiClient.interceptors.response.use(
       });
       return Promise.reject(httpError);
     }
+    console.log(error.response?.data);
 
     // Errores de red u otros
     Swal.fire({
