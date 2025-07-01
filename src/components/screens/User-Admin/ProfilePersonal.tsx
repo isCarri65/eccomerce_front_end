@@ -14,6 +14,8 @@ import { useUsers } from "../../../hooks/useUsers";
 import { useAuth } from "../../../hooks/useAuth";
 import { useUserStore } from "../../../stores/userStore";
 import { IAddress } from "../../../types/Address/IAddress";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
 const initialAddress: ICreateAddress = {
   street: "",
@@ -72,6 +74,10 @@ const handleSubmit = async (e: React.FormEvent) => {
       <div className={styles.modalContent}>
         <h3>Agregar dirección</h3>
         <form className={styles.addressForm} onSubmit={handleSubmit}>
+          <div className={styles.addresFormContainerColumns}>
+
+          <div className={styles.addressFormFirstColummn}>
+
           <div className={styles.formRow}>
             <label>Calle</label>
             <input name="street" value={form.street} onChange={handleChange} required />
@@ -84,6 +90,11 @@ const handleSubmit = async (e: React.FormEvent) => {
             <label>Departamento</label>
             <input name="apartment" value={form.apartment} onChange={handleChange} />
           </div>
+
+          </div>
+
+          <div className={styles.addressFormSecondColummn}>
+
           <div className={styles.formRow}>
             <label>Departamento/Piso</label>
             <input name="aptNumberAndFloor" value={form.aptNumberAndFloor} onChange={handleChange} />
@@ -99,6 +110,9 @@ const handleSubmit = async (e: React.FormEvent) => {
           <div className={styles.formRow}>
             <label>Código Postal</label>
             <input name="postal" value={form.postal} onChange={handleChange} required />
+          </div>
+          
+          </div>
           </div>
           <div className={styles.formActions}>
             <Button type="submit" variant="primary" disabled={loading}>
@@ -147,43 +161,54 @@ const EditAddressForm: React.FC<{
       <div className={styles.modalContent}>
         <h3>Editar dirección</h3>
         <form className={styles.addressForm} onSubmit={handleSubmit}>
-          <div className={styles.formRow}>
-            <label>Calle</label>
-            <input name="street" value={form.street || ""} onChange={handleChange} required />
+
+          <div className={styles.addresFormContainerColumns}>
+            
+            <div className={styles.addressFormFirstColummn}>
+              <div className={styles.formRow}>
+                <label>Calle</label>
+                <input name="street" value={form.street || ""} onChange={handleChange} required />
+              </div>
+              <div className={styles.formRow}>
+                <label>Número</label>
+                <input
+                  name="number"
+                  type="number"
+                  value={form.number !== null && form.number !== undefined ? form.number : ""}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className={styles.formRow}>
+                <label>Departamento</label>
+                <input name="apartment" value={form.apartment || ""} onChange={handleChange} />
+              </div>
+            </div>
+
+            <div className={styles.addressFormSecondColummn}>
+              <div className={styles.formRow}>
+                <label>Departamento/Piso</label>
+                <input
+                  name="aptNumberAndFloor"
+                  value={form.aptNumberAndFloor || ""}
+                  onChange={handleChange}
+                  />
+              </div>
+              <div className={styles.formRow}>
+                <label>Provincia</label>
+                <input name="province" value={form.province || ""} onChange={handleChange} required />
+              </div>
+              <div className={styles.formRow}>
+                <label>Localidad</label>
+                <input name="locality" value={form.locality || ""} onChange={handleChange} required />
+              </div>
+              <div className={styles.formRow}>
+                <label>Código Postal</label>
+                <input name="postal" value={form.postal || ""} onChange={handleChange} />
+              </div>
+            </div>
+
           </div>
-          <div className={styles.formRow}>
-            <label>Número</label>
-            <input
-              name="number"
-              type="number"
-              value={form.number !== null && form.number !== undefined ? form.number : ""}
-              onChange={handleChange}
-            />
-          </div>
-          <div className={styles.formRow}>
-            <label>Departamento</label>
-            <input name="apartment" value={form.apartment || ""} onChange={handleChange} />
-          </div>
-          <div className={styles.formRow}>
-            <label>Departamento/Piso</label>
-            <input
-              name="aptNumberAndFloor"
-              value={form.aptNumberAndFloor || ""}
-              onChange={handleChange}
-            />
-          </div>
-          <div className={styles.formRow}>
-            <label>Provincia</label>
-            <input name="province" value={form.province || ""} onChange={handleChange} required />
-          </div>
-          <div className={styles.formRow}>
-            <label>Localidad</label>
-            <input name="locality" value={form.locality || ""} onChange={handleChange} required />
-          </div>
-          <div className={styles.formRow}>
-            <label>Código Postal</label>
-            <input name="postal" value={form.postal || ""} onChange={handleChange} />
-          </div>
+
           <div className={styles.formActions}>
             <Button type="submit" variant="primary" disabled={loading}>
               {loading ? "Guardando..." : "Guardar"}
@@ -367,16 +392,11 @@ export const ProfilePersonal = () => {
                   <div><strong>Localidad:</strong> {address.locality}</div>
                   <div><strong>Código Postal:</strong> {address.postal || "-"}</div>
                 </div>
-                <Button
-                  variant="outline"
+                <FontAwesomeIcon className={styles.editBtn} icon={faEdit}                
                   onClick={() => {
                     setEditAddress(address);
                     setShowEditAddressForm(true);
-                  }}
-                  className={styles.editBtn}
-                >
-                  Editar
-                </Button>
+                  }} />
               </div>
             ))
           )}
