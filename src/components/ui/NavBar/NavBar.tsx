@@ -81,9 +81,6 @@ export const NavBar = () => {
     navigate(path);
   };
 
-  const moveToProfile = () => {
-    navigate("/profile");
-  };
   return (
     <nav className={styles.navBarContainer}>
       <div
@@ -124,11 +121,7 @@ export const NavBar = () => {
             icon={faUser}
             onClick={() => navigate(isAuthenticated ? "/profile" : "/login")}
           />
-          <FontAwesomeIcon
-            icon={faUser}
-            className={styles.iconItem}
-            onClick={moveToProfile}
-          />
+
           {isAuthenticated && user && (
             <p className={styles.userName}>{user.name}</p>
           )}

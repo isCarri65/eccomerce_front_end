@@ -7,12 +7,13 @@ import {
   updateAddress,
 } from "../../../api/services/AddressService";
 import { IUser } from "../../../types/User/IUser";
-import { Address } from "../../../types/Address/IAddress";
 import { ICreateAddress } from "../../../types/Address/ICreateAddress";
 import { Button } from "../../ui/ElementsHTML/Button";
 import { useMessageStore } from "../../../stores/messageStore";
 import { useUsers } from "../../../hooks/useUsers";
 import { useAuth } from "../../../hooks/useAuth";
+import { useUserStore } from "../../../stores/userStore";
+import { IAddress } from "../../../types/Address/IAddress";
 
 const initialAddress: ICreateAddress = {
   street: "",
@@ -40,6 +41,7 @@ const AddressForm: React.FC<{
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
+  setLoading(true)
 
   if (!currentUserProfile?.id) {
     alert('Usuario no autenticado.');
@@ -55,6 +57,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     const newAddress = await createAddress(addressToCreate);
 
     console.log('Dirección creada:', newAddress);
+    setLoading(false)
     addMessage("Direccion creada Correctamente","success")
     onAddressCreated()
     onClose();
@@ -112,7 +115,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 };
 
 const EditAddressForm: React.FC<{
-  address: Address;
+  address: IAddress;
   onClose: () => void;
   onAddressUpdated: () => void;
 }> = ({ address, onClose, onAddressUpdated }) => {
@@ -199,13 +202,13 @@ export const ProfilePersonal = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { addMessage } = useMessageStore();
-  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [addresses, setAddresses] = useState<IAddress[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [form, setForm] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(false);
   const { currentUserProfile, handleUpdateUserProfile, fetchUserProfile } = useUsers();
-  const [editAddress, setEditAddress] = useState<Address | null>(null);
+  const [editAddress, setEditAddress] = useState<IAddress | null>(null);
   const [showEditAddressForm, setShowEditAddressForm] = useState(false);
 
   useEffect(() => {
@@ -348,13 +351,6 @@ export const ProfilePersonal = () => {
       <div className={styles.card}>
         <div className={styles.addressHeader}>
           <h2 className={styles.sectionTitle}>Direcciones</h2>
-          <Button
-            variant="primary"
-            onClick={() => setShowAddressForm(true)}
-            className={styles.addAddressBtn}
-          >
-            Agregar Dirección
-          </Button>
         </div>
         <div className={styles.addressList}>
           {addresses.length === 0 ? (

@@ -9,14 +9,14 @@ import { IUser } from '../../../types/User/IUser';
 import { ISize } from '../../../types/Size/ISize';
 import { IColor } from '../../../types/Color/IColor';
 import { IProductGallery } from '../../../types/Product/IProductGallery';
-import { Address } from '../../../types/Address/IAddress';
-import { IDiscount } from '../../../types/Discount/IDiscount';
 import publicApiClient from '../../../api/interceptors/axios.publicApiClient';
 import { getUserProfile } from '../../../api/services/UserService';
 import { getAllAddresses } from '../../../api/services/AddressService';
-import { getProductById } from '../../../services/productService';
 import { getSizeById } from '../../../api/services/SizeService';
 import { getColorById } from '../../../api/services/ColorService';
+import { getProductById } from '../../../api/services/ProductService';
+import { IDiscountRule } from '../../../types/Discount/IDiscountRule';
+import { IAddress } from '../../../types/Address/IAddress';
 
 
 
@@ -26,7 +26,7 @@ interface CartItem {
   color: IColor;
   gallery?: IProductGallery;
   quantity: number;
-  discount?: IDiscount;
+  discount?: IDiscountRule;
 }
 
 const CheckoutScreen: React.FC = () => {
@@ -34,7 +34,7 @@ const CheckoutScreen: React.FC = () => {
   const [showSummary, setShowSummary] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [user, setUser] = useState<IUser | null>(null);
-  const [address, setAddress] = useState<Address | null>(null);
+  const [address, setAddress] = useState<IAddress | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,7 +47,7 @@ const CheckoutScreen: React.FC = () => {
       return response.data;
     };
 
-    const fetchDiscountByProductId = async (productId: number): Promise<IDiscount | null> => {
+    const fetchDiscountByProductId = async (productId: number): Promise<IDiscountRule | null> => {
       const response = await publicApiClient.get(`/public/productdiscounts/product/${productId}`);
       return response.data[0]?.discount || null;
     };
@@ -96,7 +96,7 @@ const CheckoutScreen: React.FC = () => {
 
   const calculateSubtotal = () => {
     const subtotal = cartItems.reduce((total, item) => {
-      const base = item.product.sellPrice * item.quantity;
+      const base = item.product.price * item.quantity;
       const final = item.discount ? base * (1 - item.discount.percentage / 100) : base;
       return total + final;
     }, 0);

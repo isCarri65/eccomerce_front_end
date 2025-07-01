@@ -94,6 +94,7 @@
 
 .addressHeader {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
