@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react';
 import styles from './CartSidebar.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
+import { Button } from '../ElementsHTML/Button';
+import { useUserStore } from '../../../stores/userStore';
+import axios from 'axios';
 
 interface CartItem {
-  id: string;
+  productId: number;
   name: string;
   price: number;
-  size: string;
+  sizeId: number;
+  sizeName: string;
   quantity: number;
-  color: string;
+  colorId: number;
+  colorName: string;
 }
 
 interface CartSidebarProps {
@@ -18,69 +23,68 @@ interface CartSidebarProps {
   setShowCart: (show: boolean) => void;
 }
 
-// Mock API service
-const mockApi = {
-  getProductsByIds: async (ids: string[]): Promise<CartItem[]> => {
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    // Mock data - replace with your actual product fetching logic
-    const allProducts: CartItem[] = [
-      { id: '1', name: 'Product A', price: 25.99, size: 'M', quantity: 1, color: 'Red' },
-      { id: '2', name: 'Product B', price: 49.99, size: 'L', quantity: 1, color: 'Blue' },
-      { id: '3', name: 'Product C', price: 15.00, size: 'S', quantity: 2, color: 'Green' },
-    ];
-    return allProducts.filter(product => ids.includes(product.id));
-  },
-};
-
 export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isAuthenticated } = useUserStore();
   const navigate = useNavigate();
+  const BASEURL = 'http://localhost:8081/';
 
   useEffect(() => {
-  if (showCart) {
-    setLoading(true);
-    const storedItems = sessionStorage.getItem('cartItems');
-    if (storedItems) {
-      const storedData = JSON.parse(storedItems); // array de objetos
-      const itemIds = storedData.map((item: any) => item.id); // obtenemos los IDs
+    if (showCart) {
+      setLoading(true);
+      const storedItems = sessionStorage.getItem('cart');
+      if (storedItems) {
+        const parsedItems = JSON.parse(storedItems);
 
-      if (itemIds.length > 0) {
-        mockApi.getProductsByIds(itemIds).then(products => {
-          const itemsWithDetails = products.map(product => {
-            const storedItemData = storedData.find((item: any) => item.id === product.id);
-            return {
-              ...product,
-              quantity: storedItemData?.quantity || 1,
-              size: storedItemData?.size || 'N/A',
-              color: storedItemData?.color || 'N/A',
-            };
-          });
+        const fetchData = async () => {
+          try {
+            const itemsWithDetails = await Promise.all(
+              parsedItems.map(async (item: any) => {
+                const [productRes, sizeRes, colorRes] = await Promise.all([
+                  axios.get(`${BASEURL}api/public/products/${item.productId}`),
+                  axios.get(`${BASEURL}api/public/sizes/${item.sizeId}`),
+                  axios.get(`${BASEURL}api/public/colors/${item.colorId}`)
+                ]);
 
-          setCartItems(itemsWithDetails);
-          setLoading(false);
-        });
+                return {
+                  productId: item.productId,
+                  name: productRes.data.name,
+                  price: productRes.data.sellPrice,
+                  sizeId: item.sizeId,
+                  sizeName: sizeRes.data.name,
+                  colorId: item.colorId,
+                  colorName: colorRes.data.name,
+                  quantity: item.quantity
+                };
+              })
+            );
+
+            setCartItems(itemsWithDetails);
+          } catch (err) {
+            console.error('Error fetching product details', err);
+            setCartItems([]);
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        fetchData();
       } else {
         setCartItems([]);
         setLoading(false);
       }
-    } else {
-      setCartItems([]);
-      setLoading(false);
     }
-  }
-}, [showCart]);
+  }, [showCart]);
 
-
-  const handleQuantityChange = (id: string, quantity: number) => {
+  const handleQuantityChange = (productId: number, sizeId: number, colorId: number, quantity: number) => {
     const updatedItems = cartItems.map(item =>
-      item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
+      item.productId === productId && item.sizeId === sizeId && item.colorId === colorId
+        ? { ...item, quantity: Math.max(1, quantity) }
+        : item
     );
     setCartItems(updatedItems);
-    // Also update sessionStorage
-    const updatedStoredItems = JSON.stringify(updatedItems.map(item => ({ id: item.id, quantity: item.quantity, size: item.size, color: item.color })));
-    sessionStorage.setItem('cartItems', updatedStoredItems);
+    sessionStorage.setItem('cart', JSON.stringify(updatedItems.map(({ sizeName, colorName, ...rest }) => rest)));
   };
 
   const handleCloseCart = () => {
@@ -89,25 +93,28 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
 
   const handleGoToProducts = () => {
     setShowCart(false);
-    navigate('/productsCatalog'); // Replace with your actual products page route
+    navigate('/productsCatalog');
   };
 
-  const handleDeleteItem = (id: string) => {
-    const updatedItems = cartItems.filter(item => item.id !== id);
+  const handleDeleteItem = (productId: number, sizeId: number, colorId: number) => {
+    const updatedItems = cartItems.filter(
+      item => !(item.productId === productId && item.sizeId === sizeId && item.colorId === colorId)
+    );
     setCartItems(updatedItems);
-    // Also update sessionStorage
-    const updatedStoredItems = JSON.stringify(updatedItems.map(item => ({ id: item.id, quantity: item.quantity, size: item.size, color: item.color })));
-    sessionStorage.setItem('cartItems', updatedStoredItems);
+    sessionStorage.setItem('cart', JSON.stringify(updatedItems.map(({ sizeName, colorName, ...rest }) => rest)));
   };
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
   };
 
-  const checkoutHandle = ()=>{
-    setShowCart(false)
-    navigate("/checkout")
-  }
+  const checkoutHandle = () => {
+    if (!isAuthenticated) {
+      return <Navigate to="/login" replace />;
+    }
+    setShowCart(false);
+    navigate('/checkout');
+  };
 
   return (
     <div className={`${styles.cartSidebar} ${showCart ? styles.open : ''}`}>
@@ -129,29 +136,28 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
           <>
             <ul className={styles.cartItemList}>
               {cartItems.map(item => (
-                <li key={item.id} className={styles.cartItem}>
+                <li key={`${item.productId}-${item.sizeId}-${item.colorId}`} className={styles.cartItem}>
                   <div className={styles.itemImage}>
-                    {/* Placeholder for product image */}
-                    <img src={/*item.image */"asd"} alt={item.name} />
+                    <img src={"placeholder.jpg"} alt={item.name} />
                   </div>
                   <div className={styles.itemInfo}>
                     <div className={styles.itemDetails}>
-                        <div>
-                      <h4>{item.name}</h4>
-                      <p>Talle: {item.size} Color: {item.color}</p>
-                        </div>
-                      <button className={styles.deleteButton} onClick={() => handleDeleteItem(item.id)}>
+                      <div>
+                        <h4>{item.name}</h4>
+                        <p>Talle: {item.sizeName} Color: {item.colorName}</p>
+                      </div>
+                      <button className={styles.deleteButton} onClick={() => handleDeleteItem(item.productId, item.sizeId, item.colorId)}>
                         <FontAwesomeIcon icon={faTrash} />
                       </button>
                     </div>
                     <div className={styles.itemActions}>
                       <div className={styles.quantitySelector}>
-                        <button className={styles.minorButtonQuantity} onClick={() => handleQuantityChange(item.id, item.quantity - 1)}>-</button>
+                        <button onClick={() => handleQuantityChange(item.productId, item.sizeId, item.colorId, item.quantity - 1)}>-</button>
                         <span>{item.quantity}</span>
-                        <button className={styles.mayorButtonQuantity} onClick={() => handleQuantityChange(item.id, item.quantity + 1)}>+</button>
+                        <button onClick={() => handleQuantityChange(item.productId, item.sizeId, item.colorId, item.quantity + 1)}>+</button>
                       </div>
                       <div className={styles.itemPrice}>
-                        ${(item.price * item.quantity).toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+                        ${(item.price * item.quantity).toFixed(2)}
                       </div>
                     </div>
                   </div>
@@ -159,21 +165,19 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
               ))}
             </ul>
 
-
             <div className={styles.cartSummary}>
               <div className={styles.total}>
                 <span>Total:</span>
                 <span>${calculateTotal()}</span>
               </div>
-              <button className={styles.checkoutButton} onClick={checkoutHandle}>Checkout</button>
+              <Button onClick={checkoutHandle}>Checkout</Button>
             </div>
-                  <div className={styles.bottomLinks}>
-        <Link to="#" className={styles.bottomLinks} onClick={handleCloseCart}>&lt; Seguir comprando</Link>
-      </div>
+            <div className={styles.bottomLinks}>
+              <Link to="#" className={styles.bottomLinks} onClick={handleCloseCart}>&lt; Seguir comprando</Link>
+            </div>
           </>
         )}
       </div>
-
     </div>
   );
 };

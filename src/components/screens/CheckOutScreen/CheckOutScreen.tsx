@@ -1,81 +1,88 @@
 import React, { useEffect, useState } from 'react';
 import styles from './CheckoutScreen.module.css';
 import CheckoutItem from '../../ui/CheckoutComponents/CheckoutItem/CheckoutItem';
-import ShippingAddress from '../../ui/CheckoutComponents/ShippingAdress/ShippingAddress'; // Import ShippingAddress
+import ShippingAddress from '../../ui/CheckoutComponents/ShippingAdress/ShippingAddress';
 import PaymentOptions from '../../ui/CheckoutComponents/PaymentOption/PaymentOption';
-import axios from 'axios';
 import MercadoPagoSection from '../../ui/CheckoutComponents/MercadoPagoComponent/MercadoPagoComponent';
 import { IProduct } from '../../../types/Product/IProduct';
 import { IUser } from '../../../types/User/IUser';
 import { ISize } from '../../../types/Size/ISize';
-import { IColor } from '../../../types/Color/IColor'
+import { IColor } from '../../../types/Color/IColor';
 import { IProductGallery } from '../../../types/Product/IProductGallery';
-import { Address } from '../../../types/Address/IAddress';
+import publicApiClient from '../../../api/interceptors/axios.publicApiClient';
+import { getUserProfile } from '../../../api/services/UserService';
+import { getAllAddresses } from '../../../api/services/AddressService';
+import { getSizeById } from '../../../api/services/SizeService';
+import { getColorById } from '../../../api/services/ColorService';
+import { getProductById } from '../../../api/services/ProductService';
+import { IDiscountRule } from '../../../types/Discount/IDiscountRule';
+import { IAddress } from '../../../types/Address/IAddress';
 
 
 
-interface CheckoutScreenProps {
+interface CartItem {
+  product: IProduct;
+  size: ISize;
+  color: IColor;
+  gallery?: IProductGallery;
+  quantity: number;
+  discount?: IDiscountRule;
 }
 
-const CheckoutScreen: React.FC<CheckoutScreenProps> = () => {
-  const BASEURL = "http://localhost:8080/"
-  // State to manage the current active step in the checkout process
+const CheckoutScreen: React.FC = () => {
   const [activeStep, setActiveStep] = useState<'shippingAddress' | 'payment'>('shippingAddress');
-
-  // State to manage the visibility of the Mercado Pago summary
   const [showSummary, setShowSummary] = useState(false);
-
-  // State to store fetched data
-  const [product, setProduct] = useState<IProduct | null>(null);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [user, setUser] = useState<IUser | null>(null);
-  const [size, setSize] = useState<ISize | null>(null);
-  const [color, setColor] = useState<IColor | null>(null);
-  const [productGallery, setProductGallery] = useState<IProductGallery | null>(null);
-  const [address, setAddress] = useState<Address | null>(null);
-
-
-  const [quantity, setQuantity] = useState<number>(0);
-  
-
-
+  const [address, setAddress] = useState<IAddress | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch product, user, size, color, and quantity data from sessionStorage and API
   useEffect(() => {
-    const productId = sessionStorage.getItem('productId');
-    const sizeId = sessionStorage.getItem('sizeId');
-    const colorId = sessionStorage.getItem('colorId');
-    const storedQuantity = sessionStorage.getItem('quantity');
+    const storedCart = sessionStorage.getItem('cart');
+    const parsedCart = storedCart ? JSON.parse(storedCart) : [];
 
+    const fetchGalleryByProductId = async (productId: number): Promise<IProductGallery> => {
+      const response = await publicApiClient.get(`/public/productgalleries/product/${productId}`);
+      return response.data;
+    };
 
-    if (storedQuantity) {
-        setQuantity(parseInt(storedQuantity, 10));
-    }
+    const fetchDiscountByProductId = async (productId: number): Promise<IDiscountRule | null> => {
+      const response = await publicApiClient.get(`/public/productdiscounts/product/${productId}`);
+      return response.data[0]?.discount || null;
+    };
 
-
-    const fetchCheckoutData = async () => {
+    const fetchData = async () => {
       setLoading(true);
-      setError(null);
       try {
-        const productResponse = await axios.get(`${BASEURL}api/public/products/${productId}`);
-        setProduct(productResponse.data as IProduct);
+        const userRes = await getUserProfile();
+        setUser(userRes);
 
-        const userResponse = await axios.get(`${BASEURL}api/protected/profile`);
-        setUser(userResponse.data as IUser);
+        const addresses = await getAllAddresses();
+        setAddress(addresses[0] ?? null);
 
-        const sizeResponse = await axios.get(`${BASEURL}api/public/sizes/${sizeId}`);
-        setSize(sizeResponse.data as ISize);
+        const items: CartItem[] = await Promise.all(
+          parsedCart.map(async (item: any) => {
+            const [product, size, color, discount, gallery] = await Promise.all([
+              getProductById(item.productId),
+              getSizeById(item.sizeId),
+              getColorById(item.colorId),
+              fetchDiscountByProductId(item.productId),
+              fetchGalleryByProductId(item.productId),
+            ]);
 
-        const colorResponse = await axios.get(`${BASEURL}api/public/colors/${colorId}`);
-        setColor(colorResponse.data as IColor);
+            return {
+              product,
+              size,
+              color,
+              quantity: item.quantity,
+              gallery,
+              discount,
+            };
+          })
+        );
 
-        const productGalleryResponse = await axios.get(`${BASEURL}api/public/productgalleries/product/${productId}`);
-        setProductGallery(productGalleryResponse.data as IProductGallery);
-        
-        const addressResponse = await axios.get(`${BASEURL}api/protected/addresses/getAll}`);
-        setAddress(addressResponse.data as Address);
-
+        setCartItems(items);
       } catch (err) {
         console.error('Error fetching checkout data:', err);
         setError('Error al cargar los datos del pedido.');
@@ -84,49 +91,33 @@ const CheckoutScreen: React.FC<CheckoutScreenProps> = () => {
       }
     };
 
-    fetchCheckoutData();
-  }, []); // Empty dependency array means this effect runs once on mount
+    fetchData();
+  }, []);
 
-    const calculateSubtotal = () => {
-      if (product) {
-          return (product.sellPrice * quantity).toFixed(2);
-      }
-      return (0).toFixed(2);
+  const calculateSubtotal = () => {
+    const subtotal = cartItems.reduce((total, item) => {
+      const base = item.product.price * item.quantity;
+      const final = item.discount ? base * (1 - item.discount.percentage / 100) : base;
+      return total + final;
+    }, 0);
+    return subtotal.toFixed(2);
   };
 
   const subtotal = calculateSubtotal();
-  const shippingCost = 0; // Hardcoded shipping cost for now
+  const shippingCost = 0;
   const total = (parseFloat(subtotal) + shippingCost).toFixed(2);
 
-  // Function to handle address confirmation and move to the payment step
-  const handleAddressConfirmed = (useCurrent: boolean) => {
-    console.log('Address confirmed. Using current address:', useCurrent);
-    setActiveStep('payment'); // Move to the payment step and collapse current
-  };
-
-  // Function to handle clicking on a section header to expand it
+  const handleAddressConfirmed = () => setActiveStep('payment');
   const handleSectionHeaderClick = (step: 'shippingAddress' | 'payment') => {
-      // Only allow expanding if it's not the current active step
-     if (activeStep !== step) {
-        setActiveStep(step);
-     }
+    if (activeStep !== step) setActiveStep(step);
   };
-
-  // Function to toggle Mercado Pago summary visibility
-  const toggleSummary = () => {
-    setShowSummary(!showSummary);
-  };
-
+  const toggleSummary = () => setShowSummary(!showSummary);
 
   return (
     <div className={styles.container}>
       <div className={styles.infoSection}>
-        {/* Shipping Address Section */}
         <div className={`${styles.checkoutSection} ${activeStep === 'shippingAddress' ? styles.active : ''}`}>
-          <div
-             className={styles.sectionHeader}
-             onClick={() => handleSectionHeaderClick('shippingAddress')} // Add click handler
-          >
+          <div className={styles.sectionHeader} onClick={() => handleSectionHeaderClick('shippingAddress')}>
             <span className={styles.stepNumber}>1</span>
             <h3>Dirección de Envío</h3>
           </div>
@@ -137,80 +128,57 @@ const CheckoutScreen: React.FC<CheckoutScreenProps> = () => {
           )}
         </div>
 
-        {/* Payment Section */}
         <div className={`${styles.checkoutSection} ${activeStep === 'payment' ? styles.active : ''}`}>
-           <div
-              className={styles.sectionHeader}
-              onClick={() => handleSectionHeaderClick('payment')} // Add click handler
-            >
+          <div className={styles.sectionHeader} onClick={() => handleSectionHeaderClick('payment')}>
             <span className={styles.stepNumber}>2</span>
             <h3>Pago</h3>
           </div>
           {activeStep === 'payment' && (
-             <div className={styles.sectionContent}>
-                <PaymentOptions />
-                <div className={styles.paymentMethodOption}>
-                   <div className={styles.paymentMethodHeader}>
-                       <h4>Mercado Pago</h4>
-                   </div>
-                   {loading && <p>Cargando datos del pedido...</p>}
-                   {error && <p>Error al cargar los datos del pedido: {error}</p>}
-                   {!loading && !error && product && user && size && color && (
-                     <MercadoPagoSection
-                       showSummary={showSummary}
-                       toggleSummary={toggleSummary}
-                       product={product}
-                       user={user}
-                       size={size}
-                       color={color}
-                       address={address}
-                     />
-                   )}
-               </div>
-             </div>
+            <div className={styles.sectionContent}>
+              <PaymentOptions />
+              <div className={styles.paymentMethodOption}>
+                <h4>Mercado Pago</h4>
+                {loading && <p>Cargando datos del pedido...</p>}
+                {error && <p>{error}</p>}
+                {!loading && !error && (
+                  <MercadoPagoSection
+                    showSummary={showSummary}
+                    toggleSummary={toggleSummary}
+                    user={user}
+                    address={address}
+                    cartItems={cartItems}
+                  />
+                )}
+              </div>
+            </div>
           )}
         </div>
-
-        {/* You can add more sections here following the same pattern */}
       </div>
+
       <div className={styles.orderSummary}>
         <h3>Resumen del Pedido</h3>
         <div className={styles.itemList}>
-           {/* Display fetched product data instead of mockCartItems */}
-           {product && size && color && quantity > 0 && (
-                <CheckoutItem
-                    key={product.id}
-                    item={{
-                        id: product.id,
-                        name: product.name,
-                        sellPrice: product.sellPrice,
-                        buyPrice: product.buyPrice,
-                        description: product.description,
-                        state: product.state,
-                        genre: product.genre,
-                        categories: product.categories
-                    }}
-                    image={productGallery}
-                    size={size}
-                    color={color}
-                    quantity={quantity}
-                />
-           )}
+          {cartItems.map((item, index) => (
+            <CheckoutItem
+              key={index}
+              item={item.product}
+              image={item.gallery}
+              size={item.size}
+              color={item.color}
+              quantity={item.quantity}
+            />
+          ))}
         </div>
         <div className={styles.summaryDetails}>
           <p>Subtotal: <span>${subtotal}</span></p>
           <p>Costo de Envío: <span>${shippingCost.toFixed(2)}</span></p>
           <p>Total: <span>${total}</span></p>
         </div>
-         {/* Discount Code Section Placeholder */}
         <div className={styles.discountSection}>
-            {/* Input for discount code would go here */}
-            <input type="text" placeholder="Ingresá tu código de descuento aquí" />
-            {/* Button to apply discount */}
+          <input type="text" placeholder="Ingresá tu código de descuento aquí" />
         </div>
-         <div className={styles.backToCart}>
-            {/* Link to go back to the cart */}
-            <a href="#">Volver al carrito</a>
+        <div className={styles.backToCart}>
+          <a href="#">Volver al carrito</a>
         </div>
       </div>
     </div>

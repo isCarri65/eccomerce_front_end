@@ -1,5 +1,6 @@
 import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
 import { IType } from "../../types/Type/IType";
+import { ICreateType } from "../../types/Type/ICreateType";
 
 export const getAllTypes = async (): Promise<IType[]> => {
   const response = await interceptorApiClient.get("/types");

@@ -10,7 +10,7 @@ import { ISize } from '../../../../types/Size/ISize';
 
 interface CheckoutItemProps {
   item: IProduct;
-  image: IProductGallery | null;
+  image: IProductGallery | undefined | null;
   size: ISize;
   color: IColor;
   quantity: number;

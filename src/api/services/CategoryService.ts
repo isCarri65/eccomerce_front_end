@@ -1,6 +1,8 @@
 import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
 import { ICategory } from "../../types/Category/ICategory";
 import publicApiClient from "../interceptors/axios.publicApiClient";
+import { ICreateCategory } from "../../types/Category/ICreateCategory";
+import { IUpdateCategory } from "../../types/Category/IUpdateCategory";
 
 export const getAllCategorys = async (): Promise<ICategory[]> => {
   const response = await interceptorApiClient.get("/categories");

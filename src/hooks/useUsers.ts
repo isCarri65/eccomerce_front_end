@@ -108,6 +108,7 @@ export const useUsers = (): UseUsersReturn => {
   // Actualizar perfil del usuario actual
   const handleUpdateUserProfile = async (data: IUser): Promise<boolean> => {
     try {
+      console.log(data, "lo que envia el frnt al service")
       const updatedProfile = await updateUserProfile(data);
       setCurrentUserProfile(updatedProfile);
       // Si el usuario actualizado está en la lista de usuarios, también actualizarlo ahí

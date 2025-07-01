@@ -1,5 +1,7 @@
 import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
 import { ISize } from "../../types/Size/ISize";
+import { IUpdateSize } from "../../types/Size/IUpdateSize";
+import { ICreateSize } from "../../types/Size/ICreateSize";
 
 export const getAllSizes = async (): Promise<ISize[]> => {
   const response = await interceptorApiClient.get("/sizes");
