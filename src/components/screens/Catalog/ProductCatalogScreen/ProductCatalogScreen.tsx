@@ -4,41 +4,24 @@ import { useNavigate } from "react-router-dom";
 import { IProduct } from "../../../../types/Product/IProduct";
 import { ProductGenre } from "../../../../types/enums/ProductGenre";
 import { SidebarFilters } from "../../../ui/SidebarFilters/SidebarFilters";
-
-
-// Demo products
-const demoProducts: IProduct[] = [
-  {
-    id: 1,
-    name: "Nike Air Max",
-    description: "Zapatillas deportivas con tecnología Air Max",
-    state: true,
-    buyPrice: 80,
-    sellPrice: 120,
-    genre: ProductGenre.Unisex,
-    categories: [{ id: 1, name: "Zapatillas", image:"" }, { id: 2, name: "Deportes", image: "" }],
-  },
-  {
-    id: 2,
-    name: "Adidas Ultraboost",
-    description: "Zapatillas de running con gran amortiguación",
-    state: true,
-    buyPrice: 100,
-    sellPrice: 150,
-    genre: ProductGenre.Unisex,
-    categories: [{ id: 1, name: "Zapatillas", image:"https://nikearprod.vtexassets.com/arquivos/ids/1391289-1600-1600?width=1600&height=1600&aspect=true" }, { id: 2, name: "Deportes", image: "https://nikearprod.vtexassets.com/arquivos/ids/1391289-1600-1600?width=1600&height=1600&aspect=true" }],
-  }
-];
+import { getAllProducts } from "../../../../api/services/ProductService";
 
 export const ProductCatalogScreen = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [selectedGenre, setSelectedGenre] = useState<ProductGenre | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [sortOption, setSortOption] = useState<"recommended" | "price_asc" | "price_desc">("recommended");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setProducts(demoProducts); // Cambia por fetch real cuando esté tu API
+    setLoading(true);
+    setError(null);
+    getAllProducts()
+      .then(setProducts)
+      .catch(() => setError("No se pudieron cargar los productos"))
+      .finally(() => setLoading(false));
   }, []);
 
   const handleClearFilters = () => {
@@ -46,13 +29,22 @@ export const ProductCatalogScreen = () => {
     setSelectedCategory(null);
   };
 
+  // Guardar en el sessionStorage el id del producto
+  const handleAddToCart = (productId: number) => {
+    // Por ahora solo ids, luego sumale size/color/qty
+    let cart = JSON.parse(sessionStorage.getItem("cart") || "[]");
+    cart.push({ productId, quantity: 1 }); // Para futuras mejoras agregá userId, sizeId, etc.
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+    alert("¡Producto agregado al carrito!");
+  };
+
   let filtered = products;
   if (selectedGenre) filtered = filtered.filter(p => p.genre === selectedGenre);
   if (selectedCategory) filtered = filtered.filter(p => p.categories.some(c => c.id === selectedCategory));
   if (sortOption === "price_asc")
-    filtered = [...filtered].sort((a, b) => a.sellPrice - b.sellPrice);
+    filtered = [...filtered].sort((a, b) => a.price - b.price);
   if (sortOption === "price_desc")
-    filtered = [...filtered].sort((a, b) => b.sellPrice - a.sellPrice);
+    filtered = [...filtered].sort((a, b) => b.price - a.price);
 
   return (
     <div className={styles.catalogContainer}>
@@ -83,7 +75,11 @@ export const ProductCatalogScreen = () => {
           </div>
         </div>
         <section className={styles.productsGrid}>
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className={styles.emptyMsgWrapper}><div className={styles.emptyMsg}>Cargando productos...</div></div>
+          ) : error ? (
+            <div className={styles.emptyMsgWrapper}><div className={styles.emptyMsg}>{error}</div></div>
+          ) : filtered.length === 0 ? (
             <div className={styles.emptyMsgWrapper}>
               <div className={styles.emptyMsg}>
                 No hay productos agregados en este catálogo.
@@ -98,12 +94,26 @@ export const ProductCatalogScreen = () => {
                 style={{ cursor: "pointer" }}
               >
                 <div className={styles.productImage}>
-                  <img src="https://via.placeholder.com/160x110?text=NIKE" alt={prod.name} />
+                  {/* <img src={prod.image ?? "/assets/placeholder.jpg"} alt={prod.name} /> */}
                 </div>
                 <div className={styles.productDetails}>
                   <div className={styles.productName}>{prod.name}</div>
                   <div className={styles.productDesc}>{prod.description}</div>
-                  <div className={styles.productPrice}>${prod.sellPrice.toLocaleString()}</div>
+                  <div className={styles.productPrice}>
+                    {typeof prod.price === 'number'
+                      ? `$${prod.price.toLocaleString()}`
+                      : 'Precio no disponible'}
+                  </div>
+                  <button
+                    className={styles.addToCartBtn}
+                    type="button"
+                    onClick={e => {
+                      e.stopPropagation(); // Así no navega al detalle si solo agregás al carrito
+                      handleAddToCart(prod.id);
+                    }}
+                  >
+                    Agregar al carrito
+                  </button>
                 </div>
               </div>
             ))
