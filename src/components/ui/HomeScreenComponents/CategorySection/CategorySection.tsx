@@ -1,44 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ICategory } from "../../../../types/Category/ICategory";
 import { CategoryCard } from "../CategoryCard/CategoryCard";
-import imageAMD from "../../../../assets/homeImages/fondo pc AMD.jpg";
 import SimpleBar from "simplebar-react";
 import styles from "./CategorySection.module.css";
 import "./ScrollStyle.css";
-const categoryExample: ICategory[] = [
-  {
-    id: "1",
-    name: "Hombre",
-    image: imageAMD,
-  },
-  {
-    id: "2",
-    name: "Mujer",
-    image: imageAMD,
-  },
-  {
-    id: "3",
-    name: "Niño/a",
-    image: imageAMD,
-  },
-  {
-    id: "4",
-    name: "Deporte",
-    image: imageAMD,
-  },
-  {
-    id: "5",
-    name: "Zapatillas",
-    image: imageAMD,
-  },
-  {
-    id: "6",
-    name: "Invierno",
-    image: imageAMD,
-  },
-];
+import { getAllCategorys } from "../../../../api/services/CategoryService";
+
 export const CategorySection = () => {
-  const [categories, setCategories] = useState<ICategory[]>(categoryExample);
+  const [categories, setCategories] = useState<ICategory[] | null>(null);
+  useEffect(() => {
+  
+    const fetchProducts = async () => {
+      try {
+        const response = await getAllCategorys();
+        setCategories(response);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+  
+    fetchProducts();
+  }, []);
   return (
     <div className={styles.sectionContainer}>
       <div className={styles.titleContainer}>
@@ -46,15 +28,15 @@ export const CategorySection = () => {
       </div>
 
       <SimpleBar
-        style={{ height: "80vh" }}
+        style={{ height: "100%" }}
         forceVisible="y"
         autoHide={false}
         className="w-[90%] md:w-[80%]  lg:w-[66%] xl:w-[66%] "
       >
         <div className={styles.categoryContainer + " sm:grid-cols-1"}>
-          {categories.map((category, index) => (
+          {categories ? categories.map((category, index) => (
             <CategoryCard key={index} category={category} />
-          ))}
+          )) : ("Cargando categorias...")}
         </div>
       </SimpleBar>
     </div>
