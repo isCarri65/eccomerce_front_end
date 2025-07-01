@@ -122,6 +122,7 @@
 .addressList {
   display: flex;
   flex-direction: column;
+  margin-bottom: 4%;
   gap: 1rem;
 }
 

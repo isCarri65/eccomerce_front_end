@@ -3,7 +3,6 @@ import styles from './CheckoutScreen.module.css';
 import CheckoutItem from '../../ui/CheckoutComponents/CheckoutItem/CheckoutItem';
 import ShippingAddress from '../../ui/CheckoutComponents/ShippingAdress/ShippingAddress';
 import PaymentOptions from '../../ui/CheckoutComponents/PaymentOption/PaymentOption';
-import axios from 'axios';
 import MercadoPagoSection from '../../ui/CheckoutComponents/MercadoPagoComponent/MercadoPagoComponent';
 import { IProduct } from '../../../types/Product/IProduct';
 import { IUser } from '../../../types/User/IUser';
@@ -12,6 +11,14 @@ import { IColor } from '../../../types/Color/IColor';
 import { IProductGallery } from '../../../types/Product/IProductGallery';
 import { Address } from '../../../types/Address/IAddress';
 import { IDiscount } from '../../../types/Discount/IDiscount';
+import publicApiClient from '../../../api/interceptors/axios.publicApiClient';
+import { getUserProfile } from '../../../api/services/UserService';
+import { getAllAddresses } from '../../../api/services/AddressService';
+import { getProductById } from '../../../services/productService';
+import { getSizeById } from '../../../api/services/SizeService';
+import { getColorById } from '../../../api/services/ColorService';
+
+
 
 interface CartItem {
   product: IProduct;
@@ -23,7 +30,6 @@ interface CartItem {
 }
 
 const CheckoutScreen: React.FC = () => {
-  const BASEURL = "http://localhost:8081/";
   const [activeStep, setActiveStep] = useState<'shippingAddress' | 'payment'>('shippingAddress');
   const [showSummary, setShowSummary] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -36,32 +42,42 @@ const CheckoutScreen: React.FC = () => {
     const storedCart = sessionStorage.getItem('cart');
     const parsedCart = storedCart ? JSON.parse(storedCart) : [];
 
+    const fetchGalleryByProductId = async (productId: number): Promise<IProductGallery> => {
+      const response = await publicApiClient.get(`/public/productgalleries/product/${productId}`);
+      return response.data;
+    };
+
+    const fetchDiscountByProductId = async (productId: number): Promise<IDiscount | null> => {
+      const response = await publicApiClient.get(`/public/productdiscounts/product/${productId}`);
+      return response.data[0]?.discount || null;
+    };
+
     const fetchData = async () => {
       setLoading(true);
       try {
-        const userRes = await axios.get(`${BASEURL}api/protected/profile`);
-        setUser(userRes.data);
+        const userRes = await getUserProfile();
+        setUser(userRes);
 
-        const addressRes = await axios.get(`${BASEURL}api/protected/addresses/getAll`);
-        setAddress(addressRes.data[0] ?? null);
+        const addresses = await getAllAddresses();
+        setAddress(addresses[0] ?? null);
 
         const items: CartItem[] = await Promise.all(
           parsedCart.map(async (item: any) => {
-            const [productRes, sizeRes, colorRes, discountRes, galleryRes] = await Promise.all([
-              axios.get(`${BASEURL}api/public/products/${item.productId}`),
-              axios.get(`${BASEURL}api/public/sizes/${item.sizeId}`),
-              axios.get(`${BASEURL}api/public/colors/${item.colorId}`),
-              axios.get(`${BASEURL}api/public/productdiscounts/product/${item.productId}`),
-              axios.get(`${BASEURL}api/public/productgalleries/product/${item.productId}`)
+            const [product, size, color, discount, gallery] = await Promise.all([
+              getProductById(item.productId),
+              getSizeById(item.sizeId),
+              getColorById(item.colorId),
+              fetchDiscountByProductId(item.productId),
+              fetchGalleryByProductId(item.productId),
             ]);
 
             return {
-              product: productRes.data,
-              size: sizeRes.data,
-              color: colorRes.data,
+              product,
+              size,
+              color,
               quantity: item.quantity,
-              gallery: galleryRes.data,
-              discount: discountRes.data[0]?.discount ?? null
+              gallery,
+              discount,
             };
           })
         );
@@ -130,7 +146,7 @@ const CheckoutScreen: React.FC = () => {
                     toggleSummary={toggleSummary}
                     user={user}
                     address={address}
-                    cartItems={cartItems} // Nuevo prop si querés manejar múltiples productos dentro de MercadoPagoSection
+                    cartItems={cartItems}
                   />
                 )}
               </div>

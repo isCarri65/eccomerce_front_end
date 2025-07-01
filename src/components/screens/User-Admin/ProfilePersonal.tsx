@@ -9,7 +9,6 @@ import { ICreateAddress } from '../../../types/Address/ICreateAddress';
 import { Button } from '../../ui/ElementsHTML/Button';
 import { useUserStore } from '../../../stores/userStore';
 import { useMessageStore } from '../../../stores/messageStore';
-import axios from 'axios';
 
 interface AddressFormProps {
   onClose: () => void;
@@ -25,7 +24,6 @@ const initialAddress: ICreateAddress = {
 };
 
 const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressCreated }) => {
-  const BASEURL = "http://localhost:8081/"
   const [form, setForm] = useState(initialAddress);
   const [loading, setLoading] = useState(false);
   const { addMessage } = useMessageStore();
@@ -39,26 +37,25 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressCreated }) 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  try {
-    const token = sessionStorage.getItem('sesionToken'); // O como lo hayas guardado
-    const response = await axios.post(
-      `${BASEURL}api/protected/addresses/create`,
-      {
-        ...form,
-        user: { id: currentUserProfile?.id } // o el ID dinámico del usuario actual
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+  if (!currentUserProfile?.id) {
+    alert('Usuario no autenticado.');
+    return;
+  }
 
-    console.log('Dirección creada:', response.data);
+  try {
+    const addressToCreate = {
+      ...form,
+      user: { id: currentUserProfile.id }
+    };
+
+    const newAddress = await createAddress(addressToCreate);
+
+    console.log('Dirección creada:', newAddress);
+    addMessage("Direccion creada Correctamente","success")
+    onAddressCreated()
     onClose();
   } catch (error: any) {
-    console.error('Error al crear la dirección:', error.response?.data || error.message, error);
+    console.error('Error al crear la dirección:', error.response?.data || error.message);
     alert('Error al crear la dirección');
   }
 };
@@ -119,6 +116,7 @@ export const ProfilePersonal: React.FC = () => {
   const loadAddresses = async () => {
     try {
       const addressesData = await getAllAddresses();
+      console.log(addressesData)
       setAddresses(addressesData);
     } catch (error: any) {
       addMessage(error.message || "Error al cargar las direcciones", "error");
@@ -217,13 +215,6 @@ export const ProfilePersonal: React.FC = () => {
       <div className={styles.card}>
         <div className={styles.addressHeader}>
           <h2 className={styles.sectionTitle}>Direcciones</h2>
-          <Button 
-            variant="primary" 
-            onClick={() => setShowAddressForm(true)}
-            className={styles.addAddressBtn}
-          >
-            Agregar Dirección
-          </Button>
         </div>
         <div className={styles.addressList}>
           {addresses.length === 0 ? (
@@ -244,6 +235,13 @@ export const ProfilePersonal: React.FC = () => {
             ))
           )}
         </div>
+                  <Button 
+            variant="primary" 
+            onClick={() => setShowAddressForm(true)}
+            className={styles.addAddressBtn}
+          >
+            Agregar Dirección
+          </Button>
       </div>
       <div className={styles.card}>
         <div className={styles.sessionBlock}>

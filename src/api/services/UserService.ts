@@ -83,7 +83,7 @@ export const getUserById = async (id: number): Promise<IUser> => {
 };
 
 export const getUserProfile = async (): Promise<IUser> => {
-  const response = await interceptorApiClient.get(`/profile`);
+  const response = await interceptorApiClient.get(`/protected/users/profile`);
   return response.data;
 };
 
@@ -94,7 +94,7 @@ export const createUser = async (data: IUser): Promise<IUser> => {
 
 export const updateUserProfile = async (data: IUser): Promise<IUser> => {
   const response = await interceptorApiClient.put(
-    `/protected/users/updateProfile`,
+    `/protected/users/profile`,
     data
   );
   return response.data;
