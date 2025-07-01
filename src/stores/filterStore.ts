@@ -1,6 +1,15 @@
 import { create } from "zustand";
 import { ProductGenre } from "../types/enums/ProductGenre";
 import { ICategory } from "../types/Category/ICategory";
+import { IType } from "../types/Type/IType";
+
+export interface IFilterValues {
+  categorias: ICategory[];
+  genero: ProductGenre | null;
+  precio: [number, number];
+  orden: "asc" | "desc";
+  tipoProducto: IType | null;
+}
 
 interface FilterState {
   categorias: ICategory[];
@@ -8,7 +17,7 @@ interface FilterState {
   precio: [number, number];
   orden: "asc" | "desc";
   tipoPrenda: string | null;
-  setFilters: (filters: Partial<FilterState>) => void;
+  setFilters: (filters: Partial<IFilterValues>) => void;
   resetFilters: () => void;
   addCategory: (category: ICategory) => void;
 }

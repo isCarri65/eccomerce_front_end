@@ -6,12 +6,12 @@ import {
   createAddress,
 } from "../../../api/services/AddressService";
 import { IUser } from "../../../types/User/IUser";
-import { Address } from "../../../types/Address/IAddress";
 import { ICreateAddress } from "../../../types/Address/ICreateAddress";
 import { Button } from "../../ui/Button";
 import { useMessageStore } from "../../../stores/messageStore";
 import { useUsers } from "../../../hooks/useUsers";
 import { useAuth } from "../../../hooks/useAuth";
+import { IAddress } from "../../../types/Address/IAddress";
 
 interface AddressFormProps {
   onClose: () => void;
@@ -116,7 +116,7 @@ export const ProfilePersonal = () => {
   const { logout } = useAuth();
   const { addMessage } = useMessageStore();
   const [user, setUser] = useState<IUser | null>(null);
-  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [addresses, setAddresses] = useState<IAddress[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [form, setForm] = useState<IUser | null>(null);

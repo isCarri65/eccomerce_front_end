@@ -108,12 +108,13 @@ export const NavBar = () => {
   };
 
   return (
-    <nav className={styles.navBarContainer}>
-      <div
-        className={styles.navBar}
-        style={{ transform: `translateY(-${offsetY}px)` }}
-      >
-        {/* <button onClick={() => addToCart({
+    <div className={styles.container}>
+      <nav className={styles.navBarContainer}>
+        <div
+          className={styles.navBar}
+          style={{ transform: `translateY(-${offsetY}px)` }}
+        >
+          {/* <button onClick={() => addToCart({
   id: '1',
   name: 'Product A',
   price: 25.99,
@@ -122,46 +123,48 @@ export const NavBar = () => {
   color: 'Red'
 })}>Agregar Producto A</button> */}
 
-        <div className={styles.logoContainer}>
-          <img src={logo} alt="logo de nike" onClick={() => navigate("/")} />
+          <div className={styles.logoContainer}>
+            <img src={logo} alt="logo de nike" onClick={() => navigate("/")} />
+          </div>
+
+          <ul className={styles.categoriasContainer}>
+            {categoryOptionsSelects.map((cat) => (
+              <li key={`${cat.kind}-${cat.value}`}>
+                <button
+                  className={styles.navLink}
+                  onMouseEnter={() => setSelectedCategoria(cat)}
+                  onMouseLeave={() => setSelectedCategoria(null)}
+                  onClick={() => changePage(cat.value)}
+                >
+                  {cat.value}
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <div className={styles.iconContainer}>
+            <FontAwesomeIcon
+              className={styles.iconItem}
+              icon={faMagnifyingGlass}
+            />
+            <FontAwesomeIcon
+              className={styles.iconItem}
+              icon={faCartShopping}
+              onClick={() => handleCart()}
+            />
+            <FontAwesomeIcon
+              icon={faUser}
+              className={styles.iconItem}
+              onClick={moveToProfile}
+            />
+            {isAuthenticated && user && (
+              <p className={styles.userName}>{user.name}</p>
+            )}
+          </div>
         </div>
 
-        <ul className={styles.categoriasContainer}>
-          {categoryOptionsSelects.map((cat) => (
-            <li key={`${cat.kind}-${cat.value}`}>
-              <button
-                className={styles.navLink}
-                onMouseEnter={() => setSelectedCategoria(cat)}
-                onMouseLeave={() => setSelectedCategoria(null)}
-                onClick={() => changePage(cat.value)}
-              >
-                {cat.value}
-              </button>
-            </li>
-          ))}
-        </ul>
-
-        <div className={styles.iconContainer}>
-          <FontAwesomeIcon
-            className={styles.iconItem}
-            icon={faMagnifyingGlass}
-          />
-          <FontAwesomeIcon
-            className={styles.iconItem}
-            icon={faCartShopping}
-            onClick={() => handleCart()}
-          />
-          <FontAwesomeIcon
-            icon={faUser}
-            className={styles.iconItem}
-            onClick={moveToProfile}
-          />
-          {isAuthenticated && user && (
-            <p className={styles.userName}>{user.name}</p>
-          )}
-        </div>
-      </div>
-
+        <CartSidebar showCart={showCart} setShowCart={setShowCart} />
+      </nav>
       <div className={styles.OptionsCategoryContainer}>
         {selectedCategoria &&
           (selectedCategoria.kind === "genero" ? (
@@ -170,7 +173,6 @@ export const NavBar = () => {
             <TypeOptions type={selectedCategoria.param} />
           ))}
       </div>
-      <CartSidebar showCart={showCart} setShowCart={setShowCart} />
-    </nav>
+    </div>
   );
 };

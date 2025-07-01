@@ -3,12 +3,12 @@ import { ICategory } from "../../types/Category/ICategory";
 import publicApiClient from "../interceptors/axios.publicApiClient";
 
 export const getAllCategorys = async (): Promise<ICategory[]> => {
-  const response = await interceptorApiClient.get("/categories");
+  const response = await publicApiClient.get("/public/categories");
   return response.data;
 };
 
 export const getCategoryById = async (id: number): Promise<ICategory> => {
-  const response = await interceptorApiClient.get(`/categories/${id}`);
+  const response = await publicApiClient.get(`/public/categories/${id}`);
   return response.data;
 };
 

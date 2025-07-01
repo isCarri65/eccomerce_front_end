@@ -2,7 +2,7 @@ import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
 import { IType } from "../../types/Type/IType";
 
 export const getAllTypes = async (): Promise<IType[]> => {
-  const response = await interceptorApiClient.get("/types");
+  const response = await interceptorApiClient.get("/public/types");
   return response.data;
 };
 

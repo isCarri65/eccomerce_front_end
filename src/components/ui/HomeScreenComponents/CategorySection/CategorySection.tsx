@@ -1,44 +1,15 @@
-import { useState } from "react";
-import { ICategory } from "../../../../types/Category/ICategory";
+import { useEffect } from "react";
 import { CategoryCard } from "../CategoryCard/CategoryCard";
-import imageAMD from "../../../../assets/homeImages/fondo pc AMD.jpg";
 import SimpleBar from "simplebar-react";
 import styles from "./CategorySection.module.css";
 import "./ScrollStyle.css";
-const categoryExample: ICategory[] = [
-  {
-    id: "1",
-    name: "Hombre",
-    image: imageAMD,
-  },
-  {
-    id: "2",
-    name: "Mujer",
-    image: imageAMD,
-  },
-  {
-    id: "3",
-    name: "Niño/a",
-    image: imageAMD,
-  },
-  {
-    id: "4",
-    name: "Deporte",
-    image: imageAMD,
-  },
-  {
-    id: "5",
-    name: "Zapatillas",
-    image: imageAMD,
-  },
-  {
-    id: "6",
-    name: "Invierno",
-    image: imageAMD,
-  },
-];
+import { useCategories } from "../../../../hooks/useCategories";
+
 export const CategorySection = () => {
-  const [categories, setCategories] = useState<ICategory[]>(categoryExample);
+  const { fetchCategories, categories } = useCategories();
+  useEffect(() => {
+    fetchCategories();
+  }, []);
   return (
     <div className={styles.sectionContainer}>
       <div className={styles.titleContainer}>

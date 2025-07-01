@@ -9,7 +9,7 @@ export const CategoryCard: FC<ICategoryCard> = ({ category }) => {
     <div
       className={styles.categoryCardContainer}
       style={{
-        backgroundImage: `url(${category.image})`,
+        backgroundImage: `url(${category.imageUrl ? category.imageUrl : ""})`,
         backgroundSize: "cover",
       }}
     >

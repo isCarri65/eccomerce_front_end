@@ -1,3 +1,6 @@
+.container {
+  position: relative;
+}
 .navBarContainer {
   background-color: var(--primary-color);
   width: 100%;
