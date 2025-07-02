@@ -83,6 +83,7 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const token = await autoRefreshToken();
+      console.log("token ", token);
       if (token) {
         setAccessToken(token);
         const user = await fetchUserProfile();

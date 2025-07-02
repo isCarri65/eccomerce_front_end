@@ -28,7 +28,7 @@ export const CategorySection = () => {
 
       <SimpleBar
         style={{ height: "80vh" }}
-        overflowY="hidden"
+        overflowy="hidden"
         className="w-[90%] md:w-[80%]  lg:w-[66%] xl:w-[66%] "
       >
         <div className={styles.categoryContainer + " sm:grid-cols-1"}>
