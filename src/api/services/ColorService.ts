@@ -4,15 +4,15 @@ import { ICreateColor } from "../../types/Color/ICreateColor";
 import { IUpdateColor } from "../../types/Color/IUpdateColor";
 
 export const getAllColors = async (): Promise<IColor[]> => {
-  const response = await interceptorApiClient.get("/colors");
+  const response = await interceptorApiClient.get("/public/colors");
   return response.data;
 };
 export const getColorById = async (id: number): Promise<IColor> => {
-  const response = await interceptorApiClient.get(`/colors/${id}`);
+  const response = await interceptorApiClient.get(`/public/colors/${id}`);
   return response.data;
 };
 export const createColor = async (color: IColor): Promise<ICreateColor> => {
-  const response = await interceptorApiClient.post("/colors", color);
+  const response = await interceptorApiClient.post("/public/colors", color);
   return response.data;
 };
 
@@ -20,10 +20,10 @@ export const updateColor = async (
   id: number,
   color: IColor
 ): Promise<IUpdateColor> => {
-  const response = await interceptorApiClient.put(`/colors/${id}`, color);
+  const response = await interceptorApiClient.put(`/public/colors/${id}`, color);
   return response.data;
 };
 export const deleteColor = async (id: number): Promise<void> => {
-  await interceptorApiClient.delete(`/colors/${id}`);
+  await interceptorApiClient.delete(`/public/colors/${id}`);
   // No return value for delete operation
 };

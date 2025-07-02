@@ -1,28 +1,36 @@
 // utils/cartUtils.ts
 export interface CartItem {
-  productId: number;
-  colorId: number;
-  sizeId: number;
+  productVariantId: number;
+  quantity?: number;
 }
 
 const STORAGE_KEY = "cart";
 
 export function addToCart(item: CartItem) {
-  let current = [];
+  let current: CartItem[] = [];
+
   try {
     current = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
   } catch (e) {
     current = [];
   }
-  // Si ya está (igual color, size, producto), no agregamos de nuevo.
-  const exists = current.some(
-    (i: CartItem) =>
-      i.productId === item.productId &&
-      i.colorId === item.colorId &&
-      i.sizeId === item.sizeId
+
+  // Buscar si el ítem ya existe por productVariantId
+  const existingIndex = current.findIndex(
+    (i) => i.productVariantId === item.productVariantId
   );
-  if (!exists) {
-    current.push(item);
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+
+  if (existingIndex !== -1) {
+    // Si ya existe, incrementar quantity
+    current[existingIndex].quantity = (current[existingIndex].quantity || 1) + (item.quantity ?? 1);
+  } else {
+    // Si no existe, agregarlo con quantity (o 1 si no viene)
+    const newItem = {
+      ...item,
+      quantity: item.quantity ?? 1,
+    };
+    current.push(newItem);
   }
+
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(current));
 }

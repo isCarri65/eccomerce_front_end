@@ -21,7 +21,7 @@ const CheckoutItem: React.FC<CheckoutItemProps> = ({ item, image, size, color, q
     <li className={styles.checkoutItem}>
       <div className={styles.itemImage}>
         {/* Placeholder for product image - replace with actual image source */}
-        <img src={image?.image || "placeholder-image.jpg"} alt={item.name} />
+        <img src={image?.imageUrl || "placeholder-image.jpg"} alt={item.name} />
       </div>
       <div className={styles.itemInfo}>
         <div className={styles.itemDetails}>
@@ -30,7 +30,7 @@ const CheckoutItem: React.FC<CheckoutItemProps> = ({ item, image, size, color, q
           <p>Cantidad: {quantity}</p>
         </div>
         <div className={styles.itemPrice}>
-          ${(item.sellPrice * quantity).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+          ${(item.price * quantity).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
         </div>
       </div>
     </li>

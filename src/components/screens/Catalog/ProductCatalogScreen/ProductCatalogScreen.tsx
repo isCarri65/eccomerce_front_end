@@ -29,14 +29,14 @@ export const ProductCatalogScreen = () => {
     setSelectedCategory(null);
   };
 
-  // Guardar en el sessionStorage el id del producto
-  const handleAddToCart = (productId: number) => {
-    // Por ahora solo ids, luego sumale size/color/qty
-    let cart = JSON.parse(sessionStorage.getItem("cart") || "[]");
-    cart.push({ productId, quantity: 1 }); // Para futuras mejoras agregá userId, sizeId, etc.
-    sessionStorage.setItem("cart", JSON.stringify(cart));
-    alert("¡Producto agregado al carrito!");
-  };
+  // // Guardar en el sessionStorage el id del producto
+  // const handleAddToCart = (productId: number) => {
+  //   // Por ahora solo ids, luego sumale size/color/qty
+  //   let cart = JSON.parse(sessionStorage.getItem("cart") || "[]");
+  //   cart.push({ productId, quantity: 1 }); // Para futuras mejoras agregá userId, sizeId, etc.
+  //   sessionStorage.setItem("cart", JSON.stringify(cart));
+  //   alert("¡Producto agregado al carrito!");
+  // };
 
   let filtered = products;
   if (selectedGenre) filtered = filtered.filter(p => p.genre === selectedGenre);
@@ -107,10 +107,9 @@ export const ProductCatalogScreen = () => {
                   <button
                     className={styles.addToCartBtn}
                     type="button"
-                    onClick={e => {
-                      e.stopPropagation(); // Así no navega al detalle si solo agregás al carrito
-                      handleAddToCart(prod.id);
-                    }}
+                    // onClick={e => {
+                    //   handleAddToCart(prod.id);
+                    // }}
                   >
                     Agregar al carrito
                   </button>

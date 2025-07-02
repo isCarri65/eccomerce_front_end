@@ -2,6 +2,16 @@ import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
 import { IProduct } from "../../types/Product/IProduct";
 import { IUpdateProduct } from "../../types/Product/IUpdateProduct";
 import { ICreateProduct } from "../../types/Product/ICreateProduct";
+import { IProductVariantCART } from "../../types/Product/IProductVariantCART";
+
+export const getProductVariantsByProductId = async (
+  productId: number
+): Promise<IProductVariantCART[]> => {
+  const response = await interceptorApiClient.get(
+    `/public/products/${productId}/variants`
+  );
+  return response.data;
+};
 
 export const getAllProducts = async (): Promise<IProduct[]> => {
   const response = await interceptorApiClient.get("/public/products");

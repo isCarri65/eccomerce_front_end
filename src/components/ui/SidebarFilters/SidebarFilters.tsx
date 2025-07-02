@@ -5,9 +5,9 @@ import { ICategory } from "../../../types/Category/ICategory";
 
 // Opciones demo, reemplazá cuando tengas datos reales
 const genres = [
-  { value: ProductGenre.Male, label: "Hombre" },
-  { value: ProductGenre.Female, label: "Mujer" },
-  { value: ProductGenre.Children, label: "Niño/a" },
+  { value: ProductGenre.MALE, label: "Hombre" },
+  { value: ProductGenre.FEMALE, label: "Mujer" },
+  { value: ProductGenre.CHILDREN, label: "Niño/a" },
 ];
 
 const categories: ICategory[] = [
@@ -60,8 +60,8 @@ export const SidebarFilters = ({
           </button>
           {open.genero && (
             <div className={styles.accordionPanel}>
-              {genres.map((g) => (
-                <label key={g.value} className={styles.filterLabel}>
+              {genres.map((g, index) => (
+                <label key={index} className={styles.filterLabel}>
                   <input
                     type="radio"
                     name="genero"
