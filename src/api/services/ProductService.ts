@@ -1,7 +1,7 @@
 import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
 import { IProduct } from "../../types/Product/IProduct";
-import { ICreateProduct } from "../../types/Product/ICreateProduct";
 import { IUpdateProduct } from "../../types/Product/IUpdateProduct";
+import { ICreateProduct } from "../../types/Product/ICreateProduct";
 
 export const getAllProducts = async (): Promise<IProduct[]> => {
   const response = await interceptorApiClient.get("/public/products");

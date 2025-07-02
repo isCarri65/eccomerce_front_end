@@ -1,5 +1,6 @@
 import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
 import { IColor } from "../../types/Color/IColor";
+import { ICreateColor } from "../../types/Color/ICreateColor";
 import { IUpdateColor } from "../../types/Color/IUpdateColor";
 
 export const getAllColors = async (): Promise<IColor[]> => {
