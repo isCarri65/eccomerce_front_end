@@ -2,68 +2,73 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styles from "./ProductDetailScreen.module.css";
 import { IProduct } from "../../../../types/Product/IProduct";
-import { ProductGenre } from "../../../../types/enums/ProductGenre";
-// import { getProductById } from "../../../services/productService";
+import { addToCart } from "../../../../utils/cartUtils";
+
+// Simular talles y colores:
+const sizeOptions = [
+  { id: 1, label: "40" },
+  { id: 2, label: "41" },
+  { id: 3, label: "42" },
+];
+const colorOptions = [
+  { id: 1, label: "Rojo" },
+  { id: 2, label: "Azul" },
+];
 
 export const ProductDetailScreen = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<IProduct | null>(null);
+  const [selectedSize, setSelectedSize] = useState<number>(sizeOptions[0].id);
+  const [selectedColor, setSelectedColor] = useState<number>(colorOptions[0].id);
 
-  useEffect(() => {
-    // Lógica para traer el producto por ID
-    // getProductById(Number(id)).then(setProduct);
-
-    // DEMO:
-    setProduct({
-      id: 1,
-      name: "Nike Air Red",
-      description: "Zapatilla roja edición limitada",
-      buyPrice: 10000,
-      sellPrice: 14500,
-      state: true,
-      genre: ProductGenre.Unisex,
-      categories: [{ id: 1, name: "Zapatillas", image: "https://nikearprod.vtexassets.com/arquivos/ids/1391289-1600-1600?width=1600&height=1600&aspect=true" }],
-    });
+  useEffect(() => { setProduct
   }, [id]);
 
   if (!product) return <div className={styles.loading}>Cargando producto...</div>;
 
+  const handleAddToCart = () => {
+    addToCart({
+      productId: product.id,
+      colorId: selectedColor,
+      sizeId: selectedSize,
+    });
+    alert("¡Producto agregado al carrito!");
+  };
+
   return (
     <div className={styles.detailContainer}>
       <div className={styles.leftColumn}>
-        {/* Galería de imágenes */}
         <img
           src="https://via.placeholder.com/350x250?text=NIKE"
           alt={product.name}
           className={styles.mainImage}
         />
-        {/* Thumbnails... */}
       </div>
       <div className={styles.rightColumn}>
         <div className={styles.productName}>{product.name}</div>
-        <div className={styles.productPrice}>${product.sellPrice.toLocaleString()}</div>
+        <div className={styles.productPrice}>${product.price.toLocaleString()}</div>
         <div className={styles.productDesc}>{product.description}</div>
-
-        {/* Selectores de talle y color */}
         <div className={styles.selectors}>
           <label>
             Talle:
-            <select>
-              <option value="40">40</option>
-              <option value="41">41</option>
-              <option value="42">42</option>
+            <select value={selectedSize} onChange={e => setSelectedSize(Number(e.target.value))}>
+              {sizeOptions.map(opt => (
+                <option key={opt.id} value={opt.id}>{opt.label}</option>
+              ))}
             </select>
           </label>
           <label>
             Color:
-            <select>
-              <option value="red">Rojo</option>
-              <option value="blue">Azul</option>
+            <select value={selectedColor} onChange={e => setSelectedColor(Number(e.target.value))}>
+              {colorOptions.map(opt => (
+                <option key={opt.id} value={opt.id}>{opt.label}</option>
+              ))}
             </select>
           </label>
         </div>
-
-        <button className={styles.addToCartBtn}>Agregar al carrito</button>
+        <button className={styles.addToCartBtn} onClick={handleAddToCart}>
+          Agregar al carrito
+        </button>
       </div>
     </div>
   );
