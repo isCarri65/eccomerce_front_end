@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, use, useEffect, useState } from "react";
 import { ProductGenre } from "../../../types/enums/ProductGenre";
 import styles from "./GenreOptions.module.css";
 import { useTypes } from "../../../hooks/useTypes";
@@ -15,7 +15,7 @@ interface IGenreOptionsProps {
 export const GenreOptions: FC<IGenreOptionsProps> = ({ genre }) => {
   console.log(genre);
   const { types, fetchTypes } = useTypes();
-  const { categories } = useCategories();
+  const { categories, fetchCategories } = useCategories();
   const nav = useNavigate();
   const { addCategory, setFilters } = filterStore(
     useShallow((state) => ({
@@ -25,11 +25,17 @@ export const GenreOptions: FC<IGenreOptionsProps> = ({ genre }) => {
   );
 
   const filterCategoriesByType = (type: IType): ICategory[] => {
-    return categories.filter((category) => category.type.id === type.id);
+    return categories
+      .filter(
+        (category) =>
+          category.type.id === type.id && !category.tags.includes("Deporte")
+      )
+      .sort((a, b) => a.name.localeCompare(b.name));
   };
 
   useEffect(() => {
     fetchTypes();
+    fetchCategories();
   }, []);
 
   const handleSelectCategory = (category: ICategory, type: IType) => {
@@ -39,23 +45,42 @@ export const GenreOptions: FC<IGenreOptionsProps> = ({ genre }) => {
       categorias: [category],
     };
     setFilters(filterValues);
-    nav(`/ProductCatalog/${genre}/${type.name}/category=${category.name}`);
+    nav(`/productsCatalog/${genre}/${type.name}/${category.name}`);
+  };
+
+  const handleSelctType = (type: IType) => {
+    const filterValues: Partial<IFilterValues> = {
+      genero: genre,
+      tipoProducto: type,
+      categorias: [],
+    };
+    setFilters(filterValues);
+    nav(`/productsCatalog/${genre}/${type.name}`);
   };
   return (
     <div className={styles.genreOptionContainer}>
-      {types.map((type) => (
-        <div className={styles.typeContainer} key={type.id}>
-          <p className={styles.typeName}>{type.name}</p>
-          {filterCategoriesByType(type).map((category) => (
-            <p
-              key={category.id}
-              onClick={() => handleSelectCategory(category, type)}
-            >
-              {category.name}
-            </p>
+      <div className={styles.contentContainer}>
+        {types &&
+          types.map((type) => (
+            <div className={styles.typeContainer} key={type.id}>
+              <p
+                className={styles.typeName}
+                onClick={() => handleSelctType(type)}
+              >
+                {type.name}
+              </p>
+              {filterCategoriesByType(type).map((category) => (
+                <p
+                  className={styles.categoryName}
+                  key={category.id}
+                  onClick={() => handleSelectCategory(category, type)}
+                >
+                  {category.name}
+                </p>
+              ))}
+            </div>
           ))}
-        </div>
-      ))}
+      </div>
     </div>
   );
 };

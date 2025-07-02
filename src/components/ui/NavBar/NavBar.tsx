@@ -7,7 +7,6 @@ import styles from "./NavBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../../../assets/Icon/nike_logo_2.png";
 import { useEffect, useRef, useState } from "react";
-import { IType } from "../../../types/Type/IType";
 import { CategoryOptionSelect } from "../../../types/CategoryOptionSelect";
 import { GenreOptions } from "./GenreOptions";
 import { TypeOptions } from "./TypeOptions";
@@ -21,16 +20,6 @@ const genreValues = [
   ProductGenre.FEMALE,
   ProductGenre.CHILDREN,
 ];
-const typesOptions: IType[] = [
-  {
-    id: 1,
-    name: "Nuevos",
-  },
-  {
-    id: 2,
-    name: "Deportes",
-  },
-];
 
 export const NavBar = () => {
   const { isAuthenticated, user } = useAuth();
@@ -40,12 +29,13 @@ export const NavBar = () => {
   const navbarHeight = 80;
 
   const [showCart, setShowCart] = useState(false);
-  const [selectedCategoria, setSelectedCategoria] =useState<CategoryOptionSelect | null>(null);
+  const [selectedCategoria, setSelectedCategoria] =
+    useState<CategoryOptionSelect | null>(null);
 
-  const handleCart = ()=>{
-    console.log(showCart)
-    setShowCart(!showCart)
-  }
+  const handleCart = () => {
+    console.log(showCart);
+    setShowCart(!showCart);
+  };
 
   // Manejo del scroll para ocultar/mostrar el navbar
   const handleScroll = () => {
@@ -62,18 +52,15 @@ export const NavBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [offsetY]);
 
-  // Cargar tus tipos (ejemplo: fetch a tu API)
-  useEffect(() => {
-    // fetch("/api/types").then(...).then(data => setTypes(data));
-  }, []);
-
   const categoryOptionsSelects: CategoryOptionSelect[] = [
     ...genreValues.map(
       (g) => ({ kind: "genero", value: g, param: g } as CategoryOptionSelect)
     ),
-    ...typesOptions.map(
-      (t) => ({ kind: "tipo", value: t.name, param: t } as CategoryOptionSelect)
-    ),
+    {
+      kind: "tipo",
+      value: "Deporte",
+      param: { id: 2, name: "Deporte" },
+    } as CategoryOptionSelect,
   ];
 
   const changePage = (paramPath: string) => {
@@ -82,33 +69,35 @@ export const NavBar = () => {
   };
 
   return (
-<<<<<<< HEAD
     <div className={styles.container}>
       <nav className={styles.navBarContainer}>
         <div
           className={styles.navBar}
-          style={{ transform: `translateY(-${offsetY}px)` }}
+          style={{
+            transform: selectedCategoria ? "" : `translateY(-${offsetY}px)`,
+          }}
         >
-          {/* <button onClick={() => addToCart({
-  id: '1',
-  name: 'Product A',
-  price: 25.99,
-  size: 'M',
-  quantity: 1,
-  color: 'Red'
-})}>Agregar Producto A</button> */}
-
           <div className={styles.logoContainer}>
             <img src={logo} alt="logo de nike" onClick={() => navigate("/")} />
           </div>
 
           <ul className={styles.categoriasContainer}>
+            <li>
+              <button
+                className={styles.navLink}
+                onClick={() => changePage("Nuevo")}
+              >
+                Nuevo
+              </button>
+            </li>
             {categoryOptionsSelects.map((cat) => (
-              <li key={`${cat.kind}-${cat.value}`}>
+              <li
+                key={`${cat.kind}-${cat.value}`}
+                onMouseEnter={() => setSelectedCategoria(cat)}
+                onMouseLeave={() => setSelectedCategoria(null)}
+              >
                 <button
                   className={styles.navLink}
-                  onMouseEnter={() => setSelectedCategoria(cat)}
-                  onMouseLeave={() => setSelectedCategoria(null)}
                   onClick={() => changePage(cat.value)}
                 >
                   {cat.value}
@@ -125,70 +114,26 @@ export const NavBar = () => {
             <FontAwesomeIcon
               className={styles.iconItem}
               icon={faCartShopping}
-              onClick={() => handleCart()}
+              onClick={handleCart}
             />
             <FontAwesomeIcon
-              icon={faUser}
               className={styles.iconItem}
-              onClick={moveToProfile}
+              icon={faUser}
+              onClick={() => navigate(isAuthenticated ? "/profile" : "/login")}
             />
+
             {isAuthenticated && user && (
               <p className={styles.userName}>{user.name}</p>
             )}
           </div>
         </div>
-
-        <CartSidebar showCart={showCart} setShowCart={setShowCart} />
       </nav>
-=======
-    <nav className={styles.navBarContainer}>
+
       <div
-        className={styles.navBar}
-        style={{ transform: `translateY(-${offsetY}px)` }}
+        className={styles.OptionsCategoryContainer}
+        onMouseEnter={() => setSelectedCategoria(selectedCategoria)}
+        onMouseLeave={() => setSelectedCategoria(null)}
       >
-        <div className={styles.logoContainer}>
-          <img 
-            src={logo} 
-            alt="logo de nike" 
-            onClick={() => navigate("/")}
-          />
-        </div>
-
-        <ul className={styles.categoriasContainer}>
-          {categoryOptionsSelects.map((cat) => (
-            <li key={`${cat.kind}-${cat.value}`}>
-              <button
-                className={styles.navLink}
-                onMouseEnter={() => setSelectedCategoria(cat)}
-                onMouseLeave={() => setSelectedCategoria(null)}
-                onClick={() => changePage(cat.value)}
-              >
-                {cat.value}
-              </button>
-            </li>
-          ))}
-        </ul>
-
-        <div className={styles.iconContainer}>
-          <FontAwesomeIcon
-            className={styles.iconItem}
-            icon={faMagnifyingGlass}
-          />
-          <FontAwesomeIcon className={styles.iconItem} icon={faCartShopping} onClick={handleCart}/>
-          <FontAwesomeIcon
-            className={styles.iconItem}
-            icon={faUser}
-            onClick={() => navigate(isAuthenticated ? "/profile" : "/login")}
-          />
-
-          {isAuthenticated && user && (
-            <p className={styles.userName}>{user.name}</p>
-          )}
-        </div>
-      </div>
-
->>>>>>> master
-      <div className={styles.OptionsCategoryContainer}>
         {selectedCategoria &&
           (selectedCategoria.kind === "genero" ? (
             <GenreOptions genre={selectedCategoria.value} />

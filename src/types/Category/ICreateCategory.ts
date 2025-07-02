@@ -3,4 +3,5 @@ export interface ICreateCategory {
   imageUrl: string;
   publicId: string;
   typeId: number;
+  tags: string[];
 }

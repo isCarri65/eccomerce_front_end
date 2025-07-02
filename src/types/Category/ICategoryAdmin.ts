@@ -1,4 +1,4 @@
-import { IType } from "../type/IType";
+import { IType } from "../Type/IType";
 
 export interface ICategoryAdmin {
   id: number;
@@ -6,5 +6,7 @@ export interface ICategoryAdmin {
   imageUrl: string;
   publicId: string;
   deleted: boolean;
+  tags: string[];
+
   type: IType;
 }

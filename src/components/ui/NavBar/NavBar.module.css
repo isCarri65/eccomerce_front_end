@@ -1,5 +1,4 @@
 .container {
-  position: relative;
 }
 .navBarContainer {
   background-color: var(--primary-color);
@@ -19,7 +18,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 100;
   background-color: var(--primary-color);
   color: var(--letter-color);
   height: 5rem;
@@ -62,15 +61,15 @@
   width: 50vw;
   align-items: center;
   justify-content: start;
-  gap: 1.5rem;
+  height: 100%;
 }
 
-.categoriasContainer li a {
-  font-size: 1.4rem;
-}
-.navLinks {
+.categoriasContainer li {
+  height: 100%;
   display: flex;
-  gap: 75px;
+  align-items: center;
+
+  padding: 0 10px;
 }
 
 .navLink {
@@ -81,12 +80,15 @@
   position: relative;
   transition: color 0.3s ease;
 }
-
 .navLink:hover {
+  cursor: pointer;
+}
+
+.categoriasContainer li:hover .navLink {
   color: #f0f0f0;
 }
 
-.navLink:after {
+.categoriasContainer li .navLink:after {
   content: "";
   position: absolute;
   width: 0;
@@ -97,6 +99,9 @@
   transition: width 0.3s ease;
 }
 
-.navLink:hover:after {
+.categoriasContainer li:hover .navLink:after {
   width: 100%;
+}
+
+.optionCategoryContainer {
 }

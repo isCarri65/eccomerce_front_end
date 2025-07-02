@@ -2,5 +2,43 @@
   height: 300px;
   width: 100%;
   position: fixed;
-  background-color: white;
+  top: 0;
+  left: 0;
+  background-color: var(--secundary-color);
+  z-index: 80;
+  border-bottom: 1px solid var(--primary-color);
+}
+.contentContainer {
+  display: flex;
+  gap: 3rem;
+  position: relative;
+  top: 5.5rem;
+  height: 200px;
+}
+.typeContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+}
+
+.typeName {
+  font-size: 1rem;
+  width: heigt 2rem;
+  font-weight: bold;
+  color: var(--letter-Secundary-color);
+  margin-bottom: 1rem;
+}
+.typeName:hover {
+  cursor: pointer;
+  color: var(--letter-Tertiary-color);
+}
+.categoryName {
+  color: var(--letter-Tertiary-color);
+}
+.categoryName:hover {
+  cursor: pointer;
+  color: var(--letter-Secundary-color);
 }

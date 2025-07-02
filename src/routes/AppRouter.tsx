@@ -25,19 +25,26 @@ export const AppRouter = () => {
       <Routes>
         {/* PÚBLICO / USUARIO */}
         <Route path="/" element={<HomeScreen />} />
+        <Route
+          path="/productsCatalog/:param1/:typeName/:category"
+          element={<ProductCatalogScreen />}
+        />
         <Route path="/productsCatalog/*" element={<ProductCatalogScreen />} />
         <Route path="/product/:id" element={<ProductDetailScreen />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
-        
+
         {/*Protegido, ya que solo se puede comprar si se esta registrado */}
-  
-        <Route path="/checkout" element={
-                <ProtectedRoute>
-          <CheckoutScreen />
-        </ProtectedRoute>
-          } />
-        
+
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <CheckoutScreen />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/profile"
           element={

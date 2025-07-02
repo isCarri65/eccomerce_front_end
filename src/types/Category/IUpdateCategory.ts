@@ -4,4 +4,5 @@ export interface IUpdateCategory {
   publicId: string;
   deleted: boolean;
   typeId: number;
+  tags: string[];
 }
