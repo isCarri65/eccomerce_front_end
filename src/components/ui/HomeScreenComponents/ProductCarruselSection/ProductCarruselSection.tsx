@@ -1,71 +1,33 @@
 import styles from "./ProductCarruselSection.module.css";
 import SimpleBar from "simplebar-react";
 import "./ScrollStyle.css";
-import { MouseEvent, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import { IProduct } from "../../../../types/Product/IProduct";
 import { ProductCard } from "../../ProductCard/ProductCard";
-import { ProductGenre } from "../../../../types/enums/ProductGenre";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-const productExample: IProduct[] = [
-  {
-    id: "1",
-    name: "Producto 1",
-    description: "Descripción del producto 1",
-    buyPrice: 100,
-    sellPrice: 150,
-    state: true,
-    genre: ProductGenre.Male,
-    categories: [],
-  },
-  {
-    id: "2",
-    name: "Producto 2",
-    description: "Descripción del producto 2",
-    buyPrice: 200,
-    sellPrice: 250,
-    state: true,
-    genre: ProductGenre.Female,
-    categories: [],
-  },
-  {
-    id: "3",
-    name: "Producto 3",
-    description: "Descripción del producto 3",
-    buyPrice: 300,
-    sellPrice: 350,
-    state: true,
-    genre: ProductGenre.Unisex,
-    categories: [],
-  },
-  {
-    id: "4",
-    name: "Producto 4",
-    description: "Descripción del producto 4",
-    buyPrice: 400,
-    sellPrice: 450,
-    state: true,
-    genre: ProductGenre.Children,
-    categories: [],
-  },
-  {
-    id: "5",
-    name: "Producto 5",
-    description: "Descripción del producto 5",
-    buyPrice: 500,
-    sellPrice: 550,
-    state: true,
-    genre: ProductGenre.Children,
-    categories: [],
-  },
-  // Agrega más productos de ejemplo según sea necesario
-];
+import { getAllProducts } from "../../../../api/services/ProductService";
 
 export const ProductCarruselSection = () => {
   const [populatesProducts, setPopulatesProducts] =
-    useState<IProduct[]>(productExample);
+    useState<IProduct[] | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+
+  const fetchProducts = async () => {
+    try {
+      const response = await getAllProducts();
+      setPopulatesProducts(response);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  fetchProducts();
+}, []);
+
 
   // Función para mover el carrusel con las flechas
   const scroll = (
@@ -107,9 +69,9 @@ export const ProductCarruselSection = () => {
           scrollableNodeProps={{ ref: scrollRef }}
         >
           <div className={styles.productsTrack}>
-            {populatesProducts.map((product, index) => (
+            {populatesProducts ? populatesProducts.map((product, index) => (
               <ProductCard key={index} product={product} />
-            ))}
+            )) : ("Cargando Productos")}
           </div>
         </SimpleBar>
         <div className={styles.linea}></div>

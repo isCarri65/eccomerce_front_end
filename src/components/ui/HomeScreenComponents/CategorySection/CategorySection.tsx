@@ -1,14 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ICategory } from "../../../../types/Category/ICategory";
 import { CategoryCard } from "../CategoryCard/CategoryCard";
 import SimpleBar from "simplebar-react";
 import styles from "./CategorySection.module.css";
 import "./ScrollStyle.css";
-import { useCategories } from "../../../../hooks/useCategories";
+import { getAllCategorys } from "../../../../api/services/CategoryService";
 
 export const CategorySection = () => {
-  const { fetchCategories, categories } = useCategories();
+  const [categories, setCategories] = useState<ICategory[] | null>(null);
   useEffect(() => {
-    fetchCategories();
+    const fetchProducts = async () => {
+      try {
+        const response = await getAllCategorys();
+        setCategories(response);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
   }, []);
   return (
     <div className={styles.sectionContainer}>
@@ -17,15 +27,17 @@ export const CategorySection = () => {
       </div>
 
       <SimpleBar
-        style={{ height: "80vh" }}
+        style={{ height: "100%" }}
         forceVisible="y"
         autoHide={false}
         className="w-[90%] md:w-[80%]  lg:w-[66%] xl:w-[66%] "
       >
         <div className={styles.categoryContainer + " sm:grid-cols-1"}>
-          {categories.map((category, index) => (
-            <CategoryCard key={index} category={category} />
-          ))}
+          {categories
+            ? categories.map((category, index) => (
+                <CategoryCard key={index} category={category} />
+              ))
+            : "Cargando categorias..."}
         </div>
       </SimpleBar>
     </div>

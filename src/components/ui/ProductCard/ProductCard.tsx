@@ -20,7 +20,7 @@ export const ProductCard: FC<IProductCard> = ({ product }) => {
       <div className={styles.productDetails}>
         <h3 className={styles.productTitle}>{product.name}</h3>
         <p className={styles.productDescription}>{product.description}</p>
-        <p className={styles.productPrice}>${product.buyPrice.toFixed(2)}</p>
+        <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
       </div>
     </div>
   );

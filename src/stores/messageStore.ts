@@ -21,7 +21,7 @@ export const useMessageStore = create<MessageState>((set, get) => ({
     const id = Date.now().toString();
     const newMessage: Message = { id, message, type, duration };
     
-    set((state) => ({
+  set((state) => ({
       messages: [...state.messages, newMessage]
     }));
 

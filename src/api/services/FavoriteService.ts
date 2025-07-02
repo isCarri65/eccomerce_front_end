@@ -1,6 +1,7 @@
 import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
 import { IFavorite } from "../../types/Favorite/IFavorite";
 import { IProduct } from "../../types/Product/IProduct";
+import { ICreateFavorite } from "../../types/Favorite/ICreateFavorite";
 
 export const getAllFavorites = async (): Promise<IFavorite[]> => {
   const response = await interceptorApiClient.get("/favorites");

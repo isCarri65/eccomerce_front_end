@@ -1,18 +1,18 @@
 import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
-import { IDiscount } from "../../types/Discount/IDiscountRule";
+import { IDiscountRule } from "../../types/Discount/IDiscountRule";
 
-export const getAllDiscounts = async (): Promise<IDiscount[]> => {
+export const getAllDiscounts = async (): Promise<IDiscountRule[]> => {
   const response = await interceptorApiClient.get("/discounts");
   return response.data;
 };
 
-export const getDiscountById = async (id: number): Promise<IDiscount> => {
+export const getDiscountById = async (id: number): Promise<IDiscountRule> => {
   const response = await interceptorApiClient.get(`/discounts/${id}`);
   return response.data;
 };
 
 export const createDiscount = async (
-  data: IDiscount
+  data: IDiscountRule
 ): Promise<ICreateDiscount> => {
   const response = await interceptorApiClient.post("/discounts", data);
   return response.data;
@@ -20,7 +20,7 @@ export const createDiscount = async (
 
 export const updateDiscount = async (
   id: number,
-  data: IDiscount
+  data: IDiscountRule
 ): Promise<IUpdateDiscount> => {
   const response = await interceptorApiClient.put(`/discounts/${id}`, data);
   return response.data;
