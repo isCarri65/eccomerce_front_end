@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './ShippingAddress.module.css';
 import { IUser } from '../../../../types/User/IUser';
-import { Address } from '../../../../types/Address/IAddress';
+import { IAddress } from '../../../../types/Address/IAddress';
 import axios from 'axios';
 import { useUserStore } from '../../../../stores/userStore';
 import { Button } from '../../ElementsHTML/Button';
@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 interface ShippingAddressProps {
   onAddressConfirmed: (useCurrent: boolean) => void;
   user: IUser | null;
-  address: Address | null;
+  address: IAddress | null;
 }
 
 const initialAddress = {
@@ -38,7 +38,7 @@ const ShippingAddress: React.FC<ShippingAddressProps> = ({ onAddressConfirmed, u
     street: address?.street,
     city: address?.locality,
     province: address?.province,
-    zip: address?.cp,
+    zip: address?.postal,
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

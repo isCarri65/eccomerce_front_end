@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import styles from './MercadoPagoComponent.module.css';
-import { IProduct } from '../../../../types/Product/IProduct';
 import { IUser } from '../../../../types/User/IUser';
-import { ISize } from '../../../../types/Size/ISize';
-import { IColor } from '../../../../types/Color/IColor';
-import { Address } from '../../../../types/Address/IAddress';
+import { IAddress } from '../../../../types/Address/IAddress';
+import { IProductGallery } from '../../../../types/Product/IProductGallery';
 import axios from 'axios';
 
 interface CartItem {
-  product: IProduct;
-  size: ISize;
-  color: IColor;
+  productId: number;
+  name: string;
+  price: number;
+  sizeId: number;
+  sizeName: string;
+  colorId: number;
+  colorName: string;
   quantity: number;
-  discountPercentage?: number;
+  imagen: IProductGallery;
+  descuento: number | null;
+  variantId: number;
 }
 
 interface MercadoPagoSectionProps {
@@ -20,12 +24,10 @@ interface MercadoPagoSectionProps {
   user: IUser | null;
   showSummary: boolean;
   toggleSummary: Function;
-  address: Address | null;
+  address: IAddress | null;
 }
 
 const MercadoPagoSection: React.FC<MercadoPagoSectionProps> = ({ cartItems, user, showSummary, toggleSummary, address }) => {
-  const BASEURL = "http://localhost:8081/";
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,9 +39,18 @@ const MercadoPagoSection: React.FC<MercadoPagoSectionProps> = ({ cartItems, user
     toggleSummary(false);
   };
 
+  const calculateTotal = () => {
+    return cartItems.reduce((acc, item) => {
+      const base = item.price * item.quantity;
+      const discount = item.descuento ?? 0;
+      const final = base * (1 - discount / 100);
+      return acc + final;
+    }, 0).toFixed(2);
+  };
+
   const handlePayment = async () => {
     if (!user) {
-      setError("User data is missing.");
+      setError('Falta información del usuario.');
       return;
     }
 
@@ -47,45 +58,32 @@ const MercadoPagoSection: React.FC<MercadoPagoSectionProps> = ({ cartItems, user
       setLoading(true);
       setError(null);
 
-      const variantPromises = cartItems.map(item =>
-        axios.post(`${BASEURL}api/produtVariants`, {
-          quantity: item.quantity,
-          state: true,
-          product: { id: item.product.id },
-          size: { id: item.size.id },
-          color: { id: item.color.id },
-        })
-      );
-
-      const variantResponses = await Promise.all(variantPromises);
-      const productos = variantResponses.map((response, index) => ({
-        variantId: response.data.id,
-        discountId: null // Ajustar si tienes lógica de descuentos
+      // Armar los datos para CompraRequestDTO
+      const productos = cartItems.map(item => ({
+        variantId: item.variantId,
+        discountId: item.descuento ? item.descuento : null
       }));
 
-      const paymentData = {
+      const requestData = {
         productos,
-        idUser: user.id,
+        idUser: user.id
       };
 
-      const paymentResponse = await axios.post('/pay/mp', paymentData);
-      console.log('Mercado Pago payment initiated:', paymentResponse.data);
-      // Redirigir o manejar respuesta
+      const response = await axios.post('http://localhost:8081/pay/mp', requestData);
+      const { preferenceId } = response.data;
+
+      if (preferenceId) {
+        window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
+      } else {
+        throw new Error('No se recibió el preferenceId de MercadoPago');
+      }
+
     } catch (err) {
-      console.error('Error during payment process:', err);
-      setError("Payment failed. Please try again.");
+      console.error('Error en el pago:', err);
+      setError('Hubo un error al iniciar el pago.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const calculateTotal = () => {
-    return cartItems.reduce((acc, item) => {
-      const basePrice = item.product.sellPrice * item.quantity;
-      const discount = item.discountPercentage || 0;
-      const finalPrice = basePrice * (1 - discount / 100.0);
-      return acc + finalPrice;
-    }, 0).toFixed(2);
   };
 
   return (
@@ -104,13 +102,17 @@ const MercadoPagoSection: React.FC<MercadoPagoSectionProps> = ({ cartItems, user
               <>
                 {cartItems.map((item, idx) => (
                   <div key={idx}>
-                    <p>Producto: {item.product.name}</p>
-                    <p>Talla: {item.size.name}, Color: {item.color.name}</p>
+                    <p><strong>{item.name}</strong></p>
+                    <p>Talle: {item.sizeName} - Color: {item.colorName}</p>
                     <p>Cantidad: {item.quantity}</p>
+                    <p>Precio unitario: ${item.price.toFixed(2)}</p>
+                    {item.descuento && <p>Descuento: {item.descuento}%</p>}
+                    <p>Subtotal: ${(item.price * item.quantity * (1 - (item.descuento ?? 0) / 100)).toFixed(2)}</p>
+                    <hr />
                   </div>
                 ))}
-                <p>Dirección: {address?.street}, {address?.province}</p>
-                <p>Total: ${calculateTotal()}</p>
+                <p><strong>Dirección:</strong> {address?.street}, {address?.province}</p>
+                <p><strong>Total: ${calculateTotal()}</strong></p>
               </>
             ) : <p>Cargando resumen...</p>}
           </div>

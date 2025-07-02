@@ -2,19 +2,18 @@ import React, { useEffect, useState } from 'react';
 import styles from './CartSidebar.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate, Link, Navigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../ElementsHTML/Button';
 import { useUserStore } from '../../../stores/userStore';
-import axios from 'axios';
+import { getProductVariantsByProductId } from '../../../api/services/ProductService';
 
 interface CartItem {
+  productVariantId: number;
   productId: number;
   name: string;
   price: number;
-  sizeId: number;
   sizeName: string;
   quantity: number;
-  colorId: number;
   colorName: string;
 }
 
@@ -26,14 +25,14 @@ interface CartSidebarProps {
 export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const { isAuthenticated } = useUserStore();
+  const { } = useUserStore();
   const navigate = useNavigate();
-  const BASEURL = 'http://localhost:8081/';
 
   useEffect(() => {
     if (showCart) {
       setLoading(true);
       const storedItems = sessionStorage.getItem('cart');
+
       if (storedItems) {
         const parsedItems = JSON.parse(storedItems);
 
@@ -41,20 +40,14 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
           try {
             const itemsWithDetails = await Promise.all(
               parsedItems.map(async (item: any) => {
-                const [productRes, sizeRes, colorRes] = await Promise.all([
-                  axios.get(`${BASEURL}api/public/products/${item.productId}`),
-                  axios.get(`${BASEURL}api/public/sizes/${item.sizeId}`),
-                  axios.get(`${BASEURL}api/public/colors/${item.colorId}`)
-                ]);
-
+                const variant = await getProductVariantsByProductId(item.productVariantId);
                 return {
-                  productId: item.productId,
-                  name: productRes.data.name,
-                  price: productRes.data.sellPrice,
-                  sizeId: item.sizeId,
-                  sizeName: sizeRes.data.name,
-                  colorId: item.colorId,
-                  colorName: colorRes.data.name,
+                  productVariantId: variant.id,
+                  productId: variant.productId,
+                  name: variant.productName,
+                  price: variant.price,
+                  sizeName: variant.sizeDTO.value,
+                  colorName: variant.colorDTO.name,
                   quantity: item.quantity
                 };
               })
@@ -62,7 +55,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
 
             setCartItems(itemsWithDetails);
           } catch (err) {
-            console.error('Error fetching product details', err);
+            console.error('Error fetching product variant details', err);
             setCartItems([]);
           } finally {
             setLoading(false);
@@ -77,9 +70,9 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
     }
   }, [showCart]);
 
-  const handleQuantityChange = (productId: number, sizeId: number, colorId: number, quantity: number) => {
+  const handleQuantityChange = (productVariantId: number, quantity: number) => {
     const updatedItems = cartItems.map(item =>
-      item.productId === productId && item.sizeId === sizeId && item.colorId === colorId
+      item.productVariantId === productVariantId
         ? { ...item, quantity: Math.max(1, quantity) }
         : item
     );
@@ -96,10 +89,8 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
     navigate('/productsCatalog');
   };
 
-  const handleDeleteItem = (productId: number, sizeId: number, colorId: number) => {
-    const updatedItems = cartItems.filter(
-      item => !(item.productId === productId && item.sizeId === sizeId && item.colorId === colorId)
-    );
+  const handleDeleteItem = (productVariantId: number) => {
+    const updatedItems = cartItems.filter(item => item.productVariantId !== productVariantId);
     setCartItems(updatedItems);
     sessionStorage.setItem('cart', JSON.stringify(updatedItems.map(({ sizeName, colorName, ...rest }) => rest)));
   };
@@ -109,9 +100,12 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
   };
 
   const checkoutHandle = () => {
-    if (!isAuthenticated) {
-      return <Navigate to="/login" replace />;
-    }
+    const checkoutItems = cartItems.map(item => ({
+      productVariantId: item.productVariantId,
+      quantity: item.quantity
+    }));
+
+    sessionStorage.setItem('checkoutItems', JSON.stringify(checkoutItems));
     setShowCart(false);
     navigate('/checkout');
   };
@@ -136,7 +130,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
           <>
             <ul className={styles.cartItemList}>
               {cartItems.map(item => (
-                <li key={`${item.productId}-${item.sizeId}-${item.colorId}`} className={styles.cartItem}>
+                <li key={item.productVariantId} className={styles.cartItem}>
                   <div className={styles.itemImage}>
                     <img src={"placeholder.jpg"} alt={item.name} />
                   </div>
@@ -146,15 +140,15 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ showCart, setShowCart 
                         <h4>{item.name}</h4>
                         <p>Talle: {item.sizeName} Color: {item.colorName}</p>
                       </div>
-                      <button className={styles.deleteButton} onClick={() => handleDeleteItem(item.productId, item.sizeId, item.colorId)}>
+                      <button className={styles.deleteButton} onClick={() => handleDeleteItem(item.productVariantId)}>
                         <FontAwesomeIcon icon={faTrash} />
                       </button>
                     </div>
                     <div className={styles.itemActions}>
                       <div className={styles.quantitySelector}>
-                        <button onClick={() => handleQuantityChange(item.productId, item.sizeId, item.colorId, item.quantity - 1)}>-</button>
+                        <button onClick={() => handleQuantityChange(item.productVariantId, item.quantity - 1)}>-</button>
                         <span>{item.quantity}</span>
-                        <button onClick={() => handleQuantityChange(item.productId, item.sizeId, item.colorId, item.quantity + 1)}>+</button>
+                        <button onClick={() => handleQuantityChange(item.productVariantId, item.quantity + 1)}>+</button>
                       </div>
                       <div className={styles.itemPrice}>
                         ${(item.price * item.quantity).toFixed(2)}
