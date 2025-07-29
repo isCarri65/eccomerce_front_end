@@ -15,16 +15,16 @@ export const getCategoryById = async (id: number): Promise<ICategory> => {
 };
 
 export const createCategory = async (
-  data: ICategory
-): Promise<ICreateCategory> => {
+  data: ICreateCategory
+): Promise<ICategory> => {
   const response = await interceptorApiClient.post("/public/categories", data);
   return response.data;
 };
 
 export const updateCategory = async (
   id: number,
-  data: ICategory
-): Promise<IUpdateCategory> => {
+  data: IUpdateCategory
+): Promise<ICategory> => {
   const response = await interceptorApiClient.put(
     `/public/categories/${id}`,
     data

@@ -7,6 +7,6 @@ export interface IDiscountRule {
   endDate: string; // ISO string
   percentage: number;
   state: boolean;
-  category?: ICategory;
-  product?: IProduct;
+  categoryId?: ICategory;
+  productId?: IProduct;
 }

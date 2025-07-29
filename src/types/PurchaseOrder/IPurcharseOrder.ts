@@ -1,3 +1,5 @@
+import { IPurchaseOrderDetail } from "../PurchaseOrderDetail/IPurchaseOrderDetail";
+
 export type OrderState = "PAID" | "SHIPPED" | "DELIVERED";
 
 export interface IPurchaseOrder {
@@ -8,4 +10,5 @@ export interface IPurchaseOrder {
   finalPrice: number;
   paymentMethod: string;
   state: OrderState;
+  purchaseOrderDetails?: IPurchaseOrderDetail[];
 }

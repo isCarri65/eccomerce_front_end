@@ -5,9 +5,17 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  getSearchedProducts,
+  getFilteredProducts,
 } from "../api/services/ProductService";
 import { IProduct } from "../types/Product/IProduct";
 import { useProductStore } from "../stores/productStore";
+import { IPageableFilter } from "../types/IPageableFilter";
+import { IPage } from "../types/IPage";
+import { ICreateProduct } from "../types/Product/ICreateProduct";
+import { IUpdateProduct } from "../types/Product/IUpdateProduct";
+import { IProductFilter } from "../types/Product/IProducFilter";
+import { IFilterValues } from "../stores/filterStore";
 
 // Hook principal para Products
 interface UseProductsReturn {
@@ -18,14 +26,23 @@ interface UseProductsReturn {
   // CRUD Operations
   fetchProducts: () => Promise<void>;
   fetchProductById: (id: number) => Promise<IProduct | null>;
-  handleCreateProduct: (data: IProduct) => Promise<boolean>;
-  handleUpdateProduct: (id: number, data: IProduct) => Promise<boolean>;
+  handleCreateProduct: (data: ICreateProduct) => Promise<boolean>;
+  handleUpdateProduct: (id: number, data: IUpdateProduct) => Promise<boolean>;
   handleDeleteProduct: (id: number) => Promise<boolean>;
 
   // State Management
   setSelectedProduct: (product: IProduct | null) => void;
   refreshProducts: () => Promise<void>;
   clearProducts: () => void;
+  actionSearch: (
+    searchTerm: string,
+    pageable: IPageableFilter
+  ) => Promise<IPage<IProduct> | null>;
+
+  filterProducts: (
+    filters: IFilterValues,
+    pageable: IPageableFilter
+  ) => Promise<IPage<IProduct> | null>;
 }
 
 export const useProducts = (): UseProductsReturn => {
@@ -51,6 +68,47 @@ export const useProducts = (): UseProductsReturn => {
     }))
   );
 
+  const filterProducts = async (
+    filters: IFilterValues,
+    pageable: IPageableFilter
+  ): Promise<IPage<IProduct> | null> => {
+    const productFilter: IProductFilter = {
+      genre: filters.genre,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      typeId: filters.type?.id || null,
+      colorId: filters.color?.id || null,
+      categoryIds: filters.categories?.map((c) => c.id) || null,
+    };
+    try {
+      const data = await getFilteredProducts(productFilter, pageable);
+      setProducts(data.content);
+      return data;
+    } catch (error) {
+      console.log("Error al filtrar productos:", error);
+      return null;
+    }
+  };
+
+  const actionSearch = async (
+    searchTerm: string,
+    pageable: IPageableFilter
+  ): Promise<IPage<IProduct> | null> => {
+    try {
+      const data = await getSearchedProducts(searchTerm, pageable);
+      if (data.size > 0) {
+        setProducts(data.content);
+      } else {
+        setProducts([]);
+        console.log("No products found for the search term:", searchTerm);
+      }
+      return data;
+    } catch (error) {
+      console.log("Error al buscar productos:", error);
+      return null;
+    }
+  };
+
   // Obtener todos los productos
   const fetchProducts = async (): Promise<void> => {
     try {
@@ -74,7 +132,9 @@ export const useProducts = (): UseProductsReturn => {
   };
 
   // Crear producto
-  const handleCreateProduct = async (data: IProduct): Promise<boolean> => {
+  const handleCreateProduct = async (
+    data: ICreateProduct
+  ): Promise<boolean> => {
     try {
       const newProduct = await createProduct(data);
       addProduct(newProduct);
@@ -88,7 +148,7 @@ export const useProducts = (): UseProductsReturn => {
   // Actualizar producto
   const handleUpdateProduct = async (
     id: number,
-    data: IProduct
+    data: IUpdateProduct
   ): Promise<boolean> => {
     try {
       const updatedProduct = await updateProduct(id, data);
@@ -131,5 +191,7 @@ export const useProducts = (): UseProductsReturn => {
     setSelectedProduct,
     refreshProducts,
     clearProducts,
+    actionSearch,
+    filterProducts,
   };
 };

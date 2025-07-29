@@ -24,11 +24,11 @@
   height: 5rem;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
   width: 100%;
 }
 .logoContainer {
-  width: 100px;
+  width: 18vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,7 +58,7 @@
 
 .categoriasContainer {
   display: flex;
-  width: 50vw;
+  width: 40vw;
   align-items: center;
   justify-content: start;
   height: 100%;

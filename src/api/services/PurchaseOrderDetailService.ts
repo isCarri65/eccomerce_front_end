@@ -19,7 +19,7 @@ export const getPurchaseOrderDetailById = async (
 
 export const createPurchaseOrderDetail = async (
   data: IPurchaseOrderDetail
-): Promise<ICreatePurchaseOrderDetail> => {
+): Promise<IPurchaseOrderDetail> => {
   const response = await interceptorApiClient.post(
     "/purchaseorderdetails",
     data
@@ -30,7 +30,7 @@ export const createPurchaseOrderDetail = async (
 export const updatePurchaseOrderDetail = async (
   id: number,
   data: IPurchaseOrderDetail
-): Promise<IUpdatePurchaseOrderDetail> => {
+): Promise<IPurchaseOrderDetail> => {
   const response = await interceptorApiClient.put(
     `/purchaseorderdetails/${id}`,
     data

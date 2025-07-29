@@ -11,16 +11,19 @@ export const getColorById = async (id: number): Promise<IColor> => {
   const response = await interceptorApiClient.get(`/public/colors/${id}`);
   return response.data;
 };
-export const createColor = async (color: IColor): Promise<ICreateColor> => {
+export const createColor = async (color: ICreateColor): Promise<IColor> => {
   const response = await interceptorApiClient.post("/public/colors", color);
   return response.data;
 };
 
 export const updateColor = async (
   id: number,
-  color: IColor
-): Promise<IUpdateColor> => {
-  const response = await interceptorApiClient.put(`/public/colors/${id}`, color);
+  color: IUpdateColor
+): Promise<IColor> => {
+  const response = await interceptorApiClient.put(
+    `/public/colors/${id}`,
+    color
+  );
   return response.data;
 };
 export const deleteColor = async (id: number): Promise<void> => {

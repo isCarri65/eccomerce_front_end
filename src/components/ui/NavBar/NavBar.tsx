@@ -1,8 +1,4 @@
-import {
-  faCartShopping,
-  faMagnifyingGlass,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faUser } from "@fortawesome/free-solid-svg-icons";
 import styles from "./NavBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../../../assets/Icon/nike_logo_2.png";
@@ -12,13 +8,14 @@ import { GenreOptions } from "./GenreOptions";
 import { TypeOptions } from "./TypeOptions";
 import { ProductGenre } from "../../../types/enums/ProductGenre";
 import { useNavigate } from "react-router-dom";
-import { CartSidebar } from "../CartSideBar/CartSideBar";
 import { useAuth } from "../../../hooks/useAuth";
+import SearchBarTask, { SearchBarProducts } from "./SearchBarProducts";
+import { useCategories } from "../../../hooks/useCategories";
 
 const genreValues = [
-  ProductGenre.MALE,
-  ProductGenre.FEMALE,
-  ProductGenre.CHILDREN,
+  { value: ProductGenre.MALE, label: "Hombre" },
+  { value: ProductGenre.FEMALE, label: "Mujer" },
+  { value: ProductGenre.CHILDREN, label: "Niños" },
 ];
 
 export const NavBar = () => {
@@ -28,6 +25,7 @@ export const NavBar = () => {
   const lastScrollY = useRef(0);
   const navbarHeight = 80;
 
+  const { fetchCategories } = useCategories();
   const [showCart, setShowCart] = useState(false);
   const [selectedCategoria, setSelectedCategoria] =
     useState<CategoryOptionSelect | null>(null);
@@ -52,9 +50,18 @@ export const NavBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [offsetY]);
 
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   const categoryOptionsSelects: CategoryOptionSelect[] = [
     ...genreValues.map(
-      (g) => ({ kind: "genero", value: g, param: g } as CategoryOptionSelect)
+      (g) =>
+        ({
+          kind: "genero",
+          value: g.label,
+          param: g.value,
+        } as CategoryOptionSelect)
     ),
     {
       kind: "tipo",
@@ -105,12 +112,11 @@ export const NavBar = () => {
               </li>
             ))}
           </ul>
+          <div className={styles.searchComponentContainer}>
+            <SearchBarProducts />
+          </div>
 
           <div className={styles.iconContainer}>
-            <FontAwesomeIcon
-              className={styles.iconItem}
-              icon={faMagnifyingGlass}
-            />
             <FontAwesomeIcon
               className={styles.iconItem}
               icon={faCartShopping}

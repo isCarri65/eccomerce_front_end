@@ -4,13 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { IProduct } from "../../../../types/Product/IProduct";
 import { ProductGenre } from "../../../../types/enums/ProductGenre";
 import { SidebarFilters } from "../../../ui/SidebarFilters/SidebarFilters";
-import { getAllProducts } from "../../../../api/services/ProductService";
+import { useProducts } from "../../../../hooks/useProducts";
 
 export const ProductCatalogScreen = () => {
-  const [products, setProducts] = useState<IProduct[]>([]);
+  const { products, fetchProducts } = useProducts();
   const [selectedGenre, setSelectedGenre] = useState<ProductGenre | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [sortOption, setSortOption] = useState<"recommended" | "price_asc" | "price_desc">("recommended");
+  const [sortOption, setSortOption] = useState<
+    "recommended" | "price_asc" | "price_desc"
+  >("recommended");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -18,8 +20,7 @@ export const ProductCatalogScreen = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    getAllProducts()
-      .then(setProducts)
+    fetchProducts()
       .catch(() => setError("No se pudieron cargar los productos"))
       .finally(() => setLoading(false));
   }, []);
@@ -39,8 +40,12 @@ export const ProductCatalogScreen = () => {
   // };
 
   let filtered = products;
-  if (selectedGenre) filtered = filtered.filter(p => p.genre === selectedGenre);
-  if (selectedCategory) filtered = filtered.filter(p => p.categories.some(c => c.id === selectedCategory));
+  if (selectedGenre)
+    filtered = filtered.filter((p) => p.genre === selectedGenre);
+  if (selectedCategory)
+    filtered = filtered.filter((p) =>
+      p.categories.some((c) => c.id === selectedCategory)
+    );
   if (sortOption === "price_asc")
     filtered = [...filtered].sort((a, b) => a.price - b.price);
   if (sortOption === "price_desc")
@@ -65,7 +70,7 @@ export const ProductCatalogScreen = () => {
             <label>Ordenar por: </label>
             <select
               value={sortOption}
-              onChange={e => setSortOption(e.target.value as any)}
+              onChange={(e) => setSortOption(e.target.value as any)}
               className={styles.sortSelect}
             >
               <option value="recommended">Recomendado</option>
@@ -76,9 +81,13 @@ export const ProductCatalogScreen = () => {
         </div>
         <section className={styles.productsGrid}>
           {loading ? (
-            <div className={styles.emptyMsgWrapper}><div className={styles.emptyMsg}>Cargando productos...</div></div>
+            <div className={styles.emptyMsgWrapper}>
+              <div className={styles.emptyMsg}>Cargando productos...</div>
+            </div>
           ) : error ? (
-            <div className={styles.emptyMsgWrapper}><div className={styles.emptyMsg}>{error}</div></div>
+            <div className={styles.emptyMsgWrapper}>
+              <div className={styles.emptyMsg}>{error}</div>
+            </div>
           ) : filtered.length === 0 ? (
             <div className={styles.emptyMsgWrapper}>
               <div className={styles.emptyMsg}>
@@ -86,7 +95,7 @@ export const ProductCatalogScreen = () => {
               </div>
             </div>
           ) : (
-            filtered.map(prod => (
+            filtered.map((prod) => (
               <div
                 className={styles.productCard}
                 key={prod.id}
@@ -100,9 +109,9 @@ export const ProductCatalogScreen = () => {
                   <div className={styles.productName}>{prod.name}</div>
                   <div className={styles.productDesc}>{prod.description}</div>
                   <div className={styles.productPrice}>
-                    {typeof prod.price === 'number'
+                    {typeof prod.price === "number"
                       ? `$${prod.price.toLocaleString()}`
-                      : 'Precio no disponible'}
+                      : "Precio no disponible"}
                   </div>
                   <button
                     className={styles.addToCartBtn}
