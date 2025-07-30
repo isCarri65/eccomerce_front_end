@@ -6,6 +6,10 @@ export interface IProductVariantCART {
   productId: number;
   size: ISize;
   color: IColor;
-  quantity: number;
+  urlImage: string;
+  productName: string;
+  stock: number;
   state: boolean;
+  price: number;
+  quantity: number;
 }

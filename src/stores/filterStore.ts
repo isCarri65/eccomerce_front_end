@@ -17,7 +17,7 @@ export interface IFilterValues {
 const initialPageable: IPageableFilter = {
   sort: "recommendedScore,desc",
   page: "0",
-  size: "10",
+  size: "20",
 };
 const filterValues: IFilterValues = {
   categories: [],

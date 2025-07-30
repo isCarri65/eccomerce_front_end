@@ -16,11 +16,13 @@ import { ICreateProduct } from "../types/Product/ICreateProduct";
 import { IUpdateProduct } from "../types/Product/IUpdateProduct";
 import { IProductFilter } from "../types/Product/IProducFilter";
 import { IFilterValues } from "../stores/filterStore";
+import { IProductList } from "../types/Product/IProductList";
 
 // Hook principal para Products
 interface UseProductsReturn {
   // State from Zustand
   products: IProduct[];
+  productsList: IProductList[];
   selectedProduct: IProduct | null;
 
   // CRUD Operations
@@ -37,18 +39,20 @@ interface UseProductsReturn {
   actionSearch: (
     searchTerm: string,
     pageable: IPageableFilter
-  ) => Promise<IPage<IProduct> | null>;
+  ) => Promise<IPage<IProductList> | null>;
 
   filterProducts: (
     filters: IFilterValues,
     pageable: IPageableFilter
-  ) => Promise<IPage<IProduct> | null>;
+  ) => Promise<IPage<IProductList> | null>;
 }
 
 export const useProducts = (): UseProductsReturn => {
   const {
     products,
+    productsList,
     selectedProduct,
+    setProductsList,
     setProducts,
     addProduct,
     updateProductInStore,
@@ -57,8 +61,10 @@ export const useProducts = (): UseProductsReturn => {
     clearProducts,
   } = useProductStore(
     useShallow((state) => ({
+      productsList: state.productsList,
       products: state.products,
       selectedProduct: state.selectedProduct,
+      setProductsList: state.setProductsList,
       setProducts: state.setProducts,
       addProduct: state.addProduct,
       updateProductInStore: state.updateProductInStore,
@@ -71,7 +77,7 @@ export const useProducts = (): UseProductsReturn => {
   const filterProducts = async (
     filters: IFilterValues,
     pageable: IPageableFilter
-  ): Promise<IPage<IProduct> | null> => {
+  ): Promise<IPage<IProductList> | null> => {
     const productFilter: IProductFilter = {
       genre: filters.genre,
       minPrice: filters.minPrice,
@@ -82,7 +88,7 @@ export const useProducts = (): UseProductsReturn => {
     };
     try {
       const data = await getFilteredProducts(productFilter, pageable);
-      setProducts(data.content);
+      setProductsList(data.content);
       return data;
     } catch (error) {
       console.log("Error al filtrar productos:", error);
@@ -93,11 +99,11 @@ export const useProducts = (): UseProductsReturn => {
   const actionSearch = async (
     searchTerm: string,
     pageable: IPageableFilter
-  ): Promise<IPage<IProduct> | null> => {
+  ): Promise<IPage<IProductList> | null> => {
     try {
       const data = await getSearchedProducts(searchTerm, pageable);
       if (data.size > 0) {
-        setProducts(data.content);
+        setProductsList(data.content);
       } else {
         setProducts([]);
         console.log("No products found for the search term:", searchTerm);
@@ -113,7 +119,7 @@ export const useProducts = (): UseProductsReturn => {
   const fetchProducts = async (): Promise<void> => {
     try {
       const productsData = await getAllProducts();
-      setProducts(productsData);
+      setProductsList(productsData);
     } catch (error) {
       console.log("Error al obtener productos:", error);
     }
@@ -181,6 +187,7 @@ export const useProducts = (): UseProductsReturn => {
     // State from Zustand
     products,
     selectedProduct,
+    productsList,
 
     // Actions
     fetchProducts,

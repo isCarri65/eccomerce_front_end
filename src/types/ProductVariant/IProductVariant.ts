@@ -1,8 +1,11 @@
+import { IColor } from "../Color/IColor";
+import { ISize } from "../Size/ISize";
+
 export interface IProductVariant {
   id: number;
   productId: number;
-  sizeId: number;
-  colorId: number;
+  size: ISize;
+  color: IColor;
   quantity: number;
   state: boolean;
 }

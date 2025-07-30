@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import SearchBarTask, { SearchBarProducts } from "./SearchBarProducts";
 import { useCategories } from "../../../hooks/useCategories";
+import { useTypes } from "../../../hooks/useTypes";
+import { CartSidebar } from "../CartSideBar/CartSideBar";
 
 const genreValues = [
   { value: ProductGenre.MALE, label: "Hombre" },
@@ -26,6 +28,7 @@ export const NavBar = () => {
   const navbarHeight = 80;
 
   const { fetchCategories } = useCategories();
+  const { fetchTypes } = useTypes();
   const [showCart, setShowCart] = useState(false);
   const [selectedCategoria, setSelectedCategoria] =
     useState<CategoryOptionSelect | null>(null);
@@ -52,6 +55,7 @@ export const NavBar = () => {
 
   useEffect(() => {
     fetchCategories();
+    fetchTypes();
   }, []);
 
   const categoryOptionsSelects: CategoryOptionSelect[] = [
@@ -142,11 +146,14 @@ export const NavBar = () => {
       >
         {selectedCategoria &&
           (selectedCategoria.kind === "genero" ? (
-            <GenreOptions genre={selectedCategoria.value} />
+            <GenreOptions genre={selectedCategoria.param} />
           ) : (
             <TypeOptions type={selectedCategoria.param} />
           ))}
       </div>
+      {showCart && (
+        <CartSidebar showCart={showCart} setShowCart={setShowCart} />
+      )}
     </div>
   );
 };

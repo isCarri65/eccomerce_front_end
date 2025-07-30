@@ -1,14 +1,17 @@
 import { create } from "zustand";
 import { IProduct } from "../types/Product/IProduct";
+import { IProductList } from "../types/Product/IProductList";
 
 interface ProductState {
   // Estado
+  productsList: IProductList[];
   products: IProduct[];
   selectedProduct: IProduct | null;
   loading: boolean;
   error: string | null;
 
   // Acciones para productos
+  setProductsList: (products: IProductList[]) => void;
   setProducts: (products: IProduct[]) => void;
   addProduct: (product: IProduct) => void;
   updateProductInStore: (id: number, updatedProduct: IProduct) => void;
@@ -28,6 +31,7 @@ interface ProductState {
 }
 
 const initialState = {
+  productsList: [],
   products: [],
   selectedProduct: null,
   loading: false,
@@ -36,7 +40,7 @@ const initialState = {
 
 export const useProductStore = create<ProductState>((set, get) => ({
   ...initialState,
-
+  setProductsList: (products) => set({ productsList: products, error: null }),
   // Establecer lista completa de productos
   setProducts: (products) => set({ products, error: null }),
 

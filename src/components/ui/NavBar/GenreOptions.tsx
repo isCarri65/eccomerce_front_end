@@ -1,4 +1,4 @@
-import { FC, use, useEffect, useState } from "react";
+import { FC } from "react";
 import { ProductGenre } from "../../../types/enums/ProductGenre";
 import styles from "./GenreOptions.module.css";
 import { useTypes } from "../../../hooks/useTypes";
@@ -13,11 +13,10 @@ interface IGenreOptionsProps {
   genre: ProductGenre;
 }
 export const GenreOptions: FC<IGenreOptionsProps> = ({ genre }) => {
-  console.log(genre);
-  const { types, fetchTypes } = useTypes();
-  const { categories, fetchCategories } = useCategories();
+  const { types } = useTypes();
+  const { categories } = useCategories();
   const nav = useNavigate();
-  const { addCategory, setFilters } = filterStore(
+  const { setFilters } = filterStore(
     useShallow((state) => ({
       addCategory: state.addCategory,
       setFilters: state.setFilters,
@@ -33,16 +32,11 @@ export const GenreOptions: FC<IGenreOptionsProps> = ({ genre }) => {
       .sort((a, b) => a.name.localeCompare(b.name));
   };
 
-  useEffect(() => {
-    fetchTypes();
-    fetchCategories();
-  }, []);
-
   const handleSelectCategory = (category: ICategory, type: IType) => {
     const filterValues: Partial<IFilterValues> = {
-      genero: genre,
-      tipoProducto: type,
-      categorias: [category],
+      genre: genre,
+      type: type,
+      categories: [category],
     };
     setFilters(filterValues);
     nav(`/productsCatalog/${genre}/${type.name}/${category.name}`);
@@ -50,9 +44,9 @@ export const GenreOptions: FC<IGenreOptionsProps> = ({ genre }) => {
 
   const handleSelctType = (type: IType) => {
     const filterValues: Partial<IFilterValues> = {
-      genero: genre,
-      tipoProducto: type,
-      categorias: [],
+      genre: genre,
+      type: type,
+      categories: [],
     };
     setFilters(filterValues);
     nav(`/productsCatalog/${genre}/${type.name}`);

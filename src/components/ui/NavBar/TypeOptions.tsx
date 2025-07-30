@@ -1,8 +1,7 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { IType } from "../../../types/Type/IType";
 import styles from "./TypeOptions.module.css";
 import { useCategories } from "../../../hooks/useCategories";
-import { useTypes } from "../../../hooks/useTypes";
 import { useNavigate } from "react-router-dom";
 import { ICategory } from "../../../types/Category/ICategory";
 
@@ -11,8 +10,7 @@ interface ITypeOptionsProps {
 }
 
 export const TypeOptions: FC<ITypeOptionsProps> = ({ type }) => {
-  console.log(type);
-  const { categories, fetchCategories } = useCategories();
+  const { categories } = useCategories();
   const nav = useNavigate();
 
   const filterCategoriesByType = (): ICategory[] => {
@@ -26,10 +24,6 @@ export const TypeOptions: FC<ITypeOptionsProps> = ({ type }) => {
       .filter((category) => category.tags.includes(tag))
       .sort((a, b) => a.name.localeCompare(b.name));
   };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   const handleSelectCategory = (
     sportCategory: ICategory,

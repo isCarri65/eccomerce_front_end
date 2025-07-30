@@ -6,17 +6,29 @@ import { IProductVariantCART } from "../../types/Product/IProductVariantCART";
 import { IProductFilter } from "../../types/Product/IProducFilter";
 import { IPageableFilter } from "../../types/IPageableFilter";
 import { IPage } from "../../types/IPage";
+import { IProductList } from "../../types/Product/IProductList";
+import { IProductVariant } from "../../types/ProductVariant/IProductVariant";
 
 export const getProductVariantsByProductId = async (
   productId: number
-): Promise<IProductVariantCART[]> => {
+): Promise<IProductVariant[]> => {
   const response = await interceptorApiClient.get(
     `/public/products/${productId}/variants`
   );
   return response.data;
 };
 
-export const getAllProducts = async (): Promise<IProduct[]> => {
+export const getProductVariantCartById = async (
+  variantId: number
+): Promise<IProductVariantCART> => {
+  console.log("id Variant:", variantId);
+  const response = await interceptorApiClient.get<IProductVariantCART>(
+    `/public/productVariants/cart-dto/${variantId}`
+  );
+  return response.data;
+};
+
+export const getAllProducts = async (): Promise<IProductList[]> => {
   const response = await interceptorApiClient.get("/public/products");
   return response.data;
 };
@@ -52,7 +64,7 @@ export const deleteProduct = async (id: number): Promise<boolean> => {
 export const getFilteredProducts = async (
   values: IProductFilter,
   pageable: IPageableFilter
-): Promise<IPage<IProduct>> => {
+): Promise<IPage<IProductList>> => {
   const params = new URLSearchParams();
 
   if (values.genre) params.append("genre", values.genre);
@@ -75,7 +87,7 @@ export const getFilteredProducts = async (
 export const getSearchedProducts = async (
   searchTerm: string,
   pageable: IPageableFilter
-): Promise<IPage<IProduct>> => {
+): Promise<IPage<IProductList>> => {
   const params = new URLSearchParams();
 
   if (searchTerm) params.append("search", searchTerm);

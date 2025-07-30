@@ -90,18 +90,17 @@ export const SidebarFilters = ({}: {}) => {
 
   const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
-    console.log("Min price changed:", value);
     setFilters({ minPrice: value });
   };
 
   const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     setFilters({ maxPrice: value });
-    console.log("Filters changed:", filters);
   };
 
   useEffect(() => {
     filterProducts(filters, pageable);
+    console.log("Filters applied:", filters);
   }, [
     minPriceState,
     maxPriceState,
@@ -254,7 +253,7 @@ export const SidebarFilters = ({}: {}) => {
             </div>
           )}
         </div>
-        {/* Descuentos */}
+        {/* Descuentos 
         <div className={styles.accordionItem}>
           <button
             className={styles.accordionBtn}
@@ -270,9 +269,9 @@ export const SidebarFilters = ({}: {}) => {
               <label className={styles.filterLabel}>
                 <input type="checkbox" /> Sólo productos en oferta
               </label>
-            </div>
+            </div> 
           )}
-        </div>
+        </div> */}
         {/* Tipo */}
         <div className={styles.accordionItem}>
           <button
@@ -286,12 +285,17 @@ export const SidebarFilters = ({}: {}) => {
           </button>
           {open.tipo && (
             <div className={styles.accordionPanel}>
-              <label className={styles.filterLabel}>
-                <input type="checkbox" /> Nuevos
-              </label>
-              <label className={styles.filterLabel}>
-                <input type="checkbox" /> Outlet
-              </label>
+              {types.map((type) => (
+                <label key={type.id} className={styles.filterLabel}>
+                  <input
+                    type="radio"
+                    name="tipo"
+                    checked={selectedType?.id === type.id}
+                    onChange={() => setFilters({ type })}
+                  />
+                  {type.name}
+                </label>
+              ))}
             </div>
           )}
         </div>

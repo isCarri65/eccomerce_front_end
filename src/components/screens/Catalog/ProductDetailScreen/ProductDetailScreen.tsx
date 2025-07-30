@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import styles from "./ProductDetailScreen.module.css";
 import { IProduct } from "../../../../types/Product/IProduct";
 import { addToCart } from "../../../../utils/cartUtils";
-import { getProductById, getProductVariantsByProductId } from "../../../../api/services/ProductService";
+import {
+  getProductById,
+  getProductVariantsByProductId,
+} from "../../../../api/services/ProductService";
 import { useMessageStore } from "../../../../stores/messageStore";
 import { IColor } from "../../../../types/Color/IColor";
 import { ISize } from "../../../../types/Size/ISize";
-import { IProductVariantCART } from "../../../../types/Product/IProductVariantCART";
+import { IProductVariant } from "../../../../types/ProductVariant/IProductVariant";
 
 export const ProductDetailScreen = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,7 +18,7 @@ export const ProductDetailScreen = () => {
   const { addMessage } = useMessageStore();
 
   const [product, setProduct] = useState<IProduct | null>(null);
-  const [productVariants, setProductVariants] = useState<IProductVariantCART[]>([]);
+  const [productVariants, setProductVariants] = useState<IProductVariant[]>([]);
 
   const [colors, setColors] = useState<IColor[]>([]);
   const [sizes, setSizes] = useState<ISize[]>([]);
@@ -28,9 +31,9 @@ export const ProductDetailScreen = () => {
       try {
         const productItem = await getProductById(productId);
         const variants = await getProductVariantsByProductId(productId);
-        variants.map(e=>{
-          console.log(e)
-        })
+        variants.map((e) => {
+          console.log(e);
+        });
         setProduct(productItem);
         setProductVariants(variants);
         const uniqueColorsMap = new Map<number, IColor>();
@@ -53,31 +56,39 @@ export const ProductDetailScreen = () => {
     }
   }, [productId]);
 
-  if (productId === -1) return <div className={styles.loading}>Error en la carga, refresque la página o vuelva</div>;
-  if (!product) return <div className={styles.loading}>Cargando producto...</div>;
+  if (productId === -1)
+    return (
+      <div className={styles.loading}>
+        Error en la carga, refresque la página o vuelva
+      </div>
+    );
+  if (!product)
+    return <div className={styles.loading}>Cargando producto...</div>;
 
   const availableColors = selectedSize
-  ? colors.filter((color) =>
-      productVariants.some(
-        (variant) =>
-          variant.size.id === selectedSize && variant.color.id === color.id
+    ? colors.filter((color) =>
+        productVariants.some(
+          (variant) =>
+            variant.size.id === selectedSize && variant.color.id === color.id
+        )
       )
-    )
-  : colors;
+    : colors;
 
-const availableSizes = selectedColor
-  ? sizes.filter((size) =>
-      productVariants.some(
-        (variant) =>
-          variant.color.id === selectedColor && variant.size.id === size.id
+  const availableSizes = selectedColor
+    ? sizes.filter((size) =>
+        productVariants.some(
+          (variant) =>
+            variant.color.id === selectedColor && variant.size.id === size.id
+        )
       )
-    )
-  : sizes;
-
+    : sizes;
 
   const handleAddToCart = () => {
     if (selectedSize === null || selectedColor === null) {
-      addMessage("Por favor, seleccione un talle y un color antes de agregar al carrito.", "error");
+      addMessage(
+        "Por favor, seleccione un talle y un color antes de agregar al carrito.",
+        "error"
+      );
       return;
     }
 
@@ -85,10 +96,13 @@ const availableSizes = selectedColor
       (v) => v.size.id === selectedSize && v.color.id === selectedColor
     );
     if (!variant) {
-      addMessage("No existe una variante para el talle y color seleccionados.", "error");
+      addMessage(
+        "No existe una variante para el talle y color seleccionados.",
+        "error"
+      );
       return;
     }
-    console.log(variant.id)
+    console.log(variant.id);
     addToCart({
       productVariantId: variant.id,
       quantity: 1,
@@ -100,15 +114,26 @@ const availableSizes = selectedColor
   return (
     <div className={styles.detailContainer}>
       <div className={styles.leftColumn}>
-        <img
-          src="https://via.placeholder.com/350x250?text=NIKE"
-          alt={product.name}
-          className={styles.mainImage}
-        />
+        {product.productGalleries ? (
+          <div>
+            {product.productGalleries.map((image) => (
+              <img
+                key={image.id}
+                src={image.imageUrl}
+                alt={`imagen de ${product.name}`}
+                className={styles.galleryImage}
+              />
+            ))}
+          </div>
+        ) : (
+          <p>Image not found</p>
+        )}
       </div>
       <div className={styles.rightColumn}>
         <div className={styles.productName}>{product.name}</div>
-        <div className={styles.productPrice}>${product.price.toLocaleString()}</div>
+        <div className={styles.productPrice}>
+          ${product.price.toLocaleString()}
+        </div>
         <div className={styles.productDesc}>{product.description}</div>
 
         <div className={styles.selectors}>

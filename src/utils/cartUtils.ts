@@ -22,13 +22,15 @@ export function addToCart(item: CartItem) {
 
   if (existingIndex !== -1) {
     // Si ya existe, incrementar quantity
-    current[existingIndex].quantity = (current[existingIndex].quantity || 1) + (item.quantity ?? 1);
+    current[existingIndex].quantity =
+      (current[existingIndex].quantity || 1) + (item.quantity ?? 1);
   } else {
     // Si no existe, agregarlo con quantity (o 1 si no viene)
     const newItem = {
       ...item,
       quantity: item.quantity ?? 1,
     };
+    console.log("Adding item to cart:", newItem);
     current.push(newItem);
   }
 

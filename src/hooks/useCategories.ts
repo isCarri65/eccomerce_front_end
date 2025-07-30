@@ -9,6 +9,8 @@ import {
 } from "../api/services/CategoryService";
 import { ICategory } from "../types/Category/ICategory";
 import { useCategoryStore } from "../stores/categoryStore";
+import { ICreateCategory } from "../types/Category/ICreateCategory";
+import { IUpdateCategory } from "../types/Category/IUpdateCategory";
 
 // Hook principal para Categories
 interface UseCategoriesReturn {
@@ -19,8 +21,8 @@ interface UseCategoriesReturn {
   // CRUD Operations
   fetchCategories: () => Promise<void>;
   fetchCategoryById: (id: number) => Promise<ICategory | null>;
-  handleCreateCategory: (data: ICategory) => Promise<boolean>;
-  handleUpdateCategory: (id: number, data: ICategory) => Promise<boolean>;
+  handleCreateCategory: (data: ICreateCategory) => Promise<boolean>;
+  handleUpdateCategory: (id: number, data: IUpdateCategory) => Promise<boolean>;
   handleDeleteCategory: (id: number) => Promise<boolean>;
   fetchCategoriesByTypeId: (typeId: number) => Promise<ICategory[]>;
 
@@ -65,7 +67,9 @@ export const useCategories = (): UseCategoriesReturn => {
   };
 
   // Crear categoría
-  const handleCreateCategory = async (data: ICategory): Promise<boolean> => {
+  const handleCreateCategory = async (
+    data: ICreateCategory
+  ): Promise<boolean> => {
     try {
       const newCategory = await createCategory(data);
       addCategory(newCategory);
@@ -79,7 +83,7 @@ export const useCategories = (): UseCategoriesReturn => {
   // Actualizar categoría
   const handleUpdateCategory = async (
     id: number,
-    data: ICategory
+    data: IUpdateCategory
   ): Promise<boolean> => {
     try {
       const updatedCategory = await updateCategory(id, data);

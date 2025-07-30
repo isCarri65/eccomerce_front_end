@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
 import styles from "./ProductCatalogScreen.module.css";
 import { useNavigate } from "react-router-dom";
-import { IProduct } from "../../../../types/Product/IProduct";
-import { ProductGenre } from "../../../../types/enums/ProductGenre";
 import { SidebarFilters } from "../../../ui/SidebarFilters/SidebarFilters";
 import { useProducts } from "../../../../hooks/useProducts";
 
 export const ProductCatalogScreen = () => {
-  const { products, fetchProducts } = useProducts();
-  const [selectedGenre, setSelectedGenre] = useState<ProductGenre | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const { productsList, fetchProducts } = useProducts();
   const [sortOption, setSortOption] = useState<
     "recommended" | "price_asc" | "price_desc"
   >("recommended");
@@ -25,11 +21,6 @@ export const ProductCatalogScreen = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleClearFilters = () => {
-    setSelectedGenre(null);
-    setSelectedCategory(null);
-  };
-
   // // Guardar en el sessionStorage el id del producto
   // const handleAddToCart = (productId: number) => {
   //   // Por ahora solo ids, luego sumale size/color/qty
@@ -39,13 +30,7 @@ export const ProductCatalogScreen = () => {
   //   alert("¡Producto agregado al carrito!");
   // };
 
-  let filtered = products;
-  if (selectedGenre)
-    filtered = filtered.filter((p) => p.genre === selectedGenre);
-  if (selectedCategory)
-    filtered = filtered.filter((p) =>
-      p.categories.some((c) => c.id === selectedCategory)
-    );
+  let filtered = productsList;
   if (sortOption === "price_asc")
     filtered = [...filtered].sort((a, b) => a.price - b.price);
   if (sortOption === "price_desc")
@@ -53,13 +38,7 @@ export const ProductCatalogScreen = () => {
 
   return (
     <div className={styles.catalogContainer}>
-      <SidebarFilters
-        selectedGenre={selectedGenre}
-        setSelectedGenre={setSelectedGenre}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        onClearFilters={handleClearFilters}
-      />
+      <SidebarFilters />
       <main className={styles.productsSection}>
         <div className={styles.headerRow}>
           <div>
@@ -103,7 +82,10 @@ export const ProductCatalogScreen = () => {
                 style={{ cursor: "pointer" }}
               >
                 <div className={styles.productImage}>
-                  {/* <img src={prod.image ?? "/assets/placeholder.jpg"} alt={prod.name} /> */}
+                  <img
+                    src={prod.imageUrl ?? "/assets/placeholder.jpg"}
+                    alt={`imagen de ${prod.name}`}
+                  />
                 </div>
                 <div className={styles.productDetails}>
                   <div className={styles.productName}>{prod.name}</div>
