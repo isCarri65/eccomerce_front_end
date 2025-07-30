@@ -1,5 +1,6 @@
 import interceptorApiClient from "../interceptors/axios.interceptorApiClient";
 import { IUser } from "../../types/User/IUser";
+import { IAddress } from "../../types/Address/IAddress";
 
 // Funciones existentes
 export const getAllUsers = async (): Promise<IUser[]> => {
@@ -14,6 +15,11 @@ export const getUserById = async (id: number): Promise<IUser> => {
 
 export const getUserProfile = async (): Promise<IUser> => {
   const response = await interceptorApiClient.get(`/profile`);
+  return response.data;
+};
+
+export const getUserProfileAddresses = async (): Promise<IAddress[]> => {
+  const response = await interceptorApiClient.get("/profile/addresses");
   return response.data;
 };
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./ProfilePersonal.module.css";
 import {
-  getAllAddresses,
+  getAllAddressesProfile,
   createAddress,
   updateAddress,
 } from "../../../api/services/AddressService";
@@ -304,7 +304,7 @@ export const ProfilePersonal = () => {
 
   const loadAddresses = async () => {
     try {
-      const addressesData = await getAllAddresses();
+      const addressesData = await getAllAddressesProfile();
       console.log(addressesData);
       setAddresses(addressesData);
     } catch (error: any) {

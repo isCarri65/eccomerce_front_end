@@ -1,42 +1,42 @@
 import { useShallow } from "zustand/react/shallow";
 import {
-  getAllAddresses,
   getAddressById,
   createAddress,
   updateAddress,
   deleteAddress,
-} from "../api/services/AddressService";
-import { Address } from "../types/Address/IAddress";
-import { ICreateAddress, IUpdateAddress } from "../types/Address/IAddress"; // Asumiendo que existen estos tipos
+} from "../api/services/AddressService"; // Asumiendo que existen estos tipos
 import { useAddressStore } from "../stores/addressStore";
+import { IAddress } from "../types/Address/IAddress";
+import { ICreateAddress } from "../types/Address/ICreateAddress";
+import { IUpdateAddress } from "../types/Address/IUpdateAddress";
 
 // Hook principal para Addresses
 interface UseAddressesReturn {
   // State from Zustand
-  addresses: Address[];
-  selectedAddress: Address | null;
+  addresses: IAddress[];
+  selectedAddress: IAddress | null;
   loading: boolean;
   error: string | null;
 
   // CRUD Operations
   fetchAddresses: () => Promise<void>;
-  fetchAddressById: (id: number) => Promise<Address | null>;
-  handleCreateAddress: (address: Address) => Promise<ICreateAddress | null>;
+  fetchAddressById: (id: number) => Promise<IAddress | null>;
+  handleCreateAddress: (address: ICreateAddress) => Promise<IAddress | null>;
   handleUpdateAddress: (
     id: number,
-    address: Address
-  ) => Promise<IUpdateAddress | null>;
+    address: IUpdateAddress
+  ) => Promise<IAddress | null>;
   handleDeleteAddress: (id: number) => Promise<boolean>;
 
   // State Management
-  setSelectedAddress: (address: Address | null) => void;
+  setSelectedAddress: (address: IAddress | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   refreshAddresses: () => Promise<void>;
   clearAddresses: () => void;
 
   // Utility functions
-  getAddressFromStore: (id: number) => Address | undefined;
+  getAddressFromStore: (id: number) => IAddress | undefined;
   resetStore: () => void;
 }
 
@@ -92,7 +92,7 @@ export const useAddresses = (): UseAddressesReturn => {
   };
 
   // Obtener address por ID
-  const fetchAddressById = async (id: number): Promise<Address | null> => {
+  const fetchAddressById = async (id: number): Promise<IAddress | null> => {
     setLoading(true);
     setError(null);
     try {
@@ -110,16 +110,14 @@ export const useAddresses = (): UseAddressesReturn => {
   };
 
   // Crear address
-  const handleCreateAddress = async (
-    address: Address
-  ): Promise<ICreateAddress | null> => {
+  const handleCreateAddress = async (address: ICreateAddress) => {
     setLoading(true);
     setError(null);
     try {
       const newAddress = await createAddress(address);
       // Asumiendo que la respuesta incluye el address creado
       if (newAddress && "id" in newAddress) {
-        addAddressToStore(newAddress as Address);
+        addAddressToStore(newAddress);
       }
       return newAddress;
     } catch (error) {
@@ -133,17 +131,14 @@ export const useAddresses = (): UseAddressesReturn => {
   };
 
   // Actualizar address
-  const handleUpdateAddress = async (
-    id: number,
-    address: Address
-  ): Promise<IUpdateAddress | null> => {
+  const handleUpdateAddress = async (id: number, address: IUpdateAddress) => {
     setLoading(true);
     setError(null);
     try {
       const updatedAddress = await updateAddress(id, address);
       // Asumiendo que la respuesta incluye el address actualizado
       if (updatedAddress && "id" in updatedAddress) {
-        updateAddressInStore(id, updatedAddress as Address);
+        updateAddressInStore(id, updatedAddress);
       }
       return updatedAddress;
     } catch (error) {

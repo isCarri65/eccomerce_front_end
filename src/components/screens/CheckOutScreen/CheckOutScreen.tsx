@@ -3,77 +3,35 @@ import styles from "./CheckoutScreen.module.css";
 import ShippingAddress from "../../ui/CheckoutComponents/ShippingAdress/ShippingAddress";
 import PaymentOptions from "../../ui/CheckoutComponents/PaymentOption/PaymentOption";
 import MercadoPagoSection from "../../ui/CheckoutComponents/MercadoPagoComponent/MercadoPagoComponent";
-import { getUserProfile } from "../../../api/services/UserService";
-import { getAllAddresses } from "../../../api/services/AddressService";
-import { getProductById } from "../../../api/services/ProductService";
-import { getSizeById } from "../../../api/services/SizeService";
-import { getColorById } from "../../../api/services/ColorService";
-import { IProductGallery } from "../../../types/Product/IProductGallery";
-
-interface CartItem {
-  productId: number;
-  name: string;
-  price: number;
-  sizeId: number;
-  sizeName: string;
-  colorId: number;
-  colorName: string;
-  quantity: number;
-  imagen: IProductGallery;
-  descuento: number | null;
-  variantId: number;
-}
+import { getUserProfileAddresses } from "../../../api/services/UserService";
+import { cartStore } from "../../../stores/cartStore";
+import { IProductVariantCART } from "../../../types/Product/IProductVariantCART";
+import { useUsers } from "../../../hooks/useUsers";
+import { IAddress } from "../../../types/Address/IAddress";
+import { useAddresses } from "../../../hooks/useAddress";
 
 const CheckoutScreen: React.FC = () => {
   const [activeStep, setActiveStep] = useState<"shippingAddress" | "payment">(
     "shippingAddress"
   );
   const [showSummary, setShowSummary] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [user, setUser] = useState<any | null>(null);
-  const [address, setAddress] = useState<any | null>(null);
+  const [cartItems, setCartItems] = useState<IProductVariantCART[]>([]);
+  const { currentUserProfile } = useUsers();
+  const [addresses, setAddresses] = useState<IAddress[] | null>(null);
+  const { selectedAddress } = useAddresses();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showMp, setShowMp] = useState(false);
+  const itemsChecked = cartStore((state) => state.itemsChecked);
 
   useEffect(() => {
-    const checkoutItems = JSON.parse(
-      sessionStorage.getItem("checkoutItems") || "[]"
-    );
-
     const fetchData = async () => {
       setLoading(true);
       try {
-        const userRes = await getUserProfile();
-        setUser(userRes);
+        const addresses = await getUserProfileAddresses();
+        setAddresses(addresses);
 
-        const addresses = await getAllAddresses();
-        setAddress(addresses[0] ?? null);
-
-        // Mapeo con estructura igual al cart
-        const items: CartItem[] = await Promise.all(
-          checkoutItems.map(async (item: any) => {
-            const [product, size, color] = await Promise.all([
-              getProductById(item.productId),
-              getSizeById(item.sizeId),
-              getColorById(item.colorId),
-            ]);
-            return {
-              productId: item.productId,
-              name: product.name,
-              price: product.price,
-              sizeId: item.sizeId,
-              sizeName: size.name,
-              colorId: item.colorId,
-              colorName: color.name,
-              quantity: item.quantity,
-              imagen: product.productGalleries,
-              descuento: product.discountPercentage,
-            };
-          })
-        );
-
-        setCartItems(items);
+        setCartItems(itemsChecked);
       } catch (err) {
         console.error("Error fetching checkout data:", err);
         setError("Error al cargar los datos del pedido.");
@@ -88,11 +46,7 @@ const CheckoutScreen: React.FC = () => {
   const calculateSubtotal = () => {
     return cartItems
       .reduce((total, item) => {
-        const hasDiscount = item.descuento && item.descuento > 0;
-        const priceAfterDiscount = hasDiscount
-          ? item.price * (1 - item.descuento / 100)
-          : item.price;
-        return total + priceAfterDiscount * item.quantity;
+        return total + item.productList.price * item.quantity;
       }, 0)
       .toFixed(2);
   };
@@ -132,8 +86,8 @@ const CheckoutScreen: React.FC = () => {
             <div className={styles.sectionContent}>
               <ShippingAddress
                 onAddressConfirmed={handleAddressConfirmed}
-                user={user}
-                address={address}
+                user={currentUserProfile}
+                addresses={addresses}
               />
             </div>
           )}
@@ -160,8 +114,8 @@ const CheckoutScreen: React.FC = () => {
                   <MercadoPagoSection
                     showSummary={showSummary}
                     toggleSummary={toggleSummary}
-                    user={user}
-                    address={address}
+                    user={currentUserProfile}
+                    address={selectedAddress}
                     cartItems={cartItems}
                   />
                 </div>
@@ -180,32 +134,30 @@ const CheckoutScreen: React.FC = () => {
             <div key={index} className={styles.checkoutItemSummary}>
               <div>
                 <div>
-                  <strong>{item.name}</strong>
+                  <strong>{item.productList.name}</strong>
                 </div>
-                <img src={item.imagen.imageUrl} alt={item.name} />
+                <img
+                  src={item.productList.imageUrl}
+                  alt={item.productList.name}
+                />
               </div>
-              <div>Talle: {item.sizeName}</div>
-              <div>Color: {item.colorName}</div>
+              <div>Talle: {item.size.name}</div>
+              <div>Color: {item.color.name}</div>
               <div>Cantidad: {item.quantity}</div>
-              {item.descuento && item.descuento > 0 ? (
+              {item.productList.discountPercentage &&
+              item.productList.discountPercentage > 0 ? (
                 <>
                   <div>
-                    Precio unitario: <s>${item.price.toFixed(2)}</s>{" "}
-                    <strong>
-                      ${(item.price * (1 - item.descuento / 100)).toFixed(2)}
-                    </strong>
+                    Precio unitario:{" "}
+                    <s>${item.productList.originalPrice.toFixed(2)}</s>{" "}
+                    <strong>${item.productList.price.toFixed(2)}</strong>
                   </div>
                 </>
               ) : (
-                <div>Precio unitario: ${item.price.toFixed(2)}</div>
+                <div>Precio unitario: ${item.productList.price.toFixed(2)}</div>
               )}
               <div>
-                Subtotal: $
-                {(
-                  (item.descuento && item.descuento > 0
-                    ? item.price * (1 - item.descuento / 100)
-                    : item.price) * item.quantity
-                ).toFixed(2)}
+                Subtotal: ${(item.productList.price * item.quantity).toFixed(2)}
               </div>
             </div>
           ))}

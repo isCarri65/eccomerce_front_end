@@ -1,7 +1,7 @@
 import { ICategory } from "../Category/ICategory";
 import { ProductGenre } from "../enums/ProductGenre";
+import { IProductVariant } from "../ProductVariant/IProductVariant";
 import { IProductGallery } from "./IProductGallery";
-import { IProductVariant } from "./IProductVariant";
 
 export interface IProductAdmin {
   id: number;

@@ -1,6 +1,6 @@
 export interface ICreateAddress {
   street: string;
-  number: number;
+  number: string;
   apartment: string;
   aptNumberAndFloor: string;
   province: string;

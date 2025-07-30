@@ -3,20 +3,34 @@ import { IAddress } from "../../types/Address/IAddress";
 import { ICreateAddress } from "../../types/Address/ICreateAddress";
 import { IUpdateAddress } from "../../types/Address/IUpdateAddress";
 
+export const getAllAddressesProfile = async (): Promise<IAddress[]> => {
+  const response = await interceptorApiClient.get("/profile/addresses");
+  return response.data;
+};
+
 export const getAllAddresses = async (): Promise<IAddress[]> => {
-  const response = await interceptorApiClient.get("/profile/addresses/getAll");
+  const response = await interceptorApiClient.get("/public/addresses");
   return response.data;
 };
 
 export const getAddressById = async (id: number): Promise<IAddress> => {
-  const response = await interceptorApiClient.get(`/addresses/${id}`);
+  const response = await interceptorApiClient.get(`/public/addresses/${id}`);
   return response.data;
 };
 
 export const createAddress = async (
   address: ICreateAddress
 ): Promise<IAddress> => {
-  const response = await interceptorApiClient.post("/profile/addresses/create", address);
+  const response = await interceptorApiClient.post("/admin/addresses", address);
+  return response.data;
+};
+export const createAddressProfile = async (
+  address: ICreateAddress
+): Promise<IAddress> => {
+  const response = await interceptorApiClient.post(
+    "/profile/addresses/create",
+    address
+  );
   return response.data;
 };
 
@@ -24,7 +38,10 @@ export const updateAddress = async (
   id: number,
   address: IUpdateAddress
 ): Promise<IAddress> => {
-  const response = await interceptorApiClient.put(`/profile/addresses/update/${id}`, address);
+  const response = await interceptorApiClient.put(
+    `/profile/addresses/update/${id}`,
+    address
+  );
   return response.data;
 };
 
