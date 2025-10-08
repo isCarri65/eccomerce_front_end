@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 import { createHTTPError } from "../../utils/errors";
 import { useAuthStore } from "../../stores/useAuthStore";
 
-const BASE_URL = "http://localhost:8081/api"; // Cambia si tu endpoint de auth es otro dominio
+const BASE_URL = "http://localhost:8082/api"; // Cambia si tu endpoint de auth es otro dominio
 
 //TODO:TOKEN
 

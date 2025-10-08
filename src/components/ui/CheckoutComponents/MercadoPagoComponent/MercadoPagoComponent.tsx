@@ -79,7 +79,7 @@ const MercadoPagoSection: React.FC<MercadoPagoSectionProps> = ({
       };
 
       const response = await axios.post(
-        "http://localhost:8081/pay/mp",
+        "http://localhost:8082/pay/mp",
         requestData
       );
       const { preferenceId } = response.data;

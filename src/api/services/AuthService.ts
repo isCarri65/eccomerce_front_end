@@ -60,7 +60,7 @@ export const autoRefreshToken = async () => {
       throw new Error("No hay refresh token para renovar la sesión.");
 
     const refreshResponse = await axios.post(
-      "http://localhost:8081/api/auth/refresh",
+      "http://localhost:8082/api/auth/refresh",
       {},
       {
         headers: {
