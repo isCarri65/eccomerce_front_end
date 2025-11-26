@@ -15,46 +15,13 @@ import { IColor } from "../../../types/Color/IColor";
 import { ISize } from "../../../types/Size/ISize";
 import { ProductGenre } from "../../../types/enums/ProductGenre";
 
-const mockProducts: IProduct[] = [
-  {
-    id: 1,
-    name: "Nike Air Max",
-    description: "Zapatillas deportivas de alta calidad.",
-    buyPrice: 100,
-    sellPrice: 150,
-    state: true,
-    genre: ProductGenre.Male,
-    categories: [{ id: 1, name: "Calzado", image: "" }],
-  },
-  {
-    id: 2,
-    name: "Adidas Run",
-    description: "Ideales para correr.",
-    buyPrice: 80,
-    sellPrice: 120,
-    state: false,
-    genre: ProductGenre.Male,
-    categories: [{ id: 1, name: "Calzado", image: "" }],
-  },
-  {
-    id: 3,
-    name: "Remera Nike",
-    description: "Remera deportiva.",
-    buyPrice: 30,
-    sellPrice: 60,
-    state: true,
-    genre: ProductGenre.Male,
-    categories: [{ id: 2, name: "Ropa", image: "" }],
-  },
-];
-
 const initialForm: any = {
   name: "",
   description: "",
   buyPrice: 0,
   sellPrice: 0,
   state: true,
-  genre: ProductGenre.Male,
+  genre: ProductGenre,
   categories: [],
   stock: 0,
   color: "",
@@ -63,7 +30,7 @@ const initialForm: any = {
 };
 
 export const AdminProducts: React.FC = () => {
-  const [products, setProducts] = useState<IProduct[]>(mockProducts);
+  const [products, setProducts] = useState<IProduct[]>([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [colors, setColors] = useState<IColor[]>([]);
   const [sizes, setSizes] = useState<ISize[]>([]);
@@ -74,16 +41,35 @@ export const AdminProducts: React.FC = () => {
   const [sizeType, setSizeType] = useState<"LETTER" | "NUMBER">("LETTER");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const loadProducts = async () => {
+    try {
+      const response = await getAllProducts();
+      setProducts(response as unknown as IProduct[]);
+    } catch (error) {
+      console.error("Error al cargar productos", error);
+    }
+  };
+
   useEffect(() => {
-    getAllCategorys().then(setCategories);
-    getAllColors().then(setColors);
-    getAllSizes().then(setSizes);
+    getAllCategorys()
+      .then(setCategories)
+      .catch((e) => console.error("Error al cargar categorías", e));
+
+    getAllColors()
+      .then(setColors)
+      .catch((e) => console.error("Error al cargar colores", e));
+
+    getAllSizes()
+      .then(setSizes)
+      .catch((e) => console.error("Error al cargar talles", e));
+
+    loadProducts();
   }, []);
 
   const filteredProducts = selectedCategory
     ? products.filter((p) =>
-        p.categories.some((c) => c.id === selectedCategory)
-      )
+      p.categories?.some((c) => c.id === selectedCategory)
+    )
     : products;
 
   const handleChange = (
@@ -102,9 +88,7 @@ export const AdminProducts: React.FC = () => {
     setSelectedCategory(Number(e.target.value) || null);
   };
 
-  const handleFormCategoryChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleFormCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const catId = Number(e.target.value);
     const cat = categories.find((c) => c.id === catId);
     setForm((prev: any) => ({ ...prev, categories: cat ? [cat] : [] }));
@@ -121,40 +105,90 @@ export const AdminProducts: React.FC = () => {
   };
 
   const handleEdit = (product: IProduct) => {
-    setForm({ ...product, stock: 0, color: "", images: [], sizes: [] });
+    setForm({
+      ...product,
+      stock: product.stock ?? 0,
+      color: (product as any).color ?? "",
+      images: [],
+      sizes:
+        product.productVariants?.map((v: any) =>
+          typeof v.sizeId === "number" ? v.sizeId : null
+        ) ?? [],
+      categories: product.categories ?? [],
+    });
+
     setEditMode(true);
     setShowForm(true);
   };
 
   const handleDelete = async (id: number) => {
-    setProducts((products) => products.filter((p) => p.id !== id));
+    try {
+      const ok = await deleteProduct(id);
+      if (ok) {
+        setProducts((products) => products.filter((p) => p.id !== id));
+      } else {
+        console.warn("El backend no confirmó el borrado del producto");
+      }
+    } catch (error) {
+      console.error("Error al eliminar producto", error);
+    }
+  };
+
+  const buildFormDataFromForm = (data: any): FormData => {
+    const formData = new FormData();
+
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("buyPrice", String(data.buyPrice));
+    formData.append("sellPrice", String(data.sellPrice));
+    formData.append("state", String(data.state));
+    formData.append("genre", data.genre);
+    formData.append("stock", String(data.stock ?? 0));
+    formData.append("color", data.color ?? "");
+
+    const categoryId = data.categories?.[0]?.id;
+    if (categoryId) {
+      formData.append("categoryId", String(categoryId));
+    }
+
+    if (data.sizes && data.sizes.length > 0) {
+      formData.append("sizes", JSON.stringify(data.sizes));
+    }
+
+    if (data.images && data.images.length > 0) {
+      (data.images as File[]).forEach((file) => {
+        formData.append("images", file);
+      });
+    }
+
+    return formData;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editMode && form.id) {
-      setProducts((products) =>
-        products.map((p) =>
-          p.id === form.id ? ({ ...form, id: form.id } as IProduct) : p
-        )
-      );
-    } else {
-      const newId = Math.max(...products.map((p) => p.id), 0) + 1;
-      setProducts((products) => [
-        ...products,
-        { ...form, id: newId, categories: form.categories || [] } as IProduct,
-      ]);
+    try {
+      const formData = buildFormDataFromForm(form);
+
+      if (editMode && form.id) {
+        await updateProduct(form.id, formData as any);
+      } else {
+        await createProduct(formData as any);
+      }
+
+      await loadProducts();
+      setShowForm(false);
+    } catch (error) {
+      console.error("Error al guardar producto", error);
     }
-    setShowForm(false);
   };
 
-  // Imagenes
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const filesImages = e.target.files;
     if (filesImages) {
       setForm((prev: any) => ({ ...prev, images: Array.from(filesImages) }));
     }
   };
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.dataTransfer.files) {
@@ -164,16 +198,16 @@ export const AdminProducts: React.FC = () => {
       }));
     }
   };
+
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
 
-  // Talles
   const handleSizeTypeChange = (type: "LETTER" | "NUMBER") => {
     setSizeType(type);
     setForm((prev: any) => ({ ...prev, sizes: [] }));
-    // Aquí deberías llamar a getSizes(type) si tu endpoint lo soporta
   };
+
   const handleSizeToggle = (id: number) => {
     setForm((prev: any) => {
       const exists = prev.sizes?.includes(id);
@@ -209,6 +243,7 @@ export const AdminProducts: React.FC = () => {
               </select>
             </div>
           </div>
+
           <div className={styles.tableWrapper}>
             <table
               className={styles.table}
@@ -217,6 +252,7 @@ export const AdminProducts: React.FC = () => {
               <thead>
                 <tr>
                   <th>Producto</th>
+                  <th>Imagen</th>
                   <th>Precio Compra</th>
                   <th>Precio Venta</th>
                   <th>Categoría</th>
@@ -225,15 +261,44 @@ export const AdminProducts: React.FC = () => {
                   <th>Acciones</th>
                 </tr>
               </thead>
+
               <tbody>
                 {filteredProducts.map((product) => (
                   <tr key={product.id}>
                     <td>{product.name}</td>
+
+                    <td>
+                      {/* Imagen desde productGalleries */}
+                      {product.productGalleries && product.productGalleries.length > 0 ? (
+                        <img
+                          src={product.productGalleries[0].imageUrl}
+                          alt={product.name}
+                          className={styles.thumbnail}
+                        />
+                      ) : product.imageUrl ? (
+                        /* Imagen desde imageUrl plano del backend */
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          className={styles.thumbnail}
+                        />
+                      ) : (
+                        <span className={styles.noImage}>Sin imagen</span>
+                      )}
+                    </td>
+
+
                     <td>${product.buyPrice}</td>
                     <td>${product.sellPrice}</td>
-                    <td>{product.categories.map((c) => c.name).join(", ")}</td>
-                    <td>-</td>
+
+                    <td>
+                      {product.categories?.map((c) => c.name).join(", ")}
+                    </td>
+
+                    <td>{product.stock ?? "-"}</td>
+
                     <td>{product.state ? "Activo" : "Inactivo"}</td>
+
                     <td>
                       <button
                         className={styles.editBtn}
@@ -257,6 +322,7 @@ export const AdminProducts: React.FC = () => {
       ) : (
         <form className={styles.productForm} onSubmit={handleSubmit}>
           <h2>{editMode ? "Editar Producto" : "Crear Producto"}</h2>
+
           <div className={styles.formGrid}>
             <div className={styles.leftCol}>
               <div className={styles.formRow}>
@@ -268,6 +334,7 @@ export const AdminProducts: React.FC = () => {
                   required
                 />
               </div>
+
               <div className={styles.formRow}>
                 <label>Precio Compra</label>
                 <input
@@ -278,6 +345,7 @@ export const AdminProducts: React.FC = () => {
                   required
                 />
               </div>
+
               <div className={styles.formRow}>
                 <label>Precio Venta</label>
                 <input
@@ -288,6 +356,7 @@ export const AdminProducts: React.FC = () => {
                   required
                 />
               </div>
+
               <div className={styles.formRow}>
                 <label>Stock Inicial</label>
                 <input
@@ -298,6 +367,7 @@ export const AdminProducts: React.FC = () => {
                   required
                 />
               </div>
+
               <div className={styles.formRow}>
                 <label>Color</label>
                 <select
@@ -314,6 +384,7 @@ export const AdminProducts: React.FC = () => {
                   ))}
                 </select>
               </div>
+
               <div className={styles.formRow}>
                 <label>Habilitado</label>
                 <select
@@ -330,6 +401,7 @@ export const AdminProducts: React.FC = () => {
                   <option value="0">No</option>
                 </select>
               </div>
+
               <div className={styles.formRow}>
                 <label>Categoría</label>
                 <select
@@ -347,6 +419,7 @@ export const AdminProducts: React.FC = () => {
                 </select>
               </div>
             </div>
+
             <div className={styles.rightCol}>
               <div className={styles.formRow}>
                 <label>Descripción</label>
@@ -358,6 +431,7 @@ export const AdminProducts: React.FC = () => {
                   required
                 />
               </div>
+
               <div className={styles.formRow}>
                 <label>Imágenes</label>
                 <div
@@ -373,6 +447,7 @@ export const AdminProducts: React.FC = () => {
                       Arrastra imágenes aquí o haz click para seleccionar
                     </span>
                   )}
+
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -383,8 +458,10 @@ export const AdminProducts: React.FC = () => {
                   />
                 </div>
               </div>
+
               <div className={styles.formRow}>
                 <label>Talles</label>
+
                 <div className={styles.sizeSwitchRow}>
                   <button
                     type="button"
@@ -397,6 +474,7 @@ export const AdminProducts: React.FC = () => {
                   >
                     20-40
                   </button>
+
                   <button
                     type="button"
                     className={
@@ -409,6 +487,7 @@ export const AdminProducts: React.FC = () => {
                     XS-XL
                   </button>
                 </div>
+
                 <div className={styles.sizesList}>
                   {sizes
                     .filter((s) => s.type === sizeType)
@@ -426,10 +505,12 @@ export const AdminProducts: React.FC = () => {
               </div>
             </div>
           </div>
+
           <div className={styles.formActions}>
             <button type="submit" className={styles.createBtn}>
               {editMode ? "Aceptar" : "Crear"}
             </button>
+
             <button
               type="button"
               className={styles.cancelBtn}

@@ -15,4 +15,7 @@ export interface IProduct {
   categories: ICategory[];
   productGalleries: IProductGallery[];
   productVariants: IProductVariant[];
+  buyPrice: number;
+  sellPrice: number;
+  imageUrl?: string[];
 }

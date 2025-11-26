@@ -70,6 +70,7 @@ export const autoRefreshToken = async () => {
       }
     );
 
+    console.log(storedRefreshToken);
     const newToken = refreshResponse.data.token;
     return newToken;
   } catch (err: any) {

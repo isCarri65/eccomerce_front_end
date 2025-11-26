@@ -30,6 +30,7 @@ export const getProductVariantCartById = async (
 
 export const getAllProducts = async (): Promise<IProductList[]> => {
   const response = await interceptorApiClient.get("/public/products");
+  console.log("response products:", response.data);
   return response.data;
 };
 
