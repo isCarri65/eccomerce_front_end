@@ -15,7 +15,7 @@ export const TypeOptions: FC<ITypeOptionsProps> = ({ type }) => {
 
   const filterCategoriesByType = (): ICategory[] => {
     return categories
-      .filter((category) => category.type.name === type.name)
+      .filter((category) => category?.type?.name === type?.name)
       .sort((a, b) => a.name.localeCompare(b.name));
   };
 

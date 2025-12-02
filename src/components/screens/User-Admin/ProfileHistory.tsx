@@ -15,10 +15,7 @@ export const ProfileHistory: React.FC = () => {
 
   useEffect(() => {
     // Simulación de llamada real
-    setPurchases([
-      { id: 1, name: 'Nike Air Max', totalPrice: 240, quantity: 2, date: '2024-05-01' },
-      { id: 2, name: 'Adidas Run', totalPrice: 90, quantity: 1, date: '2024-04-15' },
-    ]);
+
     // En producción: getAllPurchaseOrdersByUserProfile().then(setPurchases)
   }, []);
 

@@ -20,6 +20,7 @@ export const ProductCatalogScreen = () => {
       .catch(() => setError("No se pudieron cargar los productos"))
       .finally(() => setLoading(false));
   }, []);
+  console.log(productsList, "productsList");
 
   // // Guardar en el sessionStorage el id del producto
   // const handleAddToCart = (productId: number) => {
@@ -83,7 +84,7 @@ export const ProductCatalogScreen = () => {
               >
                 <div className={styles.productImage}>
                   <img
-                    src={prod.imageUrl ?? "/assets/placeholder.jpg"}
+                    src={prod.productGalleries?.[0]?.imageUrl ?? "/assets/placeholder.jpg"}
                     alt={`imagen de ${prod.name}`}
                   />
                 </div>

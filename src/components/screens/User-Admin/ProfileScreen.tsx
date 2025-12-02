@@ -26,8 +26,8 @@ export const ProfileScreen = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { currentUserProfile, fetchUserProfile } = useUsers();
-  const isAdmin = currentUserProfile?.role === "ADMIN";
-
+  const isAdmin = true;
+//currentUserProfile?.role === "ADMIN"
   const getProfile = async () => {
     await fetchUserProfile();
   };

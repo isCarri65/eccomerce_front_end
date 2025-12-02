@@ -90,8 +90,7 @@ export const AdminProducts: React.FC = () => {
 
   const handleFormCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const catId = Number(e.target.value);
-    const cat = categories.find((c) => c.id === catId);
-    setForm((prev: any) => ({ ...prev, categories: cat ? [cat] : [] }));
+    setForm((prev: any) => ({ ...prev, categories: catId ? [catId] : [] }));
   };
 
   const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -114,7 +113,7 @@ export const AdminProducts: React.FC = () => {
         product.productVariants?.map((v: any) =>
           typeof v.sizeId === "number" ? v.sizeId : null
         ) ?? [],
-      categories: product.categories ?? [],
+      categories: product.categories?.map(c => c.id) ?? []
     });
 
     setEditMode(true);
@@ -136,7 +135,7 @@ export const AdminProducts: React.FC = () => {
 
   const buildFormDataFromForm = (data: any): FormData => {
     const formData = new FormData();
-
+    console.log(data, "data");
     formData.append("name", data.name);
     formData.append("description", data.description);
     formData.append("buyPrice", String(data.buyPrice));
@@ -146,7 +145,7 @@ export const AdminProducts: React.FC = () => {
     formData.append("stock", String(data.stock ?? 0));
     formData.append("color", data.color ?? "");
 
-    const categoryId = data.categories?.[0]?.id;
+    const categoryId = data.categories?.[0];
     if (categoryId) {
       formData.append("categoryId", String(categoryId));
     }
@@ -156,10 +155,13 @@ export const AdminProducts: React.FC = () => {
     }
 
     if (data.images && data.images.length > 0) {
-      (data.images as File[]).forEach((file) => {
+      data.images.forEach((file: File, index: number) => {
         formData.append("images", file);
+        formData.append("imageNames", file.name); 
+        formData.append("isMainFlags", index === 0 ? "true" : "false"); 
       });
     }
+    
 
     return formData;
   };
@@ -334,7 +336,20 @@ export const AdminProducts: React.FC = () => {
                   required
                 />
               </div>
-
+              <div className={styles.formRow}>
+                <label>Género</label>
+                <select
+                  name="genre"
+                  value={form?.genre || ProductGenre.MALE}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value={ProductGenre.MALE}>Masculino</option>
+                  <option value={ProductGenre.FEMALE}>Femenino</option>
+                  <option value={ProductGenre.UNISEX}>Unisex</option>
+                  <option value={ProductGenre.CHILDREN}>Niños</option>
+                </select>
+              </div>
               <div className={styles.formRow}>
                 <label>Precio Compra</label>
                 <input
@@ -406,7 +421,7 @@ export const AdminProducts: React.FC = () => {
                 <label>Categoría</label>
                 <select
                   name="category"
-                  value={form.categories?.[0]?.id || ""}
+                  value={form.categories?.[0] || ""}
                   onChange={handleFormCategoryChange}
                   required
                 >

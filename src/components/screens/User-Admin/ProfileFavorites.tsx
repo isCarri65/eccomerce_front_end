@@ -16,11 +16,6 @@ export const ProfileFavorites: React.FC = () => {
   const [changed, setChanged] = useState<{[id:number]: boolean}>({});
 
   useEffect(() => {
-    // Simulación de llamada a getFavorite
-    setProducts([
-      { id: 1, name: 'Nike Air Max', sellPrice: 120, description: 'Zapatillas deportivas de alta calidad.', isFavorite: true },
-      { id: 2, name: 'Adidas Run', sellPrice: 90, description: 'Ideales para correr.', isFavorite: true },
-    ]);
     // En producción: getFavorite().then(setProducts)
     return () => {
       // Aquí se llamaría a updateFavorite para cada producto cambiado

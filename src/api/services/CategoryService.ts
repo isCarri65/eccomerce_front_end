@@ -32,8 +32,10 @@ export const updateCategory = async (
   return response.data;
 };
 
-export const deleteCategory = async (id: number): Promise<void> => {
-  await interceptorApiClient.delete(`/public/categories/${id}`);
+export const deleteCategory = async (id: number): Promise<boolean> => {
+  const response = await interceptorApiClient.delete(`/public/categories/${id}`);
+  console.log(response, "response");
+  return response.status === 204;
 };
 
 export const getCategoriesByTypeId = async (

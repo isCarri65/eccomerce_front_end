@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createCategory, deleteCategory, getAllCategorys, updateCategory } from '../../../api/services/CategoryService';
+import { IUpdateCategory } from '../../../types/Category/IUpdateCategory';
 
 interface CategoryItem {
   id: number;
   name: string;
 }
 
-const mockCategories: CategoryItem[] = [
-  { id: 1, name: 'Calzado' },
-  { id: 2, name: 'Ropa' },
-];
 
 export const AdminCategory: React.FC = () => {
-  const [categories, setCategories] = useState<CategoryItem[]>(mockCategories);
+  const [categories, setCategories] = useState<CategoryItem[]>();
   const [showForm, setShowForm] = useState(false);
   const [editCategory, setEditCategory] = useState<CategoryItem | null>(null);
   const [form, setForm] = useState({ name: '' });
-
+  const loadCategories = async () => {
+    try {
+      const response = await getAllCategorys();
+      setCategories(response as unknown as CategoryItem[]);
+    } catch (error) {
+      console.error("Error al cargar categorías", error);
+    }
+  };
+  useEffect(() => { 
+    loadCategories();
+  }, []);
   const handleCreate = () => {
     setForm({ name: '' });
     setEditCategory(null);
@@ -26,18 +34,37 @@ export const AdminCategory: React.FC = () => {
     setEditCategory(cat);
     setShowForm(true);
   };
-  const handleDelete = (id: number) => {
-    setCategories(categories => categories.filter(c => c.id !== id));
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await deleteCategory(id);
+      if (response) {
+        setCategories((categories) => categories?.filter((c) => c.id !== id));
+      } else {
+        console.warn("El backend no confirmó el borrado de la categoría");
+      }
+    } catch (error) {
+      console.error("Error al eliminar categoría", error);
+    }
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ name: e.target.value });
   };
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editCategory) {
-      setCategories(categories => categories.map(c => c.id === editCategory.id ? { ...c, name: form.name } : c));
+      try {
+        const response = await updateCategory(editCategory?.id ?? 0, form as IUpdateCategory);
+        setCategories((categories) => categories?.map((c) => c.id === editCategory?.id ? response as unknown as CategoryItem : c));
+      } catch (error) {
+        console.error("Error al actualizar categoría", error);
+      }
     } else {
-      setCategories(categories => [...categories, { id: categories.length + 1, name: form.name }]);
+      try {
+        const response = await createCategory({ name: form.name, imageUrl: '', publicId: '', typeId: 0, tags: [] });
+        setCategories((categories) => [...categories ?? [], response as unknown as CategoryItem]);
+      } catch (error) {
+        console.error("Error al crear categoría", error);
+      }
     }
     setShowForm(false);
   };
@@ -48,7 +75,7 @@ export const AdminCategory: React.FC = () => {
         <>
           <button style={{ background: '#22223b', color: '#fff', border: 'none', borderRadius: 8, padding: '0.7rem 2.2rem', fontWeight: 600, fontSize: '1.1rem', cursor: 'pointer', marginBottom: 18 }} onClick={handleCreate}>Crear Categoría</button>
           <ul style={{ listStyle: 'none', padding: 0 }}>
-            {categories.map(cat => (
+            {categories?.map(cat => (
               <li key={cat.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.7rem 0', borderBottom: '1px solid #eee' }}>
                 <span>{cat.name}</span>
                 <span>

@@ -72,7 +72,7 @@ export const SidebarFilters = ({}: {}) => {
     return categories
       .filter(
         (category) =>
-          category.type.name !== name && !category.tags.includes(name)
+          category?.type?.name !== name && !category?.tags?.includes(name)
       )
       .sort((a, b) => a.name.localeCompare(b.name));
   };

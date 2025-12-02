@@ -27,9 +27,9 @@ export const GenreOptions: FC<IGenreOptionsProps> = ({ genre }) => {
     return categories
       .filter(
         (category) =>
-          category.type.id === type.id && !category.tags.includes("Deporte")
+          category?.type?.id === type.id && !category?.tags?.includes("Deporte")
       )
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => a?.name?.localeCompare(b?.name));
   };
 
   const handleSelectCategory = (category: ICategory, type: IType) => {

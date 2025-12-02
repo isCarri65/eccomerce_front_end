@@ -1,21 +1,28 @@
-import React, { useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
+import { createType, deleteType, getAllTypes, updateType } from '../../../api/services/TypeService';
+import { IType } from '../../../types/Type/IType';
 interface TypeItem {
   id: number;
   name: string;
 }
 
-const mockTypes: TypeItem[] = [
-  { id: 1, name: 'Deportivo' },
-  { id: 2, name: 'Casual' },
-];
 
 export const AdminType: React.FC = () => {
-  const [types, setTypes] = useState<TypeItem[]>(mockTypes);
+  const [types, setTypes] = useState<TypeItem[]>();
   const [showForm, setShowForm] = useState(false);
   const [editType, setEditType] = useState<TypeItem | null>(null);
   const [form, setForm] = useState({ name: '' });
-
+  const loadTypes = async () => {
+    try {
+      const response = await getAllTypes();
+      setTypes(response as unknown as TypeItem[]);
+    } catch (error) {
+      console.error("Error al cargar tipos", error);
+    }
+  };
+  useEffect(() => { 
+    loadTypes();
+  }, []);
   const handleCreate = () => {
     setForm({ name: '' });
     setEditType(null);
@@ -26,18 +33,38 @@ export const AdminType: React.FC = () => {
     setEditType(type);
     setShowForm(true);
   };
-  const handleDelete = (id: number) => {
-    setTypes(types => types.filter(t => t.id !== id));
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await deleteType(id);
+      if (response) {
+        setTypes((types) => types?.filter((t) => t.id !== id));
+      } else {
+        console.warn("El backend no confirmó el borrado del tipo");
+      }
+    } catch (error) {
+      console.error("Error al eliminar tipo", error);
+    }
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ name: e.target.value });
   };
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editType) {
-      setTypes(types => types.map(t => t.id === editType.id ? { ...t, name: form.name } : t));
+      try {
+        const response = await updateType(editType?.id ?? 0, form as IType);
+        setTypes((types) => types?.map((t) => t.id === editType?.id ? response as unknown as TypeItem : t));
+      } catch (error) {
+        console.error("Error al actualizar tipo", error);
+      }
     } else {
-      setTypes(types => [...types, { id: types.length + 1, name: form.name }]);
+      console.log(form, "form");
+      try {
+        const response = await createType({ name: form.name});
+        setTypes((types) => [...types ?? [], response as unknown as TypeItem]);
+      } catch (error) {
+        console.error("Error al crear tipo", error);
+      }
     }
     setShowForm(false);
   };
@@ -48,7 +75,7 @@ export const AdminType: React.FC = () => {
         <>
           <button style={{ background: '#22223b', color: '#fff', border: 'none', borderRadius: 8, padding: '0.7rem 2.2rem', fontWeight: 600, fontSize: '1.1rem', cursor: 'pointer', marginBottom: 18 }} onClick={handleCreate}>Crear Tipo</button>
           <ul style={{ listStyle: 'none', padding: 0 }}>
-            {types.map(type => (
+            {types?.map(type => (
               <li key={type.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.7rem 0', borderBottom: '1px solid #eee' }}>
                 <span>{type.name}</span>
                 <span>

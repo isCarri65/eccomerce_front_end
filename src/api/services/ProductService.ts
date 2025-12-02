@@ -21,7 +21,6 @@ export const getProductVariantsByProductId = async (
 export const getProductVariantCartById = async (
   variantId: number
 ): Promise<IProductVariantCART> => {
-  console.log("id Variant:", variantId);
   const response = await interceptorApiClient.get<IProductVariantCART>(
     `/public/productVariants/cart-dto/${variantId}`
   );
@@ -39,12 +38,21 @@ export const getProductById = async (id: number): Promise<IProduct> => {
   return response.data;
 };
 
-export const createProduct = async (
-  data: ICreateProduct
-): Promise<IProduct> => {
-  const response = await interceptorApiClient.post("/public/products", data);
+export const createProduct = async (formData: FormData) => {
+  console.log(formData, "formData");
+  const response = await interceptorApiClient.post(
+    "/public/products",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
   return response.data;
 };
+
 
 export const updateProduct = async (
   id: number,
@@ -59,6 +67,7 @@ export const updateProduct = async (
 
 export const deleteProduct = async (id: number): Promise<boolean> => {
   const response = await interceptorApiClient.delete(`/public/products/${id}`);
+  console.log(response, "response");
   return response.status === 204;
 };
 

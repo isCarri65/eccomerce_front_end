@@ -12,7 +12,9 @@ export const getColorById = async (id: number): Promise<IColor> => {
   return response.data;
 };
 export const createColor = async (color: ICreateColor): Promise<IColor> => {
+  console.log(color, "12312312312");
   const response = await interceptorApiClient.post("/public/colors", color);
+  console.log(response, "asdasd");
   return response.data;
 };
 
@@ -26,7 +28,8 @@ export const updateColor = async (
   );
   return response.data;
 };
-export const deleteColor = async (id: number): Promise<void> => {
-  await interceptorApiClient.delete(`/public/colors/${id}`);
-  // No return value for delete operation
+export const deleteColor = async (id: number): Promise<boolean> => {
+  const response = await interceptorApiClient.delete(`/public/colors/${id}`);
+  console.log(response, "response");
+  return response.status === 204;
 };

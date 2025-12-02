@@ -1,45 +1,76 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createColor, deleteColor, getAllColors, updateColor } from '../../../api/services/ColorService';
+import { IUpdateColor } from '../../../types/Color/IUpdateColor';
 
 interface ColorItem {
   id: number;
   name: string;
 }
 
-const mockColors: ColorItem[] = [
-  { id: 1, name: 'Rojo' },
-  { id: 2, name: 'Azul' },
-];
 
 export const AdminColor: React.FC = () => {
-  const [colors, setColors] = useState<ColorItem[]>(mockColors);
+  const [colors, setColors] = useState<ColorItem[]>();
   const [showForm, setShowForm] = useState(false);
   const [editColor, setEditColor] = useState<ColorItem | null>(null);
   const [form, setForm] = useState({ name: '' });
-
-  const handleCreate = () => {
+  const loadColors = async () => {
+    try {
+      const response = await getAllColors();
+      setColors(response as unknown as ColorItem[]);
+    } catch (error) {
+      console.error("Error al cargar colores", error);
+    }
+  };
+  useEffect(() => { 
+    loadColors();
+  }, []);
+  const handleCreate = async () => {
     setForm({ name: '' });
     setEditColor(null);
     setShowForm(true);
+
   };
   const handleEdit = (color: ColorItem) => {
     setForm({ name: color.name });
     setEditColor(color);
     setShowForm(true);
   };
-  const handleDelete = (id: number) => {
-    setColors(colors => colors.filter(c => c.id !== id));
+  const handleDelete = async (id: number) => {
+    try {
+      const ok = await deleteColor(id);
+      if (ok) {
+        setColors((colors) => colors?.filter((c) => c.id !== id));
+      } else {
+        console.warn("El backend no confirmó el borrado del color");
+      }
+    } catch (error) {
+      console.error("Error al eliminar color", error);
+    }
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ name: e.target.value });
   };
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editColor) {
-      setColors(colors => colors.map(c => c.id === editColor.id ? { ...c, name: form.name } : c));
+      try {
+        const response = await updateColor(editColor?.id ?? 0, form as IUpdateColor);
+        setColors((colors) => colors?.map((c) => c.id === editColor?.id ? response as unknown as ColorItem : c));
+      } catch (error) {
+        console.error("Error al actualizar color", error);
+      }
+  
     } else {
-      setColors(colors => [...colors, { id: colors.length + 1, name: form.name }]);
+      try {
+        const response = await createColor({ name: form.name });
+        setColors((colors) => [...colors ?? [], response as unknown as ColorItem]);
+      } catch (error) {
+        console.error("Error al crear color", error);
+      }
     }
     setShowForm(false);
+    
+    
   };
   return (
     <div style={{ background: '#fff', borderRadius: 14, boxShadow: '0 2px 16px rgba(0,0,0,0.08)', padding: 32, width: 400, maxWidth: '95vw', margin: '2rem auto' }}>
@@ -48,7 +79,7 @@ export const AdminColor: React.FC = () => {
         <>
           <button style={{ background: '#22223b', color: '#fff', border: 'none', borderRadius: 8, padding: '0.7rem 2.2rem', fontWeight: 600, fontSize: '1.1rem', cursor: 'pointer', marginBottom: 18 }} onClick={handleCreate}>Crear Color</button>
           <ul style={{ listStyle: 'none', padding: 0 }}>
-            {colors.map(color => (
+            {colors?.map(color => (
               <li key={color.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.7rem 0', borderBottom: '1px solid #eee' }}>
                 <span>{color.name}</span>
                 <span>
